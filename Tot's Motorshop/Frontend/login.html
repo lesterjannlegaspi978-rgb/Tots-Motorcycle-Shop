@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Tot's Motorshop Login</title>
+
+    <link rel="icon" href="logo.png">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-box">
+
+
+        <img
+            src="logo.png"
+            class="login-logo"
+            alt="Tot's Motorshop Logo"
+        >
+
+
+        <h2>
+            Tot's Motorshop
+        </h2>
+
+
+        <p class="subtitle">
+            Sales And Inventory Monitoring System
+        </p>
+
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Enter Username"
+        >
+
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter Password"
+        >
+
+
+        <button
+            type="button"
+            onclick="login()"
+        >
+            Login
+        </button>
+
+
+        <br>
+        <br>
+
+        <a
+            href="register.html"
+            class="register-link"
+        >
+            Create Account
+        </a>
+
+        <button
+            type="button"
+            class="login-terms-link"
+            onclick="openTerms()"
+        >
+            Terms and Conditions
+        </button>
+
+        <div class="login-terms-checkbox">
+
+            <input
+                type="checkbox"
+                id="termsCheckbox"
+            >
+
+            <label for="termsCheckbox">
+                I agree to the Terms and Conditions
+            </label>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<div id="termsPopup">
+
+    <div class="terms-popup-box">
+
+
+        <h2>
+            Terms and Conditions
+        </h2>
+
+
+        <p class="terms-popup-intro">
+            Please read and understand the following terms and conditions before using Tot's Motorshop.
+        </p>
+
+
+        <div class="terms-popup-content">
+
+
+            <h3>
+                1. Purpose of the System
+            </h3>
+
+            <p>
+                Tot's Motorshop Sales and Inventory Monitoring System
+                is designed to help manage products, inventory, sales,
+                and related motor shop transactions.
+            </p>
+
+
+            <h3>
+                2. Account Responsibility
+            </h3>
+
+            <p>
+                Users are responsible for keeping their account
+                information secure and should not share their
+                login credentials with unauthorized persons.
+            </p>
+
+
+            <h3>
+                3. Inventory Management
+            </h3>
+
+            <p>
+                Product information and inventory quantities should
+                be entered accurately to help maintain reliable
+                inventory records.
+            </p>
+
+
+            <h3>
+                4. Sales Transactions
+            </h3>
+
+            <p>
+                Sales records should contain accurate product,
+                quantity, and transaction information.
+            </p>
+
+
+            <h3>
+                5. System Usage
+            </h3>
+
+            <p>
+                The system should only be used for legitimate
+                motorshop management and business-related purposes.
+            </p>
+
+
+            <h3>
+                6. Data Accuracy
+            </h3>
+
+            <p>
+                Authorized users are responsible for checking the
+                accuracy of information entered into the system.
+            </p>
+
+
+            <h3>
+                7. System Availability
+            </h3>
+
+            <p>
+                System availability may depend on the server,
+                database, network connection, and other technical
+                requirements.
+            </p>
+
+
+            <h3>
+                8. Agreement
+            </h3>
+
+            <p>
+                By selecting "Agree", you confirm that you have
+                read and understood these Terms and Conditions.
+            </p>
+
+
+        </div>
+
+        <div class="terms-popup-buttons">
+
+
+            <button
+                type="button"
+                class="terms-agree"
+                onclick="agreeTerms()"
+            >
+                ✓ Agree
+            </button>
+
+
+            <button
+                type="button"
+                class="terms-disagree"
+                onclick="disagreeTerms()"
+            >
+                ✕ Disagree
+            </button>
+
+
+        </div>
+
+
+        <p
+            id="termsMessage"
+            class="terms-popup-message"
+        ></p>
+
+
+    </div>
+
+</div>
+
+<script>
+
+
+function login() {
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const password =
+        document.getElementById("password").value.trim();
+
+    const termsCheckbox =
+        document.getElementById("termsCheckbox");
+
+
+    if (!username || !password) {
+
+        alert(
+            "Please enter your username and password."
+        );
+
+        return;
+    }
+
+
+    if (!termsCheckbox.checked) {
+
+        alert(
+            "Please agree to the Terms and Conditions first."
+        );
+
+        return;
+    }
+
+
+    fetch(
+        "http://localhost:5000/auth/login",
+        {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                username: username,
+
+                password: password
+
+            })
+
+        }
+    )
+
+
+    .then(
+        response => response.json()
+    )
+
+
+    .then(
+        data => {
+
+            if (data.success) {
+
+                localStorage.setItem(
+                    "authToken",
+                    data.token
+                );
+
+
+                localStorage.setItem(
+                    "termsAccepted",
+                    "true"
+                );
+
+
+                alert(
+                    "Login Successful"
+                );
+
+
+                window.location.href =
+                    "dashboard.html";
+
+            }
+
+            else {
+
+                alert(
+                    data.message ||
+                    "Wrong Username or Password"
+                );
+
+            }
+
+        }
+    )
+
+
+    .catch(
+        error => {
+
+            console.error(
+                "Login Error:",
+                error
+            );
+
+
+            alert(
+                "Cannot connect to the server. " +
+                "Please make sure your Node.js server is running."
+            );
+
+        }
+    );
+
+}
+
+
+function openTerms() {
+
+    const popup =
+        document.getElementById("termsPopup");
+
+    popup.style.display = "flex";
+
+}
+
+
+function agreeTerms() {
+
+    const checkbox =
+        document.getElementById(
+            "termsCheckbox"
+        );
+
+
+    const message =
+        document.getElementById(
+            "termsMessage"
+        );
+
+
+    if (!checkbox.checked) {
+
+        message.style.color =
+            "#dc2626";
+
+
+        message.innerText =
+            "Please check the box below Terms and Conditions first.";
+
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        "termsAccepted",
+        "true"
+    );
+
+
+    message.style.color =
+        "#16a34a";
+
+
+    message.innerText =
+        "Terms accepted. You may now continue.";
+
+
+    setTimeout(
+        function() {
+
+            document.getElementById(
+                "termsPopup"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "termsMessage"
+            ).innerText = "";
+
+        },
+        700
+    );
+
+}
+
+function disagreeTerms() {
+
+    const checkbox =
+        document.getElementById(
+            "termsCheckbox"
+        );
+
+
+    const message =
+        document.getElementById(
+            "termsMessage"
+        );
+
+
+    checkbox.checked = false;
+
+
+    localStorage.removeItem(
+        "termsAccepted"
+    );
+
+
+    message.style.color =
+        "#dc2626";
+
+
+    message.innerText =
+        "You must agree to the Terms and Conditions to continue.";
+
+
+    setTimeout(
+        function() {
+
+            document.getElementById(
+                "termsPopup"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "termsMessage"
+            ).innerText = "";
+
+        },
+        1200
+    );
+
+}
+
+document.getElementById(
+    "termsPopup"
+).addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target === this
+        ) {
+
+            this.style.display =
+                "none";
+
+
+            document.getElementById(
+                "termsMessage"
+            ).innerText = "";
+
+        }
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+<title>Dashboard</title>
+
+<link rel="icon" href="logo.png">
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="sidebar-header">
+
+    <img src="logo.png" class="sidebar-logo">
+
+    <h2>Tot's Motorshop</h2>
+
+</div>
+
+<ul>
+
+    <li>
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+    </li>
+
+    <li>
+        <a href="inventory.html">
+            Inventory
+        </a>
+    </li>
+
+    <li>
+        <a href="sales.html">
+            Sales
+        </a>
+    </li>
+
+    <li>
+        <a href="reports.html">
+            Reports
+        </a>
+    </li>
+
+    <li>
+        <a href="analytics.html">
+            Analytics
+        </a>
+    </li>
+
+    <li>
+        <a href="login.html">
+            Logout
+        </a>
+    </li>
+
+</ul>
+
+</div>
+
+
+<div class="content">
+
+<h1>Dashboard Overview</h1>
+
+
+<div class="welcome-box">
+
+    <div class="welcome-content">
+
+        <span class="welcome-badge">
+            MOTORSHOP MANAGEMENT SYSTEM
+        </span>
+
+        <h2>
+            Welcome to Tot's Motorshop
+        </h2>
+
+        <p class="welcome-subtitle">
+            Web-Based Sales and Inventory Monitoring System
+        </p>
+
+        <p class="welcome-description">
+
+            Manage motorcycle parts inventory, monitor product availability,
+            track sales transactions, generate reports, and support better
+            business decision-making through real-time information.
+
+        </p>
+
+        <div class="welcome-divider"></div>
+
+        <p class="welcome-quote">
+
+            "Efficient inventory management leads to smarter business growth."
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<br>
+
+
+<!-- =====================================================
+     DASHBOARD CARDS
+     ===================================================== -->
+
+<div class="cards">
+
+
+    <!-- TOTAL PRODUCTS -->
+
+    <div
+        class="card"
+        onclick="showDashboardSection('products')"
+        title="Click to view all products"
+        role="button"
+        tabindex="0"
+        onkeydown="handleCardKey(event, 'products')"
+    >
+
+        <h3>
+            Total Products
+        </h3>
+
+        <p id="total-products">
+            Loading
+        </p>
+
+    </div>
+
+
+    <!-- LOW STOCKS -->
+
+    <div
+        class="card"
+        onclick="showDashboardSection('lowstocks')"
+        title="Click to view low stock products"
+        role="button"
+        tabindex="0"
+        onkeydown="handleCardKey(event, 'lowstocks')"
+    >
+
+        <h3>
+            Low Stocks
+        </h3>
+
+        <p id="low-stocks">
+            Loading
+        </p>
+
+    </div>
+
+    <div
+        class="card"
+        onclick="showDashboardSection('sales')"
+        title="Click to view sales transactions"
+        role="button"
+        tabindex="0"
+        onkeydown="handleCardKey(event, 'sales')"
+    >
+
+        <h3>
+            Total Sales
+        </h3>
+
+        <p id="total-sales">
+            Loading
+        </p>
+
+    </div>
+
+    <div
+        class="card"
+        onclick="showDashboardSection('fastmoving')"
+        title="Click to view fast moving products"
+        role="button"
+        tabindex="0"
+        onkeydown="handleCardKey(event, 'fastmoving')"
+    >
+
+        <h3>
+            Fast Moving Products
+        </h3>
+
+        <p id="fast-moving">
+            Loading
+        </p>
+
+    </div>
+
+
+</div>
+
+
+<br>
+
+<div
+    id="dashboardDetails"
+    class="report-box"
+    style="display: none;"
+>
+
+    <div class="section-header">
+
+        <h2 id="dashboardDetailsTitle">
+            Dashboard Details
+        </h2>
+
+
+        <button
+            type="button"
+            onclick="closeDashboardSection()"
+        >
+            Back to Dashboard
+        </button>
+
+    </div>
+
+
+    <div id="dashboardDetailsContent">
+
+        Loading...
+
+    </div>
+
+</div>
+
+
+<br>
+
+<div id="dashboardMainSections">
+
+
+    <!-- LOW STOCK ALERTS -->
+
+    <div class="low-stock-box">
+
+        <div class="section-header">
+
+            <h2>
+                ⚠ Low Stock Alerts
+            </h2>
+
+            <span
+                class="alert-count"
+                id="alertCount"
+            >
+                0 Items
+            </span>
+
+        </div>
+
+
+        <div
+            class="low-stock-list"
+            id="alerts"
+        >
+
+        </div>
+
+    </div>
+
+
+    <br>
+
+    <div class="report-box">
+
+        <h2>
+            Recent Transactions
+        </h2>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Product
+                    </th>
+
+                    <th>
+                        Qty
+                    </th>
+
+                    <th>
+                        Total
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="recentSales">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+</div>
+
+
+</div>
+
+
+<script>
+
+const sidebar =
+    document.querySelector(".sidebar");
+
+const content =
+    document.querySelector(".content");
+
+
+sidebar.classList.add("hide");
+
+
+sidebar.addEventListener("mouseenter", () => {
+
+    sidebar.classList.remove("hide");
+
+    content.classList.add("expand");
+
+});
+
+
+sidebar.addEventListener("mouseleave", () => {
+
+    sidebar.classList.add("hide");
+
+    content.classList.remove("expand");
+
+});
+
+let dashboardProducts = [];
+
+let dashboardSales = [];
+
+async function loadDashboard(){
+
+    try{
+
+        const response =
+            await fetch(
+                "http://localhost:5000/dashboard/stats"
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Dashboard stats failed."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        document.getElementById(
+            "total-products"
+        ).textContent =
+            data.totalProducts ?? "0";
+
+
+        document.getElementById(
+            "low-stocks"
+        ).textContent =
+            data.lowStocks ?? "0";
+
+
+        document.getElementById(
+            "total-sales"
+        ).textContent =
+            "₱" +
+            (data.totalSales ?? "0.00");
+
+
+        document.getElementById(
+            "fast-moving"
+        ).textContent =
+            data.fastMoving ?? "0";
+
+
+    }catch(error){
+
+        console.error(
+            "Dashboard error:",
+            error
+        );
+
+
+        document.getElementById(
+            "total-products"
+        ).textContent =
+            "0";
+
+
+        document.getElementById(
+            "low-stocks"
+        ).textContent =
+            "0";
+
+
+        document.getElementById(
+            "total-sales"
+        ).textContent =
+            "₱0.00";
+
+
+        document.getElementById(
+            "fast-moving"
+        ).textContent =
+            "0";
+
+    }
+
+}
+
+async function loadDashboardProducts(){
+
+    try{
+
+        const response =
+            await fetch(
+                "http://localhost:5000/products/all"
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Products request failed."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+        if(Array.isArray(data)){
+
+            dashboardProducts = data;
+
+        }else if(Array.isArray(data.products)){
+
+            dashboardProducts = data.products;
+
+        }else{
+
+            dashboardProducts = [];
+
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "Products loading error:",
+            error
+        );
+
+
+        dashboardProducts = [];
+
+    }
+
+}
+
+async function loadDashboardSales(){
+
+    try{
+
+        const response =
+            await fetch(
+                "http://localhost:5000/sales/all"
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Sales request failed."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+        if(Array.isArray(data)){
+
+            dashboardSales = data;
+
+        }else if(Array.isArray(data.sales)){
+
+            dashboardSales = data.sales;
+
+        }else{
+
+            dashboardSales = [];
+
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "Sales loading error:",
+            error
+        );
+
+
+        dashboardSales = [];
+
+    }
+
+}
+
+async function loadRecentSales(){
+
+    try{
+
+        const response =
+            await fetch(
+                "http://localhost:5000/dashboard/recent-sales"
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Recent sales request failed."
+            );
+
+        }
+
+
+        const sales =
+            await response.json();
+
+
+        let rows = "";
+
+
+        sales.forEach(sale => {
+
+            rows += `
+
+            <tr>
+
+                <td>
+                    ${sale.product_name}
+                </td>
+
+                <td>
+                    ${sale.quantity}
+                </td>
+
+                <td>
+                    ₱${parseFloat(
+                        sale.total
+                    ).toFixed(2)}
+                </td>
+
+                <td>
+                    ${sale.sale_date}
+                </td>
+
+            </tr>
+
+            `;
+
+        });
+
+
+        document.getElementById(
+            "recentSales"
+        ).innerHTML =
+
+            rows ||
+
+            `
+
+            <tr>
+
+                <td colspan="4">
+
+                    No recent sales transactions.
+
+                </td>
+
+            </tr>
+
+            `;
+
+
+    }catch(error){
+
+        console.error(
+            "Recent sales error:",
+            error
+        );
+
+
+        document.getElementById(
+            "recentSales"
+        ).innerHTML =
+
+        `
+
+        <tr>
+
+            <td colspan="4">
+
+                Unable to load recent transactions.
+
+            </td>
+
+        </tr>
+
+        `;
+
+    }
+
+}
+
+async function loadAlerts(){
+
+    try{
+
+        const response =
+            await fetch(
+                "http://localhost:5000/dashboard/alerts"
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Alerts request failed."
+            );
+
+        }
+
+
+        const alerts =
+            await response.json();
+
+
+        const alertsContainer =
+            document.getElementById(
+                "alerts"
+            );
+
+
+        const alertCount =
+            document.getElementById(
+                "alertCount"
+            );
+
+
+        alertCount.textContent =
+
+            alerts.length +
+
+            (
+                alerts.length === 1
+                    ? " Item"
+                    : " Items"
+            );
+
+
+        if(alerts.length === 0){
+
+            alertsContainer.innerHTML = `
+
+                <div class="no-alerts">
+
+                    <span>
+                        ✓
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            All stocks are sufficient
+                        </strong>
+
+                        <small>
+                            No products currently need restocking.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            alertCount.textContent =
+                "All Good";
+
+
+            return;
+
+        }
+
+
+        let list = "";
+
+
+        alerts.forEach(product => {
+
+            let stockClass =
+                "warning";
+
+
+            if(
+                Number(product.quantity) <= 5
+            ){
+
+                stockClass =
+                    "critical";
+
+            }
+
+
+            list += `
+
+                <div
+                    class="stock-alert-item ${stockClass}"
+                >
+
+                    <div class="stock-alert-icon">
+
+                        !
+
+                    </div>
+
+
+                    <div class="stock-alert-info">
+
+                        <strong>
+                            ${product.product_name}
+                        </strong>
+
+                        <small>
+                            Stock remaining
+                        </small>
+
+                    </div>
+
+
+                    <div class="stock-quantity">
+
+                        <strong>
+                            ${product.quantity}
+                        </strong>
+
+                        <small>
+                            left
+                        </small>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+
+
+        alertsContainer.innerHTML =
+            list;
+
+
+    }catch(error){
+
+        console.error(
+            "Stock alerts error:",
+            error
+        );
+
+
+        document.getElementById(
+            "alerts"
+        ).innerHTML = `
+
+            <div class="no-alerts">
+
+                <strong>
+                    Unable to load stock alerts.
+                </strong>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+function handleCardKey(
+    event,
+    section
+){
+
+    if(
+        event.key === "Enter" ||
+        event.key === " "
+    ){
+
+        event.preventDefault();
+
+        showDashboardSection(
+            section
+        );
+
+    }
+
+}
+
+async function showDashboardSection(
+    section
+){
+
+    const detailsBox =
+        document.getElementById(
+            "dashboardDetails"
+        );
+
+
+    const mainSections =
+        document.getElementById(
+            "dashboardMainSections"
+        );
+
+
+    const detailsTitle =
+        document.getElementById(
+            "dashboardDetailsTitle"
+        );
+
+
+    const detailsContent =
+        document.getElementById(
+            "dashboardDetailsContent"
+        );
+
+    detailsBox.style.display =
+        "block";
+
+    mainSections.style.display =
+        "none";
+
+    window.scrollTo({
+
+        top:
+            detailsBox.offsetTop - 20,
+
+        behavior:
+            "smooth"
+
+    });
+
+    if(section === "products"){
+
+        detailsTitle.textContent =
+            "Total Products";
+
+
+        detailsContent.innerHTML =
+            "Loading products...";
+
+
+        await loadDashboardProducts();
+
+
+        displayAllProducts(
+            detailsContent
+        );
+
+
+        return;
+
+    }
+
+    if(section === "lowstocks"){
+
+        detailsTitle.textContent =
+            "Low Stock Products";
+
+
+        detailsContent.innerHTML =
+            "Loading low stock products...";
+
+
+        await loadDashboardProducts();
+
+
+        displayLowStockProducts(
+            detailsContent
+        );
+
+
+        return;
+
+    }
+
+    if(section === "sales"){
+
+        detailsTitle.textContent =
+            "Sales Transactions";
+
+
+        detailsContent.innerHTML =
+            "Loading sales transactions...";
+
+
+        await loadDashboardSales();
+
+
+        displaySalesTransactions(
+            detailsContent
+        );
+
+
+        return;
+
+    }
+
+    if(section === "fastmoving"){
+
+        detailsTitle.textContent =
+            "Fast Moving Products";
+
+
+        detailsContent.innerHTML =
+            "Loading fast moving products...";
+
+
+        await loadDashboardSales();
+
+
+        displayFastMovingProducts(
+            detailsContent
+        );
+
+
+        return;
+
+    }
+
+}
+
+function displayAllProducts(
+    container
+){
+
+    if(
+        !dashboardProducts.length
+    ){
+
+        container.innerHTML = `
+
+            <p>
+                No products found.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    let rows = "";
+
+
+    dashboardProducts.forEach(
+        product => {
+
+            rows += `
+
+                <tr>
+
+                    <td>
+                        ${product.id ?? ""}
+                    </td>
+
+                    <td>
+                        ${product.product_name ?? ""}
+                    </td>
+
+                    <td>
+                        ${product.category ?? ""}
+                    </td>
+
+                    <td>
+                        ${product.quantity ?? 0}
+                    </td>
+
+                    <td>
+                        ₱${parseFloat(
+                            product.price || 0
+                        ).toFixed(2)}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    container.innerHTML = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Product
+                    </th>
+
+                    <th>
+                        Category
+                    </th>
+
+                    <th>
+                        Stock
+                    </th>
+
+                    <th>
+                        Price
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                ${rows}
+
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+function displayLowStockProducts(
+    container
+){
+
+    const lowStocks =
+        dashboardProducts.filter(
+            product =>
+                Number(
+                    product.quantity
+                ) <= 10
+        );
+
+
+    if(!lowStocks.length){
+
+        container.innerHTML = `
+
+            <div class="no-alerts">
+
+                <span>
+                    ✓
+                </span>
+
+                <div>
+
+                    <strong>
+                        No low stock products
+                    </strong>
+
+                    <small>
+                        All products currently have sufficient stock.
+                    </small>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    let rows = "";
+
+
+    lowStocks.forEach(
+        product => {
+
+            rows += `
+
+                <tr>
+
+                    <td>
+                        ${product.id ?? ""}
+                    </td>
+
+                    <td>
+                        ${product.product_name ?? ""}
+                    </td>
+
+                    <td>
+                        ${product.category ?? ""}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${product.quantity ?? 0}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ₱${parseFloat(
+                            product.price || 0
+                        ).toFixed(2)}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    container.innerHTML = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Product
+                    </th>
+
+                    <th>
+                        Category
+                    </th>
+
+                    <th>
+                        Stock Left
+                    </th>
+
+                    <th>
+                        Price
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                ${rows}
+
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+function displaySalesTransactions(
+    container
+){
+
+    if(
+        !dashboardSales.length
+    ){
+
+        container.innerHTML = `
+
+            <p>
+                No sales transactions found.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    let rows = "";
+
+
+    dashboardSales.forEach(
+        sale => {
+
+            rows += `
+
+                <tr>
+
+                    <td>
+                        ${sale.id ?? ""}
+                    </td>
+
+                    <td>
+                        ${sale.product_name ?? ""}
+                    </td>
+
+                    <td>
+                        ${sale.quantity ?? 0}
+                    </td>
+
+                    <td>
+                        ₱${parseFloat(
+                            sale.total || 0
+                        ).toFixed(2)}
+                    </td>
+
+                    <td>
+                        ${formatDashboardDate(
+                            sale.sale_date
+                        )}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    container.innerHTML = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Product
+                    </th>
+
+                    <th>
+                        Qty
+                    </th>
+
+                    <th>
+                        Total
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                ${rows}
+
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+function displayFastMovingProducts(
+    container
+){
+
+    if(
+        !dashboardSales.length
+    ){
+
+        container.innerHTML = `
+
+            <p>
+                No sales data available yet.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    const productSales = {};
+
+
+    dashboardSales.forEach(
+        sale => {
+
+            const productName =
+                sale.product_name ||
+                "Unknown Product";
+
+
+            const quantity =
+                Number(
+                    sale.quantity
+                ) || 0;
+
+
+            if(
+                !productSales[productName]
+            ){
+
+                productSales[productName] = {
+
+                    product_name:
+                        productName,
+
+                    quantity_sold:
+                        0,
+
+                    transactions:
+                        0
+
+                };
+
+            }
+
+
+            productSales[
+                productName
+            ].quantity_sold +=
+                quantity;
+
+
+            productSales[
+                productName
+            ].transactions +=
+                1;
+
+        }
+    );
+
+
+    const fastMoving =
+
+        Object.values(
+            productSales
+        )
+
+        .sort(
+            (a, b) =>
+                b.quantity_sold -
+                a.quantity_sold
+        );
+
+
+    if(
+        !fastMoving.length
+    ){
+
+        container.innerHTML = `
+
+            <p>
+                No fast moving product data available.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    let rows = "";
+
+
+    fastMoving.forEach(
+        (product, index) => {
+
+            rows += `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        ${product.product_name}
+                    </td>
+
+                    <td>
+                        ${product.quantity_sold}
+                    </td>
+
+                    <td>
+                        ${product.transactions}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    container.innerHTML = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Rank
+                    </th>
+
+                    <th>
+                        Product
+                    </th>
+
+                    <th>
+                        Total Qty Sold
+                    </th>
+
+                    <th>
+                        Transactions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                ${rows}
+
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+function closeDashboardSection(){
+
+    document.getElementById(
+        "dashboardDetails"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "dashboardMainSections"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "dashboardDetailsContent"
+    ).innerHTML =
+        "Loading...";
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+function formatDashboardDate(
+    dateValue
+){
+
+    if(!dateValue){
+
+        return "";
+
+    }
+
+
+    const date =
+        new Date(dateValue);
+
+
+    if(
+        isNaN(
+            date.getTime()
+        )
+    ){
+
+        return dateValue;
+
+    }
+
+
+    return date.toLocaleString(
+        "en-PH",
+        {
+
+            year: "numeric",
+
+            month: "short",
+
+            day: "2-digit",
+
+            hour: "2-digit",
+
+            minute: "2-digit"
+
+        }
+    );
+
+}
+
+loadDashboard();
+
+loadRecentSales();
+
+loadAlerts();
+
+setInterval(() => {
+
+    loadDashboard();
+
+    loadRecentSales();
+
+    loadAlerts();
+
+}, 3000);
+
+
+</script>
+
+</body>
+</html>

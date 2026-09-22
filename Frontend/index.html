@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Tot's Motorshop</title>
+
+    <link rel="icon" href="logo.png">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    rgba(5, 12, 25, 0.82),
+                    rgba(5, 12, 25, 0.88)
+                ),
+                url("motor-bg.jpg");
+
+            background-size: cover;
+            background-position: center;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+        }
+
+        .landing {
+
+            width: 90%;
+            max-width: 1150px;
+
+            min-height: 620px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 60px;
+
+            border-radius: 25px;
+
+            background:
+                rgba(255, 255, 255, 0.08);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.15);
+
+            backdrop-filter: blur(12px);
+
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.45);
+
+        }
+
+        .left {
+
+            max-width: 650px;
+
+        }
+
+        .logo {
+
+            width: 110px;
+            height: 110px;
+
+            object-fit: contain;
+
+            margin-bottom: 25px;
+
+        }
+
+        .small-title {
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 15px;
+
+            opacity: 0.8;
+
+        }
+
+        h1 {
+
+            font-size: 58px;
+
+            line-height: 1.05;
+
+            margin-bottom: 20px;
+
+        }
+
+        h1 span {
+
+            display: block;
+
+            color: #3b82f6;
+
+        }
+
+        .description {
+
+            font-size: 18px;
+
+            line-height: 1.7;
+
+            color: #d7deea;
+
+            max-width: 600px;
+
+            margin-bottom: 35px;
+
+        }
+
+        .buttons {
+
+            display: flex;
+
+            gap: 15px;
+
+            align-items: center;
+
+        }
+
+        .start-btn {
+
+            display: inline-block;
+
+            padding: 15px 32px;
+
+            border-radius: 10px;
+
+            background: #2563eb;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            transition: 0.25s;
+
+            box-shadow:
+                0 10px 25px rgba(37, 99, 235, 0.35);
+
+        }
+
+        .start-btn:hover {
+
+            background: #1d4ed8;
+
+            transform: translateY(-2px);
+
+        }
+
+        .info-btn {
+
+            display: inline-block;
+
+            padding: 14px 25px;
+
+            border-radius: 10px;
+
+            border: 1px solid rgba(255,255,255,0.25);
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+        }
+
+        .info {
+
+            width: 320px;
+
+            padding: 30px;
+
+            border-radius: 20px;
+
+            background: rgba(0,0,0,0.25);
+
+            border: 1px solid rgba(255,255,255,0.12);
+
+        }
+
+        .info h2 {
+
+            margin-bottom: 20px;
+
+            font-size: 23px;
+
+        }
+
+        .feature {
+
+            display: flex;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+
+        }
+
+        .feature-icon {
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 10px;
+
+            background: #2563eb;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 18px;
+
+        }
+
+        .feature-text h3 {
+
+            font-size: 15px;
+
+            margin-bottom: 5px;
+
+        }
+
+        .feature-text p {
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            color: #c8d0dc;
+
+        }
+
+        .footer {
+
+            position: fixed;
+
+            bottom: 20px;
+
+            left: 0;
+
+            width: 100%;
+
+            text-align: center;
+
+            color: #aeb8c8;
+
+            font-size: 12px;
+
+        }
+
+        @media (max-width: 850px) {
+
+            .landing {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 40px;
+
+                padding: 40px 30px;
+
+            }
+
+            .info {
+
+                width: 100%;
+
+            }
+
+            h1 {
+
+                font-size: 43px;
+
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .landing {
+
+                width: 94%;
+
+                padding: 30px 22px;
+
+            }
+
+            h1 {
+
+                font-size: 36px;
+
+            }
+
+            .description {
+
+                font-size: 15px;
+
+            }
+
+            .buttons {
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+            }
+
+            .start-btn,
+            .info-btn {
+
+                text-align: center;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="landing">
+
+        <section class="left">
+
+            <img
+                src="logo.png"
+                class="logo"
+                alt="Tot's Motorshop Logo"
+            >
+
+            <p class="small-title">
+                Web-Based Management System
+            </p>
+
+            <h1>
+                Tot's
+                <span>Motorshop</span>
+            </h1>
+
+            <p class="description">
+
+                A web-based Sales and Inventory Monitoring
+                System designed to help manage products,
+                monitor inventory, record sales, and generate
+                accurate business reports efficiently.
+
+            </p>
+
+            <div class="buttons">
+
+                <a
+                    href="login.html"
+                    class="start-btn"
+                >
+                    Get Started →
+                </a>
+
+                <a
+                    href="login.html"
+                    class="info-btn"
+                >
+                    Admin Login
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <section class="info">
+
+            <h2>
+                System Features
+            </h2>
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    📦
+                </div>
+
+                <div class="feature-text">
+
+                    <h3>
+                        Inventory Monitoring
+                    </h3>
+
+                    <p>
+                        Monitor product quantities
+                        and low-stock items.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ₱
+                </div>
+
+                <div class="feature-text">
+
+                    <h3>
+                        Sales Monitoring
+                    </h3>
+
+                    <p>
+                        Record transactions and
+                        monitor sales information.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    📊
+                </div>
+
+                <div class="feature-text">
+
+                    <h3>
+                        Reports & Analytics
+                    </h3>
+
+                    <p>
+                        Generate reports and analyze
+                        inventory and sales data.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <div class="footer">
+
+        © 2026 Tot's Motorshop.
+        Sales And Inventory Monitoring System.
+
+    </div>
+
+</body>
+
+</html>

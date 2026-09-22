@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Terms and Conditions - Tot's Motorshop</title>
+
+    <link rel="icon" href="logo.png">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="terms-container">
+
+    <div class="terms-box">
+
+        <img
+            src="logo.png"
+            class="terms-logo"
+            alt="Tot's Motorshop Logo"
+        >
+
+        <h1>Terms and Conditions</h1>
+
+        <p class="terms-intro">
+            Please read and understand the following terms and conditions
+            before creating an account and using the Tot's Motorshop
+            Sales and Inventory Monitoring System.
+        </p>
+
+
+        <div class="terms-content">
+
+            <h2>1. Purpose of the System</h2>
+
+            <p>
+                The Tot's Motorshop Sales and Inventory Monitoring System
+                is designed to help manage sales transactions, monitor
+                product inventory, and maintain organized business records.
+            </p>
+
+
+            <h2>2. User Account</h2>
+
+            <p>
+                Users are responsible for providing accurate information
+                when creating an account. Account credentials must be kept
+                confidential and must not be shared with unauthorized users.
+            </p>
+
+
+            <h2>3. Inventory Management</h2>
+
+            <p>
+                Product information, stock quantities, categories, prices,
+                and related inventory records must be entered accurately.
+                Users are responsible for ensuring that inventory information
+                reflects the actual products available in the motorshop.
+            </p>
+
+
+            <h2>4. Sales Transactions</h2>
+
+            <p>
+                Sales transactions must be recorded accurately. Users should
+                verify product information, quantity, and price before
+                saving a transaction in the system.
+            </p>
+
+
+            <h2>5. Data Accuracy</h2>
+
+            <p>
+                Users are responsible for checking the accuracy of information
+                entered into the system. Incorrect or incomplete information
+                may affect inventory records and sales reports.
+            </p>
+
+
+            <h2>6. System Security</h2>
+
+            <p>
+                Users must not attempt to access, modify, or delete information
+                that they are not authorized to manage. Any account credentials
+                must be protected from unauthorized access.
+            </p>
+
+
+            <h2>7. Proper Use of the System</h2>
+
+            <p>
+                The system must only be used for legitimate motorshop
+                management activities, including inventory monitoring,
+                sales recording, reporting, and other authorized operations.
+            </p>
+
+
+            <h2>8. Agreement</h2>
+
+            <p>
+                By selecting "Agree", the user confirms that they have read,
+                understood, and accepted these Terms and Conditions.
+            </p>
+
+        </div>
+
+
+        <div class="terms-actions">
+
+            <button
+                class="agree-btn"
+                onclick="agreeTerms()"
+            >
+                ✓ Agree
+            </button>
+
+
+            <button
+                class="disagree-btn"
+                onclick="disagreeTerms()"
+            >
+                ✕ Disagree
+            </button>
+
+        </div>
+
+
+        <p
+            id="termsMessage"
+            class="terms-message"
+        ></p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function agreeTerms(){
+
+    localStorage.setItem(
+        "termsAccepted",
+        "true"
+    );
+
+    document.getElementById(
+        "termsMessage"
+    ).style.color = "#16a34a";
+
+    document.getElementById(
+        "termsMessage"
+    ).innerText =
+        "Terms accepted. You may now create your account.";
+
+    setTimeout(function(){
+
+        window.location.href =
+            "register.html";
+
+    }, 1000);
+
+}
+
+
+function disagreeTerms(){
+
+    localStorage.removeItem(
+        "termsAccepted"
+    );
+
+    document.getElementById(
+        "termsMessage"
+    ).style.color = "#dc2626";
+
+    document.getElementById(
+        "termsMessage"
+    ).innerText =
+        "You must agree to the Terms and Conditions to continue.";
+
+}
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reports - Tot's Motorshop</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+
+<style>
+
+
+    .reports-page {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #172033;
+    }
+
+    .reports-page .content {
+        padding: 30px 32px 50px !important;
+    }
+
+    /* =====================================================
+       MAIN TITLE
+    ===================================================== */
+
+    .reports-page .reports-title {
+        font-size: 32px !important;
+        font-weight: 700;
+        margin: 0 0 25px;
+        color: #ffffff;
+        letter-spacing: 0.2px;
+    }
+
+    /* =====================================================
+       SUMMARY CARDS
+    ===================================================== */
+
+    .reports-page .report-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .reports-page .report-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 22px 24px;
+        min-height: 110px;
+        box-sizing: border-box;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        border-left: 5px solid #24479b;
+    }
+
+    .reports-page .report-card h3 {
+        margin: 0 0 10px;
+        font-size: 16px !important;
+        color: #4b5563;
+        font-weight: 600;
+    }
+
+    .reports-page .report-card p {
+        margin: 0;
+        font-size: 30px !important;
+        line-height: 1.1;
+        font-weight: 700;
+        color: #24479b;
+    }
+
+    .reports-page #totalSales {
+        color: #d97706;
+    }
+
+    .reports-page #lowStocks {
+        color: #dc2626;
+    }
+
+    /* =====================================================
+       SECTIONS
+    ===================================================== */
+
+    .reports-page .report-section {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 24px;
+        margin-bottom: 25px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.10);
+        box-sizing: border-box;
+    }
+
+    .reports-page .report-section h2 {
+        margin: 0 0 7px;
+        font-size: 22px !important;
+        line-height: 1.3;
+        color: #1f3f8f;
+        font-weight: 700;
+    }
+
+    .reports-page .section-description {
+        margin: 0 0 20px;
+        color: #6b7280;
+        font-size: 14px !important;
+        line-height: 1.5;
+    }
+
+    /* =====================================================
+       FILTER
+    ===================================================== */
+
+    .reports-page .filter-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto auto;
+        gap: 14px;
+        align-items: end;
+    }
+
+    .reports-page .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .reports-page .filter-group label {
+        font-size: 14px !important;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .reports-page .filter-group input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 13px !important;
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        font-size: 15px !important;
+        color: #1f2937;
+        background: #ffffff;
+        cursor: pointer;
+    }
+
+    .reports-page .filter-group input:focus {
+        outline: none;
+        border-color: #24479b;
+        box-shadow: 0 0 0 3px rgba(36, 71, 155, 0.12);
+    }
+
+    /* =====================================================
+       BUTTONS
+    ===================================================== */
+
+    .reports-page .report-button {
+        border: none;
+        border-radius: 7px;
+        padding: 12px 20px !important;
+        min-height: 44px;
+        font-size: 14px !important;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .reports-page .filter-button {
+        background: #24479b;
+        color: #ffffff;
+    }
+
+    .reports-page .filter-button:hover {
+        background: #1b367a;
+    }
+
+    .reports-page .clear-button {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .reports-page .clear-button:hover {
+        background: #d1d5db;
+    }
+
+    .reports-page .print-button {
+        background: #111827;
+        color: #ffffff;
+        margin-top: 16px;
+    }
+
+    .reports-page .print-button:hover {
+        background: #000000;
+    }
+
+    /* =====================================================
+       FILTER STATUS
+    ===================================================== */
+
+    .reports-page .filter-status {
+        display: none;
+        margin-top: 15px;
+        padding: 11px 14px;
+        border-radius: 7px;
+        background: #eff6ff;
+        color: #1e40af;
+        font-size: 14px !important;
+        font-weight: 600;
+    }
+
+    /* =====================================================
+       SALES TREND
+    ===================================================== */
+
+    .reports-page .trend-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+
+    .reports-page .trend-card {
+        background: #f8fafc;
+        border: 1px solid #dbe3ef;
+        border-radius: 8px;
+        padding: 18px 20px;
+        min-height: 90px;
+        box-sizing: border-box;
+    }
+
+    .reports-page .trend-card-title {
+        display: block;
+        margin-bottom: 8px;
+        color: #374151;
+        font-size: 14px !important;
+        font-weight: 700;
+    }
+
+    .reports-page .trend-card-value {
+        display: block;
+        color: #24479b;
+        font-size: 21px !important;
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
+    .reports-page .trend-card-subtitle {
+        display: block;
+        margin-top: 5px;
+        color: #6b7280;
+        font-size: 13px !important;
+    }
+
+    /* =====================================================
+       TABLE
+    ===================================================== */
+
+    .reports-page .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid #dbe3ef;
+        border-radius: 8px;
+    }
+
+    .reports-page .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 750px;
+        background: #ffffff;
+    }
+
+    .reports-page .report-table thead th {
+        background: #24479b;
+        color: #ffffff;
+        padding: 13px 14px !important;
+        text-align: left;
+        font-size: 14px !important;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .reports-page .report-table tbody td {
+        padding: 12px 14px !important;
+        border-bottom: 1px solid #e5e7eb;
+        color: #374151;
+        font-size: 14px !important;
+        line-height: 1.35;
+    }
+
+    .reports-page .report-table tbody tr:nth-child(even) {
+        background: #f8fafc;
+    }
+
+    .reports-page .report-table tbody tr:hover {
+        background: #eef4ff;
+    }
+
+    .reports-page .empty-row {
+        text-align: center !important;
+        color: #6b7280 !important;
+        padding: 25px !important;
+        font-size: 14px !important;
+    }
+
+    /* =====================================================
+       STOCK COLORS
+    ===================================================== */
+
+    .reports-page .stock-number {
+        font-weight: 700;
+    }
+
+    .reports-page .low-stock {
+        color: #dc2626 !important;
+        font-weight: 700;
+    }
+
+    .reports-page .normal-stock {
+        color: #15803d !important;
+        font-weight: 700;
+    }
+
+    /* =====================================================
+       TREND BAR
+    ===================================================== */
+
+    .reports-page .trend-bar-container {
+        width: 100%;
+        min-width: 180px;
+        height: 12px;
+        background: #e5e7eb;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .reports-page .trend-bar {
+        height: 100%;
+        background: #2563eb;
+        border-radius: 20px;
+        transition: width 0.3s ease;
+    }
+
+    .reports-page .rank-number {
+        font-weight: 700;
+    }
+
+    .reports-page .quantity-value {
+        font-weight: 700;
+        color: #15803d;
+    }
+
+    /* =====================================================
+       MOBILE
+    ===================================================== */
+
+    @media (max-width: 900px) {
+
+        .reports-page .report-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .reports-page .trend-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .reports-page .filter-container {
+            grid-template-columns: 1fr 1fr;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .reports-page .content {
+            padding: 22px 15px 40px !important;
+        }
+
+        .reports-page .reports-title {
+            font-size: 27px !important;
+        }
+
+        .reports-page .report-section {
+            padding: 17px;
+        }
+
+        .reports-page .filter-container {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    /* =====================================================
+       PRINT
+    ===================================================== */
+
+   @media print {
+
+    body {
+        background: #ffffff !important;
+    }
+
+    .reports-page .sidebar,
+    .reports-page .filter-container,
+    .reports-page .print-button,
+    .reports-page .clear-button,
+    .reports-page .filter-status,
+    #summarySection,
+    #salesTrendSection,
+    #inventorySection {
+        display: none !important;
+    }
+
+        .reports-page .content {
+            margin: 0 !important;
+            padding: 10px !important;
+        }
+
+        .reports-page .reports-title {
+            color: #111827 !important;
+            font-size: 26px !important;
+        }
+
+        .reports-page .report-section {
+            box-shadow: none !important;
+            border: 1px solid #d1d5db;
+            page-break-inside: avoid;
+        }
+
+        .reports-page .report-table {
+            min-width: 100%;
+        }
+
+        .reports-page .report-table thead th {
+            background: #24479b !important;
+            color: #ffffff !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+    }
+
+    /* =====================================================
+       CUSTOM FLATPICKR CALENDAR THEME
+       Matches the blue/white design of the system
+    ===================================================== */
+
+    .flatpickr-calendar {
+        border-radius: 12px !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25) !important;
+        border: 1px solid #dbe3ef !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+    }
+
+    .flatpickr-months {
+        background: #24479b !important;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 8px 0 !important;
+    }
+
+    .flatpickr-current-month {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+
+    .flatpickr-current-month input.cur-year {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+
+    .flatpickr-weekdaycontainer .flatpickr-weekday {
+        background: #ffffff !important;
+        color: #24479b !important;
+        font-weight: 700 !important;
+    }
+
+    .flatpickr-prev-month svg,
+    .flatpickr-next-month svg {
+        fill: #ffffff !important;
+    }
+
+    .flatpickr-prev-month:hover svg,
+    .flatpickr-next-month:hover svg {
+        fill: #dbe3ef !important;
+    }
+
+    .flatpickr-day.selected,
+    .flatpickr-day.selected:hover {
+        background: #24479b !important;
+        border-color: #24479b !important;
+        color: #ffffff !important;
+    }
+
+    .flatpickr-day.today {
+        border-color: #24479b !important;
+    }
+
+    .flatpickr-day:hover {
+        background: #eef4ff !important;
+        border-color: #eef4ff !important;
+    }
+
+    .flatpickr-day.selected.today {
+        background: #24479b !important;
+    }
+
+</style>
+
+</head>
+
+<body class="reports-page">
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<div class="sidebar">
+
+<div class="sidebar-header">
+
+    <img src="logo.png" class="sidebar-logo">
+
+    <h2>Tot's Motorshop</h2>
+
+</div>
+
+<ul>
+
+    <li>
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+    </li>
+
+    <li>
+        <a href="inventory.html">
+            Inventory
+        </a>
+    </li>
+
+    <li>
+        <a href="sales.html">
+            Sales
+        </a>
+    </li>
+
+    <li>
+        <a href="reports.html">
+            Reports
+        </a>
+    </li>
+
+    <li>
+        <a href="analytics.html">
+            Analytics
+        </a>
+    </li>
+
+    <li>
+        <a href="login.html">
+            Logout
+        </a>
+    </li>
+
+</ul>
+
+</div>
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<div class="content">
+
+<h1 class="reports-title">
+    Reports Module
+</h1>
+
+
+<!-- =================================================
+     SUMMARY
+================================================== -->
+
+<div class="report-summary" id="summarySection">
+
+    <div class="report-card">
+
+        <h3>
+            Total Products
+        </h3>
+
+        <p id="totalProducts">
+            Loading...
+        </p>
+
+    </div>
+
+
+    <div class="report-card">
+
+        <h3>
+            Total Sales
+        </h3>
+
+        <p id="totalSales">
+            Loading...
+        </p>
+
+    </div>
+
+
+    <div class="report-card">
+
+        <h3>
+            Low Stocks
+        </h3>
+
+        <p id="lowStocks">
+            Loading...
+        </p>
+
+    </div>
+
+
+</div>
+
+
+<!-- =================================================
+     SALES FILTER
+================================================== -->
+
+<div class="report-section">
+
+    <h2>
+        Sales Report Filter
+    </h2>
+
+    <p class="section-description">
+        Select a date range to display sales transactions recorded within the selected period.
+    </p>
+
+
+    <div class="filter-container">
+
+
+        <div class="filter-group">
+
+            <label for="fromDate">
+                From Date
+            </label>
+
+            <input
+                type="text"
+                id="fromDate"
+                placeholder="Select date"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="filter-group">
+
+            <label for="toDate">
+                To Date
+            </label>
+
+            <input
+                type="text"
+                id="toDate"
+                placeholder="Select date"
+                readonly
+            >
+
+        </div>
+
+
+        <button
+            class="report-button filter-button"
+            onclick="filterReport()"
+        >
+            Filter
+        </button>
+
+
+        <button
+            class="report-button clear-button"
+            onclick="clearFilter()"
+        >
+            Clear
+        </button>
+
+
+    </div>
+
+
+    <div
+        id="filterStatus"
+        class="filter-status"
+    ></div>
+
+
+    <button
+    class="report-button print-button"
+    onclick="printSalesReport()"
+>
+    Print Report
+</button>
+
+</div>
+
+
+<!-- =================================================
+     SALES REPORT
+     MOVED DIRECTLY UNDER SALES FILTER
+================================================== -->
+
+<div class="report-section">
+
+    <h2>
+        Sales Report
+    </h2>
+
+    <p class="section-description">
+        Recorded sales transactions from the system.
+    </p>
+
+
+    <div class="table-wrapper">
+
+
+        <table class="report-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Product
+                    </th>
+
+                    <th>
+                        Quantity
+                    </th>
+
+                    <th>
+                        Total Amount
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="salesReportTable">
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="empty-row"
+                    >
+                        Loading sales records...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- =================================================
+     SALES TREND
+================================================== -->
+
+<div class="report-section" id="salesTrendSection">
+
+
+    <h2>
+        Sales Trend
+    </h2>
+
+
+    <p class="section-description">
+        Shows the products with the highest recorded sales quantity based on sales transactions in the system.
+    </p>
+
+
+    <div class="trend-summary">
+
+
+        <div class="trend-card">
+
+            <span class="trend-card-title">
+                Top-Selling Product
+            </span>
+
+            <span
+                id="topSellingProduct"
+                class="trend-card-value"
+            >
+                Loading...
+            </span>
+
+            <span class="trend-card-subtitle">
+                Most sold product
+            </span>
+
+        </div>
+
+
+        <div class="trend-card">
+
+            <span class="trend-card-title">
+                Highest Quantity Sold
+            </span>
+
+            <span
+                id="highestQuantitySold"
+                class="trend-card-value"
+            >
+                0 pcs
+            </span>
+
+            <span class="trend-card-subtitle">
+                In a single product
+            </span>
+
+        </div>
+
+
+        <div class="trend-card">
+
+            <span class="trend-card-title">
+                Total Quantity Sold
+            </span>
+
+            <span
+                id="totalQuantitySold"
+                class="trend-card-value"
+            >
+                0 pcs
+            </span>
+
+            <span class="trend-card-subtitle">
+                Across all recorded sales
+            </span>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+
+        <table class="report-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Rank
+                    </th>
+
+                    <th>
+                        Product
+                    </th>
+
+                    <th>
+                        Quantity Sold
+                    </th>
+
+                    <th>
+                        Sales Level
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="trendTable">
+
+                <tr>
+
+                    <td
+                        colspan="4"
+                        class="empty-row"
+                    >
+                        Loading sales trend...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- =================================================
+     INVENTORY REPORT
+     LAST SECTION
+================================================== -->
+
+<div class="report-section" id="inventorySection">
+
+
+    <h2>
+        Inventory Report
+    </h2>
+
+
+    <p class="section-description">
+        Current inventory records and available stock information.
+    </p>
+
+
+    <div class="table-wrapper">
+
+
+        <table class="report-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Product Name
+                    </th>
+
+                    <th>
+                        Category
+                    </th>
+
+                    <th>
+                        Stock
+                    </th>
+
+                    <th>
+                        Price
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="reportTable">
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="empty-row"
+                    >
+                        Loading inventory records...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+</div>
+
+<script>
+
+    /* =====================================================
+       SIDEBAR
+    ===================================================== */
+
+    const sidebar =
+        document.querySelector(".sidebar");
+
+    const content =
+        document.querySelector(".content");
+
+
+    if (sidebar && content) {
+
+        sidebar.classList.add("hide");
+
+
+        sidebar.addEventListener("mouseenter", () => {
+
+            sidebar.classList.remove("hide");
+
+            content.classList.add("expand");
+
+        });
+
+
+        sidebar.addEventListener("mouseleave", () => {
+
+            sidebar.classList.add("hide");
+
+            content.classList.remove("expand");
+
+        });
+
+    }
+
+
+    /* =====================================================
+       FLATPICKR - CUSTOM CALENDAR
+    ===================================================== */
+
+    flatpickr("#fromDate", {
+        dateFormat: "Y-m-d",
+        closeOnSelect: true,
+        allowInput: false
+    });
+
+    flatpickr("#toDate", {
+        dateFormat: "Y-m-d",
+        closeOnSelect: true,
+        allowInput: false
+    });
+
+
+    /* =====================================================
+       FORMAT MONEY
+    ===================================================== */
+
+    function formatMoney(value) {
+
+        return Number(value || 0)
+            .toLocaleString(
+                "en-PH",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+    }
+
+
+    /* =====================================================
+       FORMAT DATE
+    ===================================================== */
+
+    function formatDate(dateValue) {
+
+        if (!dateValue) {
+
+            return "";
+
+        }
+
+
+        const date =
+            new Date(dateValue);
+
+
+        if (isNaN(date.getTime())) {
+
+            return dateValue;
+
+        }
+
+
+        return date.toLocaleString(
+            "en-PH",
+            {
+                year: "numeric",
+                month: "short",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       LOAD PRODUCTS + SUMMARY
+    ===================================================== */
+
+    async function loadReport() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:5000/products/all"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load products."
+                );
+
+            }
+
+
+            const products =
+                await response.json();
+
+
+            document.getElementById(
+                "totalProducts"
+            ).textContent =
+                products.length;
+
+
+            let lowStocks = 0;
+
+            let rows = "";
+
+
+            products.forEach(product => {
+
+                const quantity =
+                    Number(product.quantity) || 0;
+
+
+                if (quantity <= 10) {
+
+                    lowStocks++;
+
+                }
+
+
+                const stockClass =
+                    quantity <= 10
+                        ? "low-stock"
+                        : "normal-stock";
+
+
+                rows += `
+
+                    <tr>
+
+                        <td>
+                            ${product.id}
+                        </td>
+
+                        <td>
+                            ${product.product_name}
+                        </td>
+
+                        <td>
+                            ${product.category}
+                        </td>
+
+                        <td class="stock-number ${stockClass}">
+                            ${quantity}
+                        </td>
+
+                        <td>
+                            ₱${formatMoney(product.price)}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+
+            document.getElementById(
+                "lowStocks"
+            ).textContent =
+                lowStocks;
+
+
+            document.getElementById(
+                "reportTable"
+            ).innerHTML =
+                rows ||
+
+                `
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="empty-row"
+                        >
+                            No inventory records found.
+                        </td>
+
+                    </tr>
+
+                `;
+
+
+        } catch (error) {
+
+            console.error(
+                "Inventory Report Error:",
+                error
+            );
+
+
+            document.getElementById(
+                "totalProducts"
+            ).textContent =
+                "Error";
+
+
+            document.getElementById(
+                "lowStocks"
+            ).textContent =
+                "Error";
+
+
+            document.getElementById(
+                "reportTable"
+            ).innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="empty-row"
+                    >
+                        Unable to load inventory records.
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LOAD SALES
+    ===================================================== */
+
+    async function getSales() {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/sales/all"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load sales."
+            );
+
+        }
+
+
+        return await response.json();
+
+    }
+
+
+    /* =====================================================
+       LOAD SALES SUMMARY
+    ===================================================== */
+
+    async function loadSalesSummary() {
+
+        try {
+
+            const sales =
+                await getSales();
+
+
+            let totalSales = 0;
+
+
+            sales.forEach(sale => {
+
+                totalSales +=
+                    Number(sale.total) || 0;
+
+            });
+
+
+            document.getElementById(
+                "totalSales"
+            ).textContent =
+                "₱" + formatMoney(totalSales);
+
+
+        } catch (error) {
+
+            console.error(
+                "Sales Summary Error:",
+                error
+            );
+
+
+            document.getElementById(
+                "totalSales"
+            ).textContent =
+                "Error";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SALES REPORT
+    ===================================================== */
+
+    async function loadSalesReport() {
+
+        try {
+
+            const sales =
+                await getSales();
+
+
+            displaySales(
+                sales
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Sales Report Error:",
+                error
+            );
+
+
+            document.getElementById(
+                "salesReportTable"
+            ).innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="empty-row"
+                    >
+                        Unable to load sales records.
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       DISPLAY SALES
+    ===================================================== */
+
+    function displaySales(sales) {
+
+        let rows = "";
+
+
+        sales.forEach(sale => {
+
+            rows += `
+
+                <tr>
+
+                    <td>
+                        ${sale.id}
+                    </td>
+
+                    <td>
+                        ${sale.product_name}
+                    </td>
+
+                    <td>
+                        ${sale.quantity}
+                    </td>
+
+                    <td>
+                        ₱${formatMoney(sale.total)}
+                    </td>
+
+                    <td>
+                        ${formatDate(sale.sale_date)}
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+
+        document.getElementById(
+            "salesReportTable"
+        ).innerHTML =
+
+            rows ||
+
+            `
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="empty-row"
+                    >
+                        No sales records found.
+                    </td>
+
+                </tr>
+
+            `;
+
+    }
+
+
+    /* =====================================================
+       SALES TREND
+
+       Groups sales by product and calculates:
+       - total quantity sold per product
+       - top-selling product
+       - highest quantity
+       - total quantity sold
+    ===================================================== */
+
+    async function loadSalesTrend() {
+
+        try {
+
+            const sales =
+                await getSales();
+
+
+            const productSales = {};
+
+
+            let totalQuantity =
+                0;
+
+
+            sales.forEach(sale => {
+
+                const productName =
+                    sale.product_name ||
+                    "Unknown Product";
+
+
+                const quantity =
+                    Number(sale.quantity) || 0;
+
+
+                totalQuantity += quantity;
+
+
+                if (!productSales[productName]) {
+
+                    productSales[productName] = 0;
+
+                }
+
+
+                productSales[productName] += quantity;
+
+            });
+
+
+            const ranking =
+                Object.entries(productSales)
+                    .sort(
+                        (a, b) =>
+                            b[1] - a[1]
+                    )
+                    .slice(0, 10);
+
+
+            const topProduct =
+                ranking.length > 0
+                    ? ranking[0][0]
+                    : "No sales yet";
+
+
+            const highestQuantity =
+                ranking.length > 0
+                    ? ranking[0][1]
+                    : 0;
+
+
+            document.getElementById(
+                "topSellingProduct"
+            ).textContent =
+                topProduct;
+
+
+            document.getElementById(
+                "highestQuantitySold"
+            ).textContent =
+                highestQuantity + " pcs";
+
+
+            document.getElementById(
+                "totalQuantitySold"
+            ).textContent =
+                totalQuantity + " pcs";
+
+
+            let rows = "";
+
+
+            const maxQuantity =
+                ranking.length > 0
+                    ? ranking[0][1]
+                    : 1;
+
+
+            ranking.forEach(
+                (item, index) => {
+
+                    const product =
+                        item[0];
+
+                    const quantity =
+                        item[1];
+
+
+                    const percentage =
+                        Math.max(
+                            5,
+                            (quantity /
+                                maxQuantity) *
+                                100
+                        );
+
+
+                    rows += `
+
+                        <tr>
+
+                            <td class="rank-number">
+                                ${index + 1}
+                            </td>
+
+                            <td>
+                                ${product}
+                            </td>
+
+                            <td class="quantity-value">
+                                ${quantity} pcs
+                            </td>
+
+                            <td>
+
+                                <div
+                                    class="trend-bar-container"
+                                    title="${quantity} pcs sold"
+                                >
+
+                                    <div
+                                        class="trend-bar"
+                                        style="width: ${percentage}%"
+                                    ></div>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            );
+
+
+            document.getElementById(
+                "trendTable"
+            ).innerHTML =
+
+                rows ||
+
+                `
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            class="empty-row"
+                        >
+                            No sales data available yet.
+                        </td>
+
+                    </tr>
+
+                `;
+
+
+        } catch (error) {
+
+            console.error(
+                "Sales Trend Error:",
+                error
+            );
+
+
+            document.getElementById(
+                "topSellingProduct"
+            ).textContent =
+                "Error";
+
+
+            document.getElementById(
+                "highestQuantitySold"
+            ).textContent =
+                "Error";
+
+
+            document.getElementById(
+                "totalQuantitySold"
+            ).textContent =
+                "Error";
+
+
+            document.getElementById(
+                "trendTable"
+            ).innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="4"
+                        class="empty-row"
+                    >
+                        Unable to load sales trend.
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       FILTER SALES BY DATE
+    ===================================================== */
+
+    async function filterReport() {
+
+        const fromDate =
+            document.getElementById(
+                "fromDate"
+            ).value;
+
+
+        const toDate =
+            document.getElementById(
+                "toDate"
+            ).value;
+
+
+        if (
+            fromDate === "" ||
+            toDate === ""
+        ) {
+
+            alert(
+                "Please select both From Date and To Date."
+            );
+
+            return;
+
+        }
+
+
+        if (fromDate > toDate) {
+
+            alert(
+                "From Date cannot be later than To Date."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const sales =
+                await getSales();
+
+
+            const filteredSales =
+                sales.filter(sale => {
+
+                    const saleDate =
+                        new Date(
+                            sale.sale_date
+                        );
+
+
+                    if (
+                        isNaN(
+                            saleDate.getTime()
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    const year =
+                        saleDate.getFullYear();
+
+
+                    const month =
+                        String(
+                            saleDate.getMonth() + 1
+                        ).padStart(2, "0");
+
+
+                    const day =
+                        String(
+                            saleDate.getDate()
+                        ).padStart(2, "0");
+
+
+                    const saleOnly =
+                        `${year}-${month}-${day}`;
+
+
+                    return (
+                        saleOnly >= fromDate &&
+                        saleOnly <= toDate
+                    );
+
+                });
+
+
+            displaySales(
+                filteredSales
+            );
+
+
+            const status =
+                document.getElementById(
+                    "filterStatus"
+                );
+
+
+            status.style.display =
+                "block";
+
+
+            status.textContent =
+                `Showing ${filteredSales.length} sales record(s) from ${fromDate} to ${toDate}.`;
+
+
+        } catch (error) {
+
+            console.error(
+                "Filter Error:",
+                error
+            );
+
+
+            alert(
+                "Unable to filter sales records."
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CLEAR FILTER
+    ===================================================== */
+
+    function clearFilter() {
+
+        document.getElementById(
+            "fromDate"
+        )._flatpickr.clear();
+
+
+        document.getElementById(
+            "toDate"
+        )._flatpickr.clear();
+
+
+        document.getElementById(
+            "filterStatus"
+        ).style.display =
+            "none";
+
+
+        loadSalesReport();
+
+    }
+
+    /* =====================================================
+       PRINT SALES REPORT
+    ===================================================== */
+
+    function printSalesReport() {
+
+        const fromDate =
+            document.getElementById("fromDate").value;
+
+        const toDate =
+            document.getElementById("toDate").value;
+
+        if (fromDate === "" || toDate === "") {
+
+            alert(
+                "Please select a date (From Date and To Date) first before printing."
+            );
+
+            return;
+
+        }
+
+        window.print();
+
+    }
+
+
+    /* =====================================================
+       INITIAL LOAD
+    ===================================================== */
+
+    loadReport();
+
+    loadSalesSummary();
+
+    loadSalesReport();
+
+    loadSalesTrend();
+
+</script>
+
+</script>
+
+</body>
+
+</html>

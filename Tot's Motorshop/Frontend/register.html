@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Owner Account - Tot's Motorshop</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="register-page">
+
+    <div class="register-card">
+
+        <img
+            src="logo.png"
+            alt="Tot's Motorshop Logo"
+            class="register-logo"
+        >
+
+        <h1>Create Owner Account</h1>
+
+        <p class="register-subtitle">
+            Create an account to manage the Tot's Motorshop Sales and
+            Inventory Monitoring System.
+        </p>
+
+        <div class="register-field">
+            <label for="fullname">Full Name</label>
+
+            <input
+                type="text"
+                id="fullname"
+                autocomplete="name"
+            >
+
+            <small id="fullnameError" class="register-error"></small>
+        </div>
+
+        <div class="register-field">
+            <label for="username">Username</label>
+
+            <input
+                type="text"
+                id="username"
+                autocomplete="username"
+            >
+
+            <small id="usernameError" class="register-error"></small>
+        </div>
+
+        <div class="register-field">
+            <label for="email">Email Address</label>
+
+            <input
+                type="email"
+                id="email"
+                autocomplete="email"
+            >
+
+            <small id="emailError" class="register-error"></small>
+        </div>
+
+        <div class="register-field">
+            <label for="contact">Cellphone Number</label>
+
+            <input
+                type="text"
+                id="contact"
+                maxlength="11"
+                inputmode="numeric"
+                autocomplete="tel"
+            >
+
+            <small id="contactError" class="register-error"></small>
+        </div>
+
+        <div class="register-field">
+            <label for="password">Password</label>
+
+            <input
+                type="password"
+                id="password"
+                autocomplete="new-password"
+            >
+
+            <small id="passwordError" class="register-error"></small>
+        </div>
+
+        <div class="register-field">
+            <label for="confirmPassword">Confirm Password</label>
+
+            <input
+                type="password"
+                id="confirmPassword"
+                autocomplete="new-password"
+            >
+
+            <small
+                id="confirmPasswordError"
+                class="register-error"
+            ></small>
+        </div>
+
+
+        <!-- TERMS -->
+        <div class="register-terms-checkbox">
+
+            <input
+                type="checkbox"
+                id="termsCheckbox"
+            >
+
+            <label for="termsCheckbox">
+                I agree to the
+                <a
+                    href="javascript:void(0)"
+                    onclick="openTerms()"
+                >
+                    Terms and Conditions
+                </a>
+            </label>
+
+        </div>
+
+        <small
+            id="termsError"
+            class="register-error"
+        ></small>
+
+        <button
+            type="button"
+            class="register-button"
+            onclick="register()"
+        >
+            Create Account
+        </button>
+
+        <p class="register-login-text">
+            Already have an account?
+            <a
+                href="login.html"
+                class="register-login-link"
+            >
+                Login
+            </a>
+        </p>
+
+    </div>
+
+</div>
+
+
+<div id="termsPopup" class="register-terms-popup">
+
+    <div class="register-terms-popup-box">
+
+        <h2>Terms and Conditions</h2>
+
+        <p class="register-terms-popup-intro">
+            Please read and review the following terms before creating
+            your owner account.
+        </p>
+
+
+        <div class="register-terms-popup-content">
+
+            <h3>1. Account Responsibility</h3>
+
+            <p>
+                The owner account is intended for authorized users
+                responsible for managing Tot's Motorshop records,
+                inventory, sales, and other system information.
+            </p>
+
+
+            <h3>2. Account Security</h3>
+
+            <p>
+                Users are responsible for keeping their username and
+                password confidential and should not share their
+                account credentials with unauthorized persons.
+            </p>
+
+
+            <h3>3. System Information</h3>
+
+            <p>
+                Information entered into the system should be accurate
+                and related to legitimate motorshop transactions.
+            </p>
+
+
+            <h3>4. Proper Use</h3>
+
+            <p>
+                The system must only be used for authorized
+                motorshop management activities.
+            </p>
+
+
+            <h3>5. Acceptance</h3>
+
+            <p>
+                By accepting these Terms and Conditions, you confirm
+                that you understand and agree to follow the rules
+                governing the use of the system.
+            </p>
+
+        </div>
+
+
+        <div class="register-terms-popup-buttons">
+
+            <button
+                type="button"
+                class="register-terms-agree"
+                onclick="agreeTerms()"
+            >
+                Agree
+            </button>
+
+            <button
+                type="button"
+                class="register-terms-disagree"
+                onclick="disagreeTerms()"
+            >
+                Disagree
+            </button>
+
+        </div>
+
+
+        <p
+            id="termsPopupMessage"
+            class="register-terms-popup-message"
+        ></p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+function openTerms() {
+
+    document.getElementById("termsPopup").style.display = "flex";
+
+}
+
+
+function agreeTerms() {
+
+    document.getElementById("termsCheckbox").checked = true;
+
+    document.getElementById("termsError").textContent = "";
+
+    document.getElementById("termsPopup").style.display = "none";
+
+}
+
+
+function disagreeTerms() {
+
+    document.getElementById("termsCheckbox").checked = false;
+
+    document.getElementById("termsError").textContent =
+        "You must agree to the Terms and Conditions.";
+
+    document.getElementById("termsPopup").style.display = "none";
+
+}
+
+document
+    .getElementById("termsPopup")
+    .addEventListener("click", function(event) {
+
+        if (event.target === this) {
+
+            this.style.display = "none";
+
+        }
+
+    });
+
+async function register() {
+
+    const fullname =
+        document.getElementById("fullname").value.trim();
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const contact =
+        document.getElementById("contact").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    const termsAccepted =
+        document.getElementById("termsCheckbox").checked;
+
+
+    const fullnameError =
+        document.getElementById("fullnameError");
+
+    const usernameError =
+        document.getElementById("usernameError");
+
+    const emailError =
+        document.getElementById("emailError");
+
+    const contactError =
+        document.getElementById("contactError");
+
+    const passwordError =
+        document.getElementById("passwordError");
+
+    const confirmPasswordError =
+        document.getElementById("confirmPasswordError");
+
+    const termsError =
+        document.getElementById("termsError");
+
+
+    fullnameError.textContent = "";
+    usernameError.textContent = "";
+    emailError.textContent = "";
+    contactError.textContent = "";
+    passwordError.textContent = "";
+    confirmPasswordError.textContent = "";
+    termsError.textContent = "";
+
+
+    let valid = true;
+
+    const fullnamePattern =
+        /^[A-Za-zÀ-ÿ\s'-]+$/;
+
+    const letterCount =
+        (fullname.match(/[A-Za-zÀ-ÿ]/g) || []).length;
+
+    if (fullname === "") {
+
+        fullnameError.textContent =
+            "Full name is required.";
+
+        valid = false;
+
+    } else if (!fullnamePattern.test(fullname)) {
+
+        fullnameError.textContent =
+            "Full name must contain letters only.";
+
+        valid = false;
+
+    } else if (letterCount < 2) {
+
+        fullnameError.textContent =
+            "Please enter a valid full name.";
+
+        valid = false;
+    }
+
+    const usernamePattern =
+        /^[A-Za-z0-9_]+$/;
+
+    if (username === "") {
+
+        usernameError.textContent =
+            "Username is required.";
+
+        valid = false;
+
+    } else if (
+        username.length < 4 ||
+        username.length > 20
+    ) {
+
+        usernameError.textContent =
+            "Username must be 4-20 characters.";
+
+        valid = false;
+
+    } else if (!usernamePattern.test(username)) {
+
+        usernameError.textContent =
+            "Username can only contain letters, numbers, and underscore.";
+
+        valid = false;
+    }
+
+    const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email === "") {
+
+        emailError.textContent =
+            "Email address is required.";
+
+        valid = false;
+
+    } else if (!emailPattern.test(email)) {
+
+        emailError.textContent =
+            "Please enter a valid email address.";
+
+        valid = false;
+
+    } else if (/\.\./.test(email)) {
+
+        emailError.textContent =
+            "Email address contains invalid dots.";
+
+        valid = false;
+
+    } else if (/\.com\.com$/i.test(email)) {
+
+        emailError.textContent =
+            "Please enter a valid email address.";
+
+        valid = false;
+    }
+
+    const contactPattern =
+        /^09\d{9}$/;
+
+    if (contact === "") {
+
+        contactError.textContent =
+            "Cellphone number is required.";
+
+        valid = false;
+
+    } else if (!contactPattern.test(contact)) {
+
+        contactError.textContent =
+            "Enter a valid Philippine cellphone number.";
+
+        valid = false;
+    }
+
+    if (password === "") {
+
+        passwordError.textContent =
+            "Password is required.";
+
+        valid = false;
+
+    } else if (password.length < 8) {
+
+        passwordError.textContent =
+            "Password must be at least 8 characters.";
+
+        valid = false;
+
+    } else if (!/[A-Z]/.test(password)) {
+
+        passwordError.textContent =
+            "Password must contain an uppercase letter.";
+
+        valid = false;
+
+    } else if (!/[a-z]/.test(password)) {
+
+        passwordError.textContent =
+            "Password must contain a lowercase letter.";
+
+        valid = false;
+
+    } else if (!/[0-9]/.test(password)) {
+
+        passwordError.textContent =
+            "Password must contain a number.";
+
+        valid = false;
+
+    } else if (!/[^A-Za-z0-9]/.test(password)) {
+
+        passwordError.textContent =
+            "Password must contain a special character.";
+
+        valid = false;
+    }
+
+    if (confirmPassword === "") {
+
+        confirmPasswordError.textContent =
+            "Please confirm your password.";
+
+        valid = false;
+
+    } else if (password !== confirmPassword) {
+
+        confirmPasswordError.textContent =
+            "Passwords do not match.";
+
+        valid = false;
+    }
+
+    if (!termsAccepted) {
+
+        termsError.textContent =
+            "You must agree to the Terms and Conditions.";
+
+        valid = false;
+    }
+
+    if (!valid) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:5000/auth/register",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    fullname: fullname,
+                    username: username,
+                    email: email,
+                    contact: contact,
+                    password: password
+                })
+            }
+        );
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            alert("Registration Successful!");
+
+            window.location.href =
+                "login.html";
+
+        } else {
+
+            alert(
+                data.message ||
+                "Registration Failed."
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server. Make sure the backend is running."
+        );
+
+    }
+
+}
+
+document
+    .getElementById("contact")
+    .addEventListener("input", function() {
+
+        this.value =
+            this.value.replace(/\D/g, "");
+
+    });
+
+</script>
+
+</body>
+</html>

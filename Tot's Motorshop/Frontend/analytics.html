@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar">
+
+    <div class="sidebar-header">
+
+        <img src="logo.png" class="sidebar-logo">
+
+        <h2>Tot's Motorshop</h2>
+
+    </div>
+
+    <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="sales.html">Sales</a></li>
+        <li><a href="reports.html">Reports</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="login.html">Logout</a></li>
+    </ul>
+
+</div>
+
+<div class="content">
+
+    <h1>Analytics Dashboard</h1>
+
+    <div class="cards analytics-cards">
+
+        <div class="card">
+            <h3>Fast Moving Products</h3>
+            <p>25</p>
+        </div>
+
+        <div class="card">
+            <h3>Low Moving Products</h3>
+            <p>8</p>
+        </div>
+
+        <div class="card">
+            <h3>Low Stock Alerts</h3>
+            <p>10</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const sidebar = document.querySelector(".sidebar");
+    const content = document.querySelector(".content");
+
+    sidebar.classList.add("hide");
+
+    // Kapag tinapat ang mouse sa kaliwang side
+    sidebar.addEventListener("mouseenter", () => {
+        sidebar.classList.remove("hide");
+        content.classList.add("expand");
+    });
+
+    sidebar.addEventListener("mouseleave", () => {
+        sidebar.classList.add("hide");
+        content.classList.remove("expand");
+    });
+
+</script>
+
+</body>
+</html>

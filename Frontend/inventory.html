@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Inventory</title>
+
+    <link rel="icon" href="logo.png">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="sidebar-header">
+
+        <img src="logo.png" class="sidebar-logo">
+
+        <h2>Tot's Motorshop</h2>
+
+    </div>
+
+    <ul>
+
+        <li>
+            <a href="dashboard.html">Dashboard</a>
+        </li>
+
+        <li>
+            <a href="inventory.html">Inventory</a>
+        </li>
+
+        <li>
+            <a href="sales.html">Sales</a>
+        </li>
+
+        <li>
+            <a href="reports.html">Reports</a>
+        </li>
+
+        <li>
+            <a href="analytics.html">Analytics</a>
+        </li>
+
+        <li>
+            <a href="login.html">Logout</a>
+        </li>
+
+    </ul>
+
+</div>
+
+
+<div class="content">
+
+    <h1>Inventory Management</h1>
+
+
+    <button onclick="showForm()">
+        Add Product
+    </button>
+
+
+    <br>
+    <br>
+
+    <div class="search-container">
+
+        <input
+            type="text"
+            id="searchProduct"
+            placeholder="🔍 Search product or category..."
+            onkeyup="searchProduct()"
+        >
+
+    </div>
+
+
+    <br>
+
+    <div
+        id="productForm"
+        class="product-form"
+        style="display:none;"
+    >
+
+        <h2 id="formTitle">
+            Add New Product
+        </h2>
+
+
+        <input
+            type="hidden"
+            id="product_id"
+        >
+
+
+        <input
+            type="text"
+            id="product_name"
+            placeholder="Product Name"
+        >
+
+
+        <input
+            type="text"
+            id="category"
+            placeholder="Category"
+        >
+
+
+        <input
+            type="number"
+            id="quantity"
+            placeholder="Stock"
+            min="0"
+        >
+
+
+        <input
+            type="number"
+            id="price"
+            placeholder="Price"
+            min="0"
+            step="0.01"
+        >
+
+        <select id="image">
+
+            <option value="">
+                Select Product Image
+            </option>
+
+            <option value="images/honda-4t.jpg">
+                Honda 4T 1L
+            </option>
+
+            <option value="images/yamalube-sport.jpg">
+                Yamalube Sport 1L
+            </option>
+
+            <option value="images/shell-advance.jpg">
+                Shell Advance AX7
+            </option>
+
+            <option value="images/motul-5100.jpg">
+                Motul 5100 1L
+            </option>
+
+            <option value="images/ngk-spark-plug.jpg">
+                NGK Spark Plug
+            </option>
+
+            <option value="images/motorcycle-battery.jpg">
+                12V Motorcycle Battery
+            </option>
+
+            <option value="images/led-headlight.jpg">
+                LED Headlight Bulb
+            </option>
+
+            <option value="images/signal-light.jpg">
+                Signal Light Bulb
+            </option>
+
+            <option value="images/front-brake-pad.jpg">
+                Front Brake Pad
+            </option>
+
+            <option value="images/rear-brake-pad.jpg">
+                Rear Brake Pad
+            </option>
+
+            <option value="images/brake-shoe.jpg">
+                Brake Shoe
+            </option>
+
+            <option value="images/brake-fluid.jpg">
+                Brake Fluid
+            </option>
+
+        </select>
+
+
+        <br>
+        <br>
+
+        <button
+            id="saveBtn"
+            onclick="saveProduct()"
+        >
+            Save Product
+        </button>
+
+        <button
+            id="updateBtn"
+            onclick="updateProduct()"
+            style="display:none;"
+        >
+            Update Product
+        </button>
+
+        <button
+            id="cancelBtn"
+            onclick="cancelForm()"
+        >
+            Cancel
+        </button>
+
+    </div>
+
+
+    <br>
+
+    <table id="inventoryTable">
+
+        <thead>
+
+            <tr>
+
+                <th>Image</th>
+
+                <th>ID</th>
+
+                <th>Product Name</th>
+
+                <th>Category</th>
+
+                <th>Stock</th>
+
+                <th>Price</th>
+
+                <th>Status</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody id="productTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+<script>
+
+const sidebar =
+    document.querySelector(".sidebar");
+
+const content =
+    document.querySelector(".content");
+
+
+sidebar.classList.add("hide");
+
+
+sidebar.addEventListener("mouseenter", () => {
+
+    sidebar.classList.remove("hide");
+
+    content.classList.add("expand");
+
+});
+
+
+sidebar.addEventListener("mouseleave", () => {
+
+    sidebar.classList.add("hide");
+
+    content.classList.remove("expand");
+
+});
+
+let allProducts = [];
+
+
+function showForm() {
+
+    document.getElementById(
+        "productForm"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "formTitle"
+    ).textContent = "Add New Product";
+
+
+    document.getElementById(
+        "saveBtn"
+    ).style.display = "inline-block";
+
+
+    document.getElementById(
+        "updateBtn"
+    ).style.display = "none";
+
+}
+
+async function saveProduct() {
+
+    const product_name =
+        document.getElementById(
+            "product_name"
+        ).value.trim();
+
+
+    const category =
+        document.getElementById(
+            "category"
+        ).value.trim();
+
+
+    const quantity =
+        document.getElementById(
+            "quantity"
+        ).value;
+
+
+    const price =
+        document.getElementById(
+            "price"
+        ).value;
+
+
+    const image =
+        document.getElementById(
+            "image"
+        ).value;
+
+    if (
+        product_name === "" ||
+        category === "" ||
+        quantity === "" ||
+        price === "" ||
+        image === ""
+    ) {
+
+        alert(
+            "Please fill in all fields including product image."
+        );
+
+        return;
+
+    }
+
+
+    if (Number(quantity) <= 0) {
+
+        alert(
+            "Stock must be greater than 0."
+        );
+
+        return;
+
+    }
+
+
+    if (Number(price) <= 0) {
+
+        alert(
+            "Price must be greater than 0."
+        );
+
+        return;
+
+    }
+
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/products/add",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        product_name,
+                        category,
+                        quantity,
+                        price,
+                        image
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        alert(data.message);
+
+
+        if (data.success) {
+
+            clearForm();
+
+            loadProducts();
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Save Product Error:",
+            error
+        );
+
+        alert(
+            "Cannot connect to the server."
+        );
+
+    }
+
+}
+
+async function loadProducts() {
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/products/all"
+            );
+
+
+        const products =
+            await response.json();
+
+
+        allProducts = products;
+
+
+        renderProducts(products);
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Load Products Error:",
+            error
+        );
+
+
+        document.getElementById(
+            "productTable"
+        ).innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    style="
+                        padding:20px;
+                        color:red;
+                        text-align:center;
+                        font-weight:bold;
+                    "
+                >
+
+                    Failed to load products.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+function renderProducts(products) {
+
+    let rows = "";
+
+
+    products.forEach(
+        (product, index) => {
+
+
+            /* IMAGE */
+
+            const imagePath =
+                product.image &&
+                product.image.trim() !== ""
+
+                    ? product.image
+
+                    : "images/logo.png";
+
+
+
+            /* STOCK STATUS */
+
+            let statusHTML = "";
+
+
+            if (
+                Number(product.quantity) > 10
+            ) {
+
+                statusHTML = `
+
+                    <span class="stock-status in-stock">
+
+                        🟢 In Stock
+
+                    </span>
+
+                `;
+
+            }
+
+            else if (
+                Number(product.quantity) >= 6
+            ) {
+
+                statusHTML = `
+
+                    <span class="stock-status limited-stock">
+
+                        🟡 Limited Stock
+
+                    </span>
+
+                `;
+
+            }
+
+            else {
+
+                statusHTML = `
+
+                    <span class="stock-status low-stock">
+
+                        🔴 Low Stock
+
+                    </span>
+
+                `;
+
+            }
+
+            rows += `
+
+                <tr>
+
+                    <td class="product-image-cell">
+
+                        <img
+
+                            src="${imagePath}"
+
+                            class="product-image"
+
+                            alt="${product.product_name}"
+
+                            onerror="
+                                this.src='images/logo.png';
+                            "
+
+                        >
+
+                    </td>
+
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+
+                    <td>
+                        ${product.product_name}
+                    </td>
+
+
+                    <td>
+                        ${product.category}
+                    </td>
+
+
+                    <td>
+                        ${product.quantity}
+                    </td>
+
+
+                    <td>
+                        ₱${Number(product.price).toFixed(2)}
+                    </td>
+
+
+                    <td>
+                        ${statusHTML}
+                    </td>
+
+
+                    <td>
+
+
+                        <button
+
+                            class="editBtn"
+
+                            onclick="editProduct(
+
+                                ${product.id},
+
+                                '${escapeValue(
+                                    product.product_name
+                                )}',
+
+                                '${escapeValue(
+                                    product.category
+                                )}',
+
+                                ${product.quantity},
+
+                                ${product.price},
+
+                                '${escapeValue(
+                                    product.image || ""
+                                )}'
+
+                            )"
+
+                        >
+
+                            Edit
+
+                        </button>
+
+
+
+                        <button
+
+                            class="deleteBtn"
+
+                            onclick="
+                                deleteProduct(
+                                    ${product.id}
+                                )
+                            "
+
+                        >
+
+                            🗑 Delete
+
+                        </button>
+
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    if (rows === "") {
+
+        rows = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    style="
+                        padding:20px;
+                        text-align:center;
+                        color:#6b7280;
+                        font-weight:bold;
+                    "
+                >
+
+                    No products found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    document.getElementById(
+        "productTable"
+    ).innerHTML = rows;
+
+}
+
+function escapeValue(value) {
+
+    return String(value)
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'");
+
+}
+
+function editProduct(
+    id,
+    name,
+    category,
+    quantity,
+    price,
+    image
+) {
+
+
+    document.getElementById(
+        "productForm"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "formTitle"
+    ).textContent = "Edit Product";
+
+
+    document.getElementById(
+        "saveBtn"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "updateBtn"
+    ).style.display = "inline-block";
+
+
+    document.getElementById(
+        "product_id"
+    ).value = id;
+
+
+    document.getElementById(
+        "product_name"
+    ).value = name;
+
+
+    document.getElementById(
+        "category"
+    ).value = category;
+
+
+    document.getElementById(
+        "quantity"
+    ).value = quantity;
+
+
+    document.getElementById(
+        "price"
+    ).value = price;
+
+
+    document.getElementById(
+        "image"
+    ).value = image || "";
+
+}
+
+async function updateProduct() {
+
+
+    const id =
+        document.getElementById(
+            "product_id"
+        ).value;
+
+
+    const product_name =
+        document.getElementById(
+            "product_name"
+        ).value.trim();
+
+
+    const category =
+        document.getElementById(
+            "category"
+        ).value.trim();
+
+
+    const quantity =
+        document.getElementById(
+            "quantity"
+        ).value;
+
+
+    const price =
+        document.getElementById(
+            "price"
+        ).value;
+
+
+    const image =
+        document.getElementById(
+            "image"
+        ).value;
+
+
+
+    if (
+        product_name === "" ||
+        category === "" ||
+        quantity === "" ||
+        price === "" ||
+        image === ""
+    ) {
+
+        alert(
+            "Please complete all fields including image."
+        );
+
+        return;
+
+    }
+
+
+    if (Number(quantity) < 0) {
+
+        alert(
+            "Quantity cannot be negative."
+        );
+
+        return;
+
+    }
+
+
+    if (Number(price) < 0) {
+
+        alert(
+            "Price cannot be negative."
+        );
+
+        return;
+
+    }
+
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/products/update/" + id,
+                {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        product_name,
+                        category,
+                        quantity,
+                        price,
+                        image
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        alert(data.message);
+
+
+        if (data.success) {
+
+            clearForm();
+
+            loadProducts();
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Update Product Error:",
+            error
+        );
+
+        alert(
+            "Cannot connect to the server."
+        );
+
+    }
+
+}
+
+async function deleteProduct(id) {
+
+
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete this product?"
+        );
+
+
+    if (!confirmDelete) {
+
+        return;
+
+    }
+
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/products/delete/" + id,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        alert(data.message);
+
+
+        if (data.success) {
+
+            loadProducts();
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Delete Product Error:",
+            error
+        );
+
+        alert(
+            "Cannot connect to the server."
+        );
+
+    }
+
+}
+
+function searchProduct() {
+
+
+    const keyword =
+        document.getElementById(
+            "searchProduct"
+        )
+        .value
+        .toLowerCase()
+        .trim();
+
+
+
+    const filteredProducts =
+        allProducts.filter(
+            product => {
+
+
+                const productName =
+                    String(
+                        product.product_name || ""
+                    ).toLowerCase();
+
+
+                const category =
+                    String(
+                        product.category || ""
+                    ).toLowerCase();
+
+
+                return (
+
+                    productName.includes(
+                        keyword
+                    )
+
+                    ||
+
+                    category.includes(
+                        keyword
+                    )
+
+                );
+
+            }
+        );
+
+
+
+    renderProducts(
+        filteredProducts
+    );
+
+}
+
+
+function clearForm() {
+
+
+    document.getElementById(
+        "product_id"
+    ).value = "";
+
+
+    document.getElementById(
+        "product_name"
+    ).value = "";
+
+
+    document.getElementById(
+        "category"
+    ).value = "";
+
+
+    document.getElementById(
+        "quantity"
+    ).value = "";
+
+
+    document.getElementById(
+        "price"
+    ).value = "";
+
+
+    document.getElementById(
+        "image"
+    ).value = "";
+
+
+    document.getElementById(
+        "productForm"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "saveBtn"
+    ).style.display = "inline-block";
+
+
+    document.getElementById(
+        "updateBtn"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "formTitle"
+    ).textContent = "Add New Product";
+
+}
+
+
+
+function cancelForm() {
+
+    clearForm();
+
+}
+
+
+
+loadProducts();
+
+</script>
+
+</body>
+
+</html>
