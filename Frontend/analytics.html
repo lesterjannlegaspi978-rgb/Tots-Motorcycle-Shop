@@ -1,55 +1,776 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Analytics</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Tot's Motorshop</title>
+    <link rel="icon" href="logo.png">
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        .analytics-page::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 20, 45, 0.55);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .analytics-page {
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #172033;
+        }
+
+        .analytics-page .content {
+            padding: 28px 32px 48px !important;
+            background: transparent !important;
+            background-image: none !important;
+            box-sizing: border-box;
+        }
+
+        .analytics-page .an-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+            padding: 24px 28px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .analytics-page .an-title {
+            margin: 0;
+            color: #1e3765;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .analytics-page .an-subtitle {
+            margin: 8px 0 0;
+            color: #5b6b82;
+            font-size: 16px;
+        }
+
+        .analytics-page .an-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .analytics-page .an-chip {
+            padding: 10px 14px;
+            color: #355581;
+            background: #f0f5ff;
+            border: 1px solid #dce7fb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .analytics-page .an-notice {
+            display: none;
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .analytics-page .an-notice.info {
+            display: block;
+            color: #1d4ed8;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+
+        .analytics-page .an-notice.error {
+            display: block;
+            color: #b91c1c;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+
+        .analytics-page .an-cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .analytics-page .an-card {
+            --accent: #24479b;
+            --tint: #eef4ff;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-width: 0;
+            min-height: 110px;
+            padding: 22px 20px;
+            background: #ffffff;
+            border-left: 5px solid var(--accent);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            cursor: pointer;
+            user-select: none;
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .analytics-page .an-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .analytics-page .an-card:focus-visible {
+            outline: 3px solid #93c5fd;
+            outline-offset: 2px;
+        }
+
+        .analytics-page .an-card.active {
+            background: var(--tint);
+            box-shadow: 0 0 0 3px var(--accent), 0 10px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .analytics-page .an-card.c-sales     { --accent: #24479b; --tint: #eaf1ff; }
+        .analytics-page .an-card.c-fast      { --accent: #16803d; --tint: #e9fbef; }
+        .analytics-page .an-card.c-slow      { --accent: #b45309; --tint: #fff4dc; }
+        .analytics-page .an-card.c-low       { --accent: #b91c1c; --tint: #fde8e8; }
+        .analytics-page .an-card.c-restock   { --accent: #6d28d9; --tint: #efeaff; }
+        .analytics-page .an-card.c-inventory { --accent: #0e7490; --tint: #e0f7fb; }
+
+        .analytics-page .an-card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+            background: var(--tint);
+            color: var(--accent);
+        }
+
+        .analytics-page .an-card.active .an-card-icon {
+            background: #ffffff;
+        }
+
+        .analytics-page .an-card-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .analytics-page .an-card-body {
+            min-width: 0;
+            text-align: left;
+        }
+
+        .analytics-page .an-card-label {
+            display: block;
+            color: #3f4f66;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .analytics-page .an-card-value {
+            margin: 6px 0 4px;
+            color: var(--accent);
+            font-size: 30px;
+            font-weight: 800;
+            line-height: 1.2;
+            overflow-wrap: anywhere;
+        }
+
+        .analytics-page .an-card-note {
+            display: block;
+            color: #5b6b82;
+            font-size: 14px;
+        }
+
+        .analytics-page .an-card-hint {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            color: #7b8aa0;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .04em;
+        }
+
+        .analytics-page .an-card.active .an-card-hint {
+            color: var(--accent);
+        }
+
+        .analytics-page .an-panel {
+            display: none;
+            padding: 28px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            box-sizing: border-box;
+        }
+
+        .analytics-page .an-panel.active {
+            display: block;
+        }
+
+        .analytics-page .an-panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e8edf4;
+        }
+
+        .analytics-page .an-panel h2 {
+            margin: 0 0 6px;
+            color: #1e3765;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .analytics-page .an-description {
+            margin: 0;
+            color: #5b6b82;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .analytics-page .an-pill {
+            padding: 8px 14px;
+            color: #355581;
+            background: #eff5ff;
+            border: 1px solid #dbe7fa;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .analytics-page .an-formula {
+            margin: 20px 0 0;
+            padding: 14px 16px;
+            color: #4b5b72;
+            background: #f5f8fd;
+            border: 1px solid #e0e8f4;
+            border-left: 4px solid #4167a5;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.7;
+            text-align: left;
+        }
+
+        .analytics-page .an-formula strong {
+            color: #1e3765;
+        }
+
+        .analytics-page .an-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .analytics-page .an-stats.spaced {
+            margin-bottom: 20px;
+        }
+
+        .analytics-page .an-stat {
+            min-width: 0;
+            padding: 20px;
+            background: #f8faff;
+            border: 1px solid #e1e8f2;
+            border-radius: 11px;
+        }
+
+        .analytics-page .an-stat.main {
+            background: #edf4ff;
+            border-color: #ccddff;
+        }
+
+        .analytics-page .an-stat span {
+            display: block;
+            margin-bottom: 8px;
+            color: #5b6b82;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .analytics-page .an-stat strong {
+            display: block;
+            color: #24479b;
+            font-size: 28px;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        .analytics-page .an-stat.good strong { color: #15803d; }
+        .analytics-page .an-stat.bad strong  { color: #b91c1c; }
+
+        .analytics-page .an-table-wrapper {
+            width: 100%;
+            max-height: 480px;
+            overflow: auto;
+            border: 1px solid #dfe7f1;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+
+        .analytics-page .an-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .analytics-page .an-table th,
+        .analytics-page .an-table td {
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .analytics-page .an-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            padding: 14px 16px;
+            color: #ffffff;
+            background: #243f70;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .analytics-page .an-table tbody td {
+            padding: 14px 16px;
+            color: #2f3e55;
+            border-bottom: 1px solid #edf0f5;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .analytics-page .an-table tbody tr:nth-child(even) { background: #f7f9fd; }
+        .analytics-page .an-table tbody tr:hover { background: #edf4ff; }
+
+        .analytics-page .an-table th.num,
+        .analytics-page .an-table td.num {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .analytics-page .an-table td.strong { font-weight: 700; }
+
+        .analytics-page .an-table td.an-empty {
+            padding: 32px;
+            color: #5b6b82;
+            text-align: center;
+        }
+
+        .analytics-page .badge {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .analytics-page .badge.fast,
+        .analytics-page .badge.ok     { color: #166534; background: #dcfce7; }
+        .analytics-page .badge.slow   { color: #9a3412; background: #ffedd5; }
+        .analytics-page .badge.low,
+        .analytics-page .badge.soon   { color: #92400e; background: #fef3c7; }
+        .analytics-page .badge.out,
+        .analytics-page .badge.urgent { color: #991b1b; background: #fee2e2; }
+
+        .analytics-page .share-cell { min-width: 170px; }
+
+        .analytics-page .share-track {
+            width: 100%;
+            height: 9px;
+            overflow: hidden;
+            background: #e5e7eb;
+            border-radius: 20px;
+        }
+
+        .analytics-page .share-bar {
+            height: 100%;
+            background: #0e7490;
+            border-radius: 20px;
+        }
+
+        .analytics-page .share-text {
+            display: block;
+            margin-top: 5px;
+            color: #5b6b82;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1000px) {
+            .analytics-page .content { padding: 20px !important; }
+            .analytics-page .an-cards,
+            .analytics-page .an-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 600px) {
+            .analytics-page .content { padding: 12px !important; }
+            .analytics-page .an-cards,
+            .analytics-page .an-stats { grid-template-columns: 1fr; }
+            .analytics-page .an-header,
+            .analytics-page .an-panel { padding: 16px; }
+            .analytics-page .an-table { min-width: 650px; }
+        }
+    </style>
 </head>
-<body>
+
+<body class="analytics-page">
 
 <div class="sidebar">
-
     <div class="sidebar-header">
-
-        <img src="logo.png" class="sidebar-logo">
-
+        <img src="logo.png" class="sidebar-logo" alt="Tot's Motorshop Logo">
         <h2>Tot's Motorshop</h2>
-
     </div>
 
     <ul>
         <li><a href="dashboard.html">Dashboard</a></li>
         <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="supplier.html">Suppliers</a></li>
+        <li><a href="purchase-order.html">Purchase Orders</a></li>
+        <li><a href="stock_in.html">Stock In</a></li>
         <li><a href="sales.html">Sales</a></li>
+        <li><a href="sales-return.html">Sales Return</a></li>
+        <li><a href="sales-refund.html">Sales Refund</a></li>
         <li><a href="reports.html">Reports</a></li>
         <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="ai_recommendation.html">AI Recommendations</a></li>
         <li><a href="login.html">Logout</a></li>
     </ul>
-
 </div>
 
 <div class="content">
-
-    <h1>Analytics Dashboard</h1>
-
-    <div class="cards analytics-cards">
-
-        <div class="card">
-            <h3>Fast Moving Products</h3>
-            <p>25</p>
+    <div class="an-header">
+        <div>
+            <h1 class="an-title">Analytics Dashboard</h1>
+            <p class="an-subtitle">
+                Sales and inventory analysis. Click a card to view its details.
+            </p>
         </div>
 
-        <div class="card">
-            <h3>Low Moving Products</h3>
-            <p>8</p>
+        <div class="an-chips">
+            <span class="an-chip" id="chipDays">Loading...</span>
+            <span class="an-chip" id="chipUpdated"></span>
         </div>
-
-        <div class="card">
-            <h3>Low Stock Alerts</h3>
-            <p>10</p>
-        </div>
-
     </div>
 
+    <div id="analyticsNotice" class="an-notice" role="status"></div>
+
+    <div class="an-cards">
+        <div class="an-card c-sales active"
+             data-panel="sales"
+             role="button"
+             tabindex="0"
+             aria-pressed="true">
+            <span class="an-card-hint">VIEWING</span>
+            <div class="an-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+            <div class="an-card-body">
+                <span class="an-card-label">Sales Summary</span>
+                <p class="an-card-value" id="cardSales">Loading...</p>
+                <span class="an-card-note" id="cardSalesNote">Net sales</span>
+            </div>
+        </div>
+
+        <div class="an-card c-fast"
+             data-panel="fast"
+             role="button"
+             tabindex="0"
+             aria-pressed="false">
+            <span class="an-card-hint">VIEW ›</span>
+            <div class="an-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
+            <div class="an-card-body">
+                <span class="an-card-label">Fast-Moving Products</span>
+                <p class="an-card-value" id="cardFast">-</p>
+                <span class="an-card-note">Best-selling products</span>
+            </div>
+        </div>
+
+        <div class="an-card c-slow"
+             data-panel="slow"
+             role="button"
+             tabindex="0"
+             aria-pressed="false">
+            <span class="an-card-hint">VIEW ›</span>
+            <div class="an-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+            <div class="an-card-body">
+                <span class="an-card-label">Slow-Moving Products</span>
+                <p class="an-card-value" id="cardSlow">-</p>
+                <span class="an-card-note">No or very low sales</span>
+            </div>
+        </div>
+
+        <div class="an-card c-low"
+             data-panel="low"
+             role="button"
+             tabindex="0"
+             aria-pressed="false">
+            <span class="an-card-hint">VIEW ›</span>
+            <div class="an-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20L12 3z"/><path d="M12 10v5M12 18h.01"/></svg></div>
+            <div class="an-card-body">
+                <span class="an-card-label">Low-Stock Monitoring</span>
+                <p class="an-card-value" id="cardLow">-</p>
+                <span class="an-card-note" id="cardLowNote"></span>
+            </div>
+        </div>
+
+        <div class="an-card c-restock"
+             data-panel="restock"
+             role="button"
+             tabindex="0"
+             aria-pressed="false">
+            <span class="an-card-hint">VIEW ›</span>
+            <div class="an-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-3-6.7"/><path d="M21 3v6h-6"/></svg></div>
+            <div class="an-card-body">
+                <span class="an-card-label">Restock Recommendation</span>
+                <p class="an-card-value" id="cardRestock">-</p>
+                <span class="an-card-note" id="cardRestockNote">Running out soon</span>
+            </div>
+        </div>
+
+        <div class="an-card c-inventory"
+             data-panel="inventory"
+             role="button"
+             tabindex="0"
+             aria-pressed="false">
+            <span class="an-card-hint">VIEW ›</span>
+            <div class="an-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></div>
+            <div class="an-card-body">
+                <span class="an-card-label">Inventory Trends</span>
+                <p class="an-card-value" id="cardInventory">-</p>
+                <span class="an-card-note" id="cardInventoryNote"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="an-panel active" id="panel-sales">
+        <div class="an-panel-head">
+            <div>
+                <h2>Sales Summary</h2>
+                <p class="an-description">
+                    Sales performance based on all recorded sales.
+                </p>
+            </div>
+            <span class="an-pill" id="pillSales"></span>
+        </div>
+
+        <div class="an-stats">
+            <div class="an-stat main">
+                <span>Net Sales</span>
+                <strong id="sNet">-</strong>
+            </div>
+            <div class="an-stat">
+                <span>Gross Sales</span>
+                <strong id="sGross">-</strong>
+            </div>
+            <div class="an-stat bad">
+                <span>Refunds</span>
+                <strong id="sRefunds">-</strong>
+            </div>
+            <div class="an-stat">
+                <span>Transactions</span>
+                <strong id="sTransactions">-</strong>
+            </div>
+            <div class="an-stat good">
+                <span>Net Quantity Sold</span>
+                <strong id="sQuantity">-</strong>
+            </div>
+            <div class="an-stat">
+                <span>Average per Sale</span>
+                <strong id="sAverage">-</strong>
+            </div>
+        </div>
+
+        <p class="an-formula" id="formulaSales"></p>
+    </div>
+
+    <div class="an-panel" id="panel-fast">
+        <div class="an-panel-head">
+            <div>
+                <h2>Fast-Moving Products</h2>
+                <p class="an-description" id="descFast">
+                    Best-selling products based on recorded sales.
+                </p>
+            </div>
+            <span class="an-pill" id="pillFast"></span>
+        </div>
+
+        <div class="an-table-wrapper">
+            <table class="an-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th class="num">Qty Sold</th>
+                        <th class="num">Net Sales</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="fastBody">
+                    <tr><td colspan="6" class="an-empty">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="an-formula" id="formulaFast"></p>
+    </div>
+
+    <div class="an-panel" id="panel-slow">
+        <div class="an-panel-head">
+            <div>
+                <h2>Slow-Moving Products</h2>
+                <p class="an-description" id="descSlow">
+                    Products with no or very low sales.
+                </p>
+            </div>
+            <span class="an-pill" id="pillSlow"></span>
+        </div>
+
+        <div class="an-table-wrapper">
+            <table class="an-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th class="num">Stock</th>
+                        <th class="num">Qty Sold</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="slowBody">
+                    <tr><td colspan="5" class="an-empty">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="an-formula" id="formulaSlow"></p>
+    </div>
+
+    <div class="an-panel" id="panel-low">
+        <div class="an-panel-head">
+            <div>
+                <h2>Low-Stock Monitoring</h2>
+                <p class="an-description" id="descLow">
+                    Products that need attention because stock is low.
+                </p>
+            </div>
+            <span class="an-pill" id="pillLow"></span>
+        </div>
+
+        <div class="an-table-wrapper">
+            <table class="an-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th class="num">Stock</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="lowBody">
+                    <tr><td colspan="4" class="an-empty">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="an-formula" id="formulaLow"></p>
+    </div>
+
+    <div class="an-panel" id="panel-restock">
+        <div class="an-panel-head">
+            <div>
+                <h2>Restock Recommendation</h2>
+                <p class="an-description" id="descRestock">
+                    Products that may run out soon based on sales.
+                </p>
+            </div>
+            <span class="an-pill" id="pillRestock"></span>
+        </div>
+
+        <div class="an-table-wrapper">
+            <table class="an-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th class="num">Stock</th>
+                        <th class="num">Avg Sales / Day</th>
+                        <th class="num">Days Left</th>
+                        <th class="num">Suggested Order</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="restockBody">
+                    <tr><td colspan="7" class="an-empty">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="an-formula" id="formulaRestock"></p>
+    </div>
+
+    <div class="an-panel" id="panel-inventory">
+        <div class="an-panel-head">
+            <div>
+                <h2>Inventory Trends</h2>
+                <p class="an-description">
+                    Stock levels and sales grouped by product category.
+                </p>
+            </div>
+            <span class="an-pill" id="pillInventory"></span>
+        </div>
+
+        <div class="an-stats spaced">
+            <div class="an-stat main">
+                <span>Total Stock</span>
+                <strong id="iStock">-</strong>
+            </div>
+            <div class="an-stat">
+                <span>Total Stock Value</span>
+                <strong id="iValue">-</strong>
+            </div>
+            <div class="an-stat good">
+                <span>Net Quantity Sold</span>
+                <strong id="iSold">-</strong>
+            </div>
+        </div>
+
+        <div class="an-table-wrapper">
+            <table class="an-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th class="num">Products</th>
+                        <th class="num">Stock</th>
+                        <th class="num">Stock Value</th>
+                        <th class="num">Net Sold</th>
+                        <th class="num">Low-Stock Items</th>
+                        <th>Share of Stock</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryBody">
+                    <tr><td colspan="7" class="an-empty">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="an-formula" id="formulaInventory"></p>
+    </div>
 </div>
 
 <script>
@@ -57,18 +778,540 @@
     const sidebar = document.querySelector(".sidebar");
     const content = document.querySelector(".content");
 
-    sidebar.classList.add("hide");
-
-    // Kapag tinapat ang mouse sa kaliwang side
-    sidebar.addEventListener("mouseenter", () => {
-        sidebar.classList.remove("hide");
-        content.classList.add("expand");
-    });
-
-    sidebar.addEventListener("mouseleave", () => {
+    if (sidebar && content) {
         sidebar.classList.add("hide");
-        content.classList.remove("expand");
+
+        sidebar.addEventListener("mouseenter", () => {
+            sidebar.classList.remove("hide");
+            content.classList.add("expand");
+        });
+
+        sidebar.addEventListener("mouseleave", () => {
+            sidebar.classList.add("hide");
+            content.classList.remove("expand");
+        });
+    }
+
+    const API_URL = "http://localhost:5000/analytics/overview";
+
+    async function fetchAnalytics() {
+        const url = new URL(API_URL);
+        url.searchParams.set("period", "all");
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Unable to load analytics."
+            );
+        }
+
+        return data;
+    }
+
+    function formatMoney(value) {
+        return Number(value || 0).toLocaleString("en-PH", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function formatNumber(value) {
+        return Number(value || 0).toLocaleString("en-PH");
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function setText(id, value) {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+    }
+
+    function setHtml(id, html) {
+        const element = document.getElementById(id);
+        if (element) element.innerHTML = html;
+    }
+
+    function setBody(id, rowsHtml, columns, emptyText) {
+        const element = document.getElementById(id);
+        if (!element) return;
+
+        element.innerHTML = rowsHtml ||
+            `<tr><td colspan="${columns}" class="an-empty">${escapeHtml(emptyText)}</td></tr>`;
+    }
+
+    function showNotice(message, type) {
+        const notice = document.getElementById("analyticsNotice");
+        if (!notice) return;
+
+        notice.textContent = message;
+        notice.className = "an-notice " + type;
+    }
+
+    function hideNotice() {
+        const notice = document.getElementById("analyticsNotice");
+        if (!notice) return;
+
+        notice.textContent = "";
+        notice.className = "an-notice";
+    }
+
+    function selectPanel(name, shouldScroll = true) {
+        const selectedPanel = document.getElementById("panel-" + name);
+
+        if (!selectedPanel) return;
+
+        document.querySelectorAll(".an-card").forEach(card => {
+            const isActive = card.dataset.panel === name;
+
+            card.classList.toggle("active", isActive);
+            card.setAttribute("aria-pressed", isActive ? "true" : "false");
+
+            const hint = card.querySelector(".an-card-hint");
+            if (hint) hint.textContent = isActive ? "VIEWING" : "VIEW ›";
+        });
+
+        document.querySelectorAll(".an-panel").forEach(panel => {
+            panel.classList.toggle("active", panel.id === "panel-" + name);
+        });
+
+        if (shouldScroll) {
+            selectedPanel.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest"
+            });
+        }
+    }
+
+    document.querySelectorAll(".an-card").forEach(card => {
+        card.addEventListener("click", () => {
+            selectPanel(card.dataset.panel);
+        });
+
+        card.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                selectPanel(card.dataset.panel);
+            }
+        });
     });
+
+    function renderHeader(data) {
+        const days = Number(data.period?.days) || 0;
+
+        setText(
+            "chipDays",
+            "Based on " + formatNumber(days) +
+            (days === 1 ? " day" : " days") + " of recorded sales"
+        );
+
+        setText(
+            "chipUpdated",
+            "Updated " + new Date().toLocaleString("en-PH")
+        );
+    }
+
+    function renderCards(data) {
+        const summary = data.summary || {};
+        const categories = data.categories || [];
+
+        const totalStock = categories.reduce(
+            (sum, item) => sum + Number(item.total_stock || 0),
+            0
+        );
+
+        setText("cardSales", "₱" + formatMoney(summary.netSales));
+
+        setText(
+            "cardSalesNote",
+            "Net sales • " + formatNumber(summary.transactions) +
+            " transaction(s)"
+        );
+
+        setText("cardFast", formatNumber(summary.fastCount));
+        setText("cardSlow", formatNumber(summary.slowCount));
+        setText("cardLow", formatNumber(summary.lowStockCount));
+
+        setText(
+            "cardLowNote",
+            formatNumber(summary.outOfStockCount) + " out of stock"
+        );
+
+        setText("cardRestock", formatNumber(summary.restockCount));
+
+        setText(
+            "cardRestockNote",
+            "Running out within " +
+            formatNumber(data.rules?.leadTimeDays) + " days"
+        );
+
+        setText("cardInventory", formatNumber(totalStock) + " pcs");
+
+        setText(
+            "cardInventoryNote",
+            "In stock • " + formatNumber(categories.length) + " categories"
+        );
+    }
+
+    function renderSales(data) {
+        const summary = data.summary || {};
+        const transactions = Number(summary.transactions) || 0;
+        const netSales = Number(summary.netSales) || 0;
+        const grossSales = Number(summary.grossSales) || 0;
+        const refunds = Number(summary.totalRefunds) || 0;
+        const quantity = Number(summary.netQuantity) || 0;
+
+        const average = transactions > 0
+            ? netSales / transactions
+            : 0;
+
+        setText("sNet", "₱" + formatMoney(netSales));
+        setText("sGross", "₱" + formatMoney(grossSales));
+        setText("sRefunds", "₱" + formatMoney(refunds));
+        setText("sTransactions", formatNumber(transactions));
+        setText("sQuantity", formatNumber(quantity) + " pcs");
+        setText("sAverage", "₱" + formatMoney(average));
+
+        setText(
+            "pillSales",
+            formatNumber(transactions) + " transaction(s)"
+        );
+
+        setHtml(
+            "formulaSales",
+            "<strong>How it is computed:</strong> Net Sales = Gross Sales − " +
+            "Refunds. Average per Sale = Net Sales ÷ Transactions. Net Quantity " +
+            "Sold = Quantity Sold − Returned Quantity."
+        );
+    }
+
+    function renderFast(data, hasSales) {
+        const products = data.fastMoving || [];
+
+        const rows = products.map(item => `
+            <tr>
+                <td class="strong">${formatNumber(item.rank)}</td>
+                <td>${escapeHtml(item.product_name)}</td>
+                <td>${escapeHtml(item.category)}</td>
+                <td class="num strong">${formatNumber(item.net_quantity)}</td>
+                <td class="num">₱${formatMoney(item.net_sales)}</td>
+                <td><span class="badge fast">Fast-Moving</span></td>
+            </tr>
+        `).join("");
+
+        setBody(
+            "fastBody",
+            rows,
+            6,
+            hasSales ? "No fast-moving products." : "No sales data available."
+        );
+
+        setText(
+            "pillFast",
+            "Showing " + products.length +
+            " of " + formatNumber(data.summary?.fastCount)
+        );
+
+        setText(
+            "descFast",
+            "Best-selling products based on net quantity sold."
+        );
+
+        setHtml(
+            "formulaFast",
+            "<strong>How it is computed:</strong> Products with positive " +
+            "net quantity sold, ranked from highest to lowest. " +
+            "Net Quantity Sold = Quantity Sold − Returned Quantity."
+        );
+    }
+
+    function renderSlow(data) {
+        const products = data.slowMoving || [];
+
+        const rows = products.map(item => `
+            <tr>
+                <td>${escapeHtml(item.product_name)}</td>
+                <td>${escapeHtml(item.category)}</td>
+                <td class="num strong">${formatNumber(item.stock)}</td>
+                <td class="num">${formatNumber(item.net_quantity)}</td>
+                <td><span class="badge slow">Slow-Moving</span></td>
+            </tr>
+        `).join("");
+
+        setBody(
+            "slowBody",
+            rows,
+            5,
+            "No slow-moving products."
+        );
+
+        setText(
+            "pillSlow",
+            "Showing " + products.length +
+            " of " + formatNumber(data.summary?.slowCount)
+        );
+
+        setText(
+            "descSlow",
+            "Products with zero net quantity sold."
+        );
+
+        setHtml(
+            "formulaSlow",
+            "<strong>How it is computed:</strong> Products with zero net " +
+            "quantity sold after subtracting returned quantities. " +
+            "Products with positive net quantity sold are classified " +
+            "as Fast-Moving under the current system rules."
+        );
+    }
+
+    function renderLow(data) {
+        const products = data.lowStock || [];
+        const limit = Number(data.rules?.lowStockLimit) || 10;
+
+        const rows = products.map(item => {
+            const stock = Number(item.stock) || 0;
+            const isOut = stock <= 0;
+
+            return `
+                <tr>
+                    <td>${escapeHtml(item.product_name)}</td>
+                    <td>${escapeHtml(item.category)}</td>
+                    <td class="num strong">${formatNumber(stock)}</td>
+                    <td>
+                        <span class="badge ${isOut ? "out" : "low"}">
+                            ${isOut ? "Out of Stock" : "Low Stock"}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+
+        setBody(
+            "lowBody",
+            rows,
+            4,
+            "No low-stock products."
+        );
+
+        setText(
+            "pillLow",
+            formatNumber(data.summary?.lowStockCount) + " product(s)"
+        );
+
+        setText(
+            "descLow",
+            "Products with " + limit + " pieces or below."
+        );
+
+        setHtml(
+            "formulaLow",
+            "<strong>How it is computed:</strong> A product is flagged " +
+            "when its current stock is " + limit +
+            " pieces or below. Zero stock is classified as Out of Stock."
+        );
+    }
+
+    function renderRestock(data, hasSales) {
+        const rules = data.rules || {};
+        const products = data.restock || [];
+
+        const rows = products.map(item => {
+            let badgeClass = "soon";
+
+            if (item.status === "Out of Stock") {
+                badgeClass = "out";
+            } else if (item.status === "Urgent") {
+                badgeClass = "urgent";
+            }
+
+            return `
+                <tr>
+                    <td>${escapeHtml(item.product_name)}</td>
+                    <td>${escapeHtml(item.category)}</td>
+                    <td class="num strong">${formatNumber(item.stock)}</td>
+                    <td class="num">${formatNumber(item.average_daily)}</td>
+                    <td class="num strong">${formatNumber(item.days_left)}</td>
+                    <td class="num strong">
+                        ${formatNumber(item.suggested_order)} pcs
+                    </td>
+                    <td>
+                        <span class="badge ${badgeClass}">
+                            ${escapeHtml(item.status)}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+
+        setBody(
+            "restockBody",
+            rows,
+            7,
+            hasSales
+                ? "No products currently meet the restock criteria."
+                : "No sales data available."
+        );
+
+        setText(
+            "pillRestock",
+            "Showing " + products.length +
+            " of " + formatNumber(data.summary?.restockCount)
+        );
+
+        setText(
+            "descRestock",
+            "Products that may run out within " +
+            formatNumber(rules.leadTimeDays) +
+            " days based on recorded sales."
+        );
+
+        setHtml(
+            "formulaRestock",
+            "<strong>How it is computed:</strong> Days Left = Current Stock ÷ " +
+            "Average Daily Sales. Products with " +
+            formatNumber(rules.leadTimeDays) +
+            " days or less are recommended for restocking. Suggested Order " +
+            "aims to cover " + formatNumber(rules.coverDays) +
+            " days of average sales."
+        );
+    }
+
+    function renderInventory(data) {
+        const categories = data.categories || [];
+
+        const totalStock = categories.reduce(
+            (sum, item) => sum + Number(item.total_stock || 0),
+            0
+        );
+
+        const totalValue = categories.reduce(
+            (sum, item) => sum + Number(item.stock_value || 0),
+            0
+        );
+
+        const totalSold = categories.reduce(
+            (sum, item) => sum + Number(item.net_sold || 0),
+            0
+        );
+
+        const maxStock = categories.reduce(
+            (max, item) =>
+                Math.max(max, Number(item.total_stock || 0)),
+            0
+        );
+
+        setText("iStock", formatNumber(totalStock) + " pcs");
+        setText("iValue", "₱" + formatMoney(totalValue));
+        setText("iSold", formatNumber(totalSold) + " pcs");
+
+        const rows = categories.map(item => {
+            const stock = Number(item.total_stock || 0);
+            const percentage = totalStock > 0
+                ? (stock / totalStock) * 100
+                : 0;
+
+            const barWidth = maxStock > 0
+                ? (stock / maxStock) * 100
+                : 0;
+
+            const lowItems = Number(item.low_stock_items || 0);
+
+            return `
+                <tr>
+                    <td>${escapeHtml(item.category)}</td>
+                    <td class="num">${formatNumber(item.products)}</td>
+                    <td class="num strong">${formatNumber(stock)}</td>
+                    <td class="num">₱${formatMoney(item.stock_value)}</td>
+                    <td class="num strong">${formatNumber(item.net_sold)}</td>
+                    <td class="num">
+                        ${
+                            lowItems > 0
+                                ? `<span class="badge low">${formatNumber(lowItems)}</span>`
+                                : `<span class="badge ok">0</span>`
+                        }
+                    </td>
+                    <td class="share-cell">
+                        <div class="share-track">
+                            <div class="share-bar"
+                                 style="width:${barWidth}%"></div>
+                        </div>
+                        <span class="share-text">
+                            ${percentage.toFixed(1)}% of total stock
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+
+        setBody(
+            "inventoryBody",
+            rows,
+            7,
+            "No inventory records found."
+        );
+
+        setText(
+            "pillInventory",
+            formatNumber(categories.length) + " categories"
+        );
+
+        setHtml(
+            "formulaInventory",
+            "<strong>How it is computed:</strong> Stock Value = Current " +
+            "Quantity × Product Price. Net Sold = Quantity Sold − Returned " +
+            "Quantity. Low-Stock Items are products at or below the configured " +
+            "low-stock limit."
+        );
+    }
+
+    async function loadAnalytics() {
+        hideNotice();
+
+        try {
+            const data = await fetchAnalytics();
+
+            const hasSales =
+                Number(data.summary?.transactions || 0) > 0;
+
+            renderHeader(data);
+            renderCards(data);
+            renderSales(data);
+            renderFast(data, hasSales);
+            renderSlow(data);
+            renderLow(data);
+            renderRestock(data, hasSales);
+            renderInventory(data);
+
+            if (!hasSales) {
+                showNotice(
+                    "No sales data available. Inventory analytics remain available.",
+                    "info"
+                );
+            }
+        } catch (error) {
+            console.error("Analytics Error:", error);
+
+            showNotice(
+                "Unable to load analytics. Please make sure the backend server is running.",
+                "error"
+            );
+
+            setText("cardSales", "Error");
+            setText("chipDays", "Unable to load data");
+        }
+    }
+
+    selectPanel("sales", false);
+    loadAnalytics();
 
 </script>
 

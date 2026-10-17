@@ -13,10 +13,13 @@
 <link rel="stylesheet" href="style.css">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 
-<style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+
+<style>
 
     .reports-page {
         font-family: Arial, Helvetica, sans-serif;
@@ -27,10 +30,6 @@
         padding: 30px 32px 50px !important;
     }
 
-    /* =====================================================
-       MAIN TITLE
-    ===================================================== */
-
     .reports-page .reports-title {
         font-size: 32px !important;
         font-weight: 700;
@@ -38,10 +37,6 @@
         color: #ffffff;
         letter-spacing: 0.2px;
     }
-
-    /* =====================================================
-       SUMMARY CARDS
-    ===================================================== */
 
     .reports-page .report-summary {
         display: grid;
@@ -57,6 +52,7 @@
         min-height: 110px;
         box-sizing: border-box;
         box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+
         border-left: 5px solid #24479b;
     }
 
@@ -83,9 +79,14 @@
         color: #dc2626;
     }
 
-    /* =====================================================
-       SECTIONS
-    ===================================================== */
+    .reports-page .sales-breakdown {
+        display: block;
+        margin-top: 8px;
+        font-size: 12px;
+        line-height: 1.4;
+
+        color: #6b7280;
+    }
 
     .reports-page .report-section {
         background: #ffffff;
@@ -111,10 +112,6 @@
         line-height: 1.5;
     }
 
-    /* =====================================================
-       FILTER
-    ===================================================== */
-
     .reports-page .filter-container {
         display: grid;
         grid-template-columns: 1fr 1fr auto auto;
@@ -134,28 +131,32 @@
         color: #374151;
     }
 
-    .reports-page .filter-group input {
+    .reports-page .filter-group input,
+    .reports-page .filter-group select {
         width: 100%;
         box-sizing: border-box;
         padding: 12px 13px !important;
         min-height: 44px;
         border: 1px solid #cbd5e1;
         border-radius: 7px;
+
         font-size: 15px !important;
         color: #1f2937;
         background: #ffffff;
         cursor: pointer;
     }
 
-    .reports-page .filter-group input:focus {
+    .reports-page .filter-group input:focus,
+    .reports-page .filter-group select:focus {
         outline: none;
         border-color: #24479b;
         box-shadow: 0 0 0 3px rgba(36, 71, 155, 0.12);
     }
 
-    /* =====================================================
-       BUTTONS
-    ===================================================== */
+    .reports-page .input-error {
+        border: 1px solid #dc2626 !important;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
+    }
 
     .reports-page .report-button {
         border: none;
@@ -165,6 +166,7 @@
         font-size: 14px !important;
         font-weight: 700;
         cursor: pointer;
+
         transition: 0.2s ease;
     }
 
@@ -196,10 +198,6 @@
         background: #000000;
     }
 
-    /* =====================================================
-       FILTER STATUS
-    ===================================================== */
-
     .reports-page .filter-status {
         display: none;
         margin-top: 15px;
@@ -211,13 +209,80 @@
         font-weight: 600;
     }
 
-    /* =====================================================
-       SALES TREND
-    ===================================================== */
+    .reports-page .sales-flow-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 14px;
+        align-items: end;
+        margin-bottom: 20px;
+    }
+
+    .reports-page .sales-flow-controls .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+
+    }
+
+    .reports-page .sales-flow-controls label {
+        font-size: 14px !important;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .reports-page .sales-flow-controls select,
+    .reports-page .sales-flow-controls input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 13px !important;
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        font-size: 15px !important;
+        color: #1f2937;
+        background: #ffffff;
+        cursor: pointer;
+    }
+
+    .reports-page .sales-flow-controls select:focus,
+    .reports-page .sales-flow-controls input:focus {
+        outline: none;
+        border-color: #24479b;
+        box-shadow: 0 0 0 3px rgba(36, 71, 155, 0.12);
+    }
+
+    .reports-page .sales-flow-chart-wrapper {
+        width: 100%;
+        height: 400px;
+
+        position: relative;
+        border: 1px solid #dbe3ef;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    .reports-page #salesFlowChart {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .reports-page .flow-status {
+        margin-top: 15px;
+        padding: 11px 14px;
+        border-radius: 7px;
+        background: #f8fafc;
+        border: 1px solid #dbe3ef;
+        color: #374151;
+        font-size: 14px !important;
+        font-weight: 600;
+    }
 
     .reports-page .trend-summary {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
+
         gap: 16px;
         margin-bottom: 18px;
     }
@@ -250,13 +315,10 @@
     .reports-page .trend-card-subtitle {
         display: block;
         margin-top: 5px;
+
         color: #6b7280;
         font-size: 13px !important;
     }
-
-    /* =====================================================
-       TABLE
-    ===================================================== */
 
     .reports-page .table-wrapper {
         width: 100%;
@@ -282,6 +344,7 @@
         white-space: nowrap;
     }
 
+
     .reports-page .report-table tbody td {
         padding: 12px 14px !important;
         border-bottom: 1px solid #e5e7eb;
@@ -305,13 +368,10 @@
         font-size: 14px !important;
     }
 
-    /* =====================================================
-       STOCK COLORS
-    ===================================================== */
-
     .reports-page .stock-number {
         font-weight: 700;
     }
+
 
     .reports-page .low-stock {
         color: #dc2626 !important;
@@ -322,10 +382,6 @@
         color: #15803d !important;
         font-weight: 700;
     }
-
-    /* =====================================================
-       TREND BAR
-    ===================================================== */
 
     .reports-page .trend-bar-container {
         width: 100%;
@@ -343,6 +399,7 @@
         transition: width 0.3s ease;
     }
 
+
     .reports-page .rank-number {
         font-weight: 700;
     }
@@ -351,10 +408,6 @@
         font-weight: 700;
         color: #15803d;
     }
-
-    /* =====================================================
-       MOBILE
-    ===================================================== */
 
     @media (max-width: 900px) {
 
@@ -370,7 +423,13 @@
             grid-template-columns: 1fr 1fr;
         }
 
+        .reports-page .sales-flow-controls {
+            grid-template-columns: 1fr 1fr;
+        }
+
+
     }
+
 
     @media (max-width: 600px) {
 
@@ -390,62 +449,138 @@
             grid-template-columns: 1fr;
         }
 
+        .reports-page .sales-flow-controls {
+            grid-template-columns: 1fr;
+        }
+
+        .reports-page .sales-flow-chart-wrapper {
+            height: 320px;
+            padding: 8px;
+        }
+
     }
 
-    /* =====================================================
-       PRINT
-    ===================================================== */
+@page {
+    size: landscape;
+    margin: 10mm;
+}
 
-   @media print {
+@media print {
 
-    body {
+    body.reports-page {
         background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     .reports-page .sidebar,
-    .reports-page .filter-container,
-    .reports-page .print-button,
-    .reports-page .clear-button,
-    .reports-page .filter-status,
-    #summarySection,
-    #salesTrendSection,
-    #inventorySection {
+    .reports-page #summarySection {
         display: none !important;
     }
 
-        .reports-page .content {
-            margin: 0 !important;
-            padding: 10px !important;
-        }
-
-        .reports-page .reports-title {
-            color: #111827 !important;
-            font-size: 26px !important;
-        }
-
-        .reports-page .report-section {
-            box-shadow: none !important;
-            border: 1px solid #d1d5db;
-            page-break-inside: avoid;
-        }
-
-        .reports-page .report-table {
-            min-width: 100%;
-        }
-
-        .reports-page .report-table thead th {
-            background: #24479b !important;
-            color: #ffffff !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
+    .reports-page .report-section:has(.filter-container) {
+        display: none !important;
     }
 
-    /* =====================================================
-       CUSTOM FLATPICKR CALENDAR THEME
-       Matches the blue/white design of the system
-    ===================================================== */
+    .reports-page #salesFlowSection,
+    .reports-page #salesTrendSection,
+    .reports-page #inventorySection {
+        display: none !important;
+    }
+
+    .reports-page .filter-container,
+    .reports-page .filter-status,
+    .reports-page .print-button,
+    .reports-page .clear-button,
+    .reports-page .filter-button {
+        display: none !important;
+    }
+
+    .reports-page .content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .reports-page .reports-title {
+        display: block !important;
+        color: #111827 !important;
+        font-size: 22px !important;
+        margin: 0 0 12px !important;
+    }
+
+    .reports-page .report-section:has(#salesReportTable) {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 12px !important;
+        box-sizing: border-box !important;
+        box-shadow: none !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 0 !important;
+        overflow: visible !important;
+    }
+
+    .reports-page .table-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+    }
+
+    .reports-page .report-table {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+        font-size: 9px !important;
+    }
+
+    .reports-page .report-table th,
+    .reports-page .report-table td {
+        padding: 6px 5px !important;
+        font-size: 9px !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+        box-sizing: border-box !important;
+    }
+
+    .reports-page .report-table th:nth-child(1),
+    .reports-page .report-table td:nth-child(1) {
+        width: 8% !important;
+    }
+
+    .reports-page .report-table th:nth-child(2),
+    .reports-page .report-table td:nth-child(2) {
+        width: 30% !important;
+    }
+
+    .reports-page .report-table th:nth-child(3),
+    .reports-page .report-table td:nth-child(3) {
+        width: 12% !important;
+    }
+
+    .reports-page .report-table th:nth-child(4),
+    .reports-page .report-table td:nth-child(4) {
+        width: 20% !important;
+    }
+
+    .reports-page .report-table th:nth-child(5),
+    .reports-page .report-table td:nth-child(5) {
+        width: 30% !important;
+    }
+
+    .reports-page .report-table thead th {
+        background: #24479b !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
 
     .flatpickr-calendar {
         border-radius: 12px !important;
@@ -453,6 +588,7 @@
         border: 1px solid #dbe3ef !important;
         font-family: Arial, Helvetica, sans-serif !important;
     }
+
 
     .flatpickr-months {
         background: #24479b !important;
@@ -486,6 +622,7 @@
         fill: #dbe3ef !important;
     }
 
+
     .flatpickr-day.selected,
     .flatpickr-day.selected:hover {
         background: #24479b !important;
@@ -510,507 +647,515 @@
 
 </head>
 
-<body class="reports-page">
 
-<!-- =====================================================
-     SIDEBAR
-===================================================== -->
+<body class="reports-page">
 
 <div class="sidebar">
 
-<div class="sidebar-header">
+    <div class="sidebar-header">
 
-    <img src="logo.png" class="sidebar-logo">
+        <img src="logo.png" class="sidebar-logo">
 
-    <h2>Tot's Motorshop</h2>
+        <h2>Tot's Motorshop</h2>
+
+    </div>
+
+    <ul>
+
+        <li>
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="inventory.html">
+                Inventory
+            </a>
+        </li>
+
+        <li>
+            <a href="supplier.html">
+                Suppliers
+            </a>
+        </li>
+
+        <li>
+
+            <a href="purchase-order.html">
+                Purchase Orders
+            </a>
+        </li>
+
+        <li>
+            <a href="stock_in.html">
+                Stock In
+            </a>
+        </li>
+
+        <li>
+            <a href="sales.html">
+                Sales
+            </a>
+        </li>
+
+        <li>
+            <a href="sales-return.html">Sales Return</a>
+        </li>
+
+        <li>
+            <a href="sales-refund.html">
+                Sales Refund
+            </a>
+        </li>
+
+        <li>
+            <a href="reports.html">
+                Reports
+            </a>
+        </li>
+
+
+        <li>
+            <a href="analytics.html">
+                Analytics
+            </a>
+        </li>
+
+        <li>
+            <a href="ai_recommendation.html">AI Recommendations</a>
+        </li>
+
+        <li>
+            <a href="login.html">
+                Logout
+            </a>
+        </li>
+
+    </ul>
 
 </div>
 
-<ul>
-
-    <li>
-        <a href="dashboard.html">
-            Dashboard
-        </a>
-    </li>
-
-    <li>
-        <a href="inventory.html">
-            Inventory
-        </a>
-    </li>
-
-    <li>
-        <a href="sales.html">
-            Sales
-        </a>
-    </li>
-
-    <li>
-        <a href="reports.html">
-            Reports
-        </a>
-    </li>
-
-    <li>
-        <a href="analytics.html">
-            Analytics
-        </a>
-    </li>
-
-    <li>
-        <a href="login.html">
-            Logout
-        </a>
-    </li>
-
-</ul>
-
-</div>
-
-<!-- =====================================================
-     MAIN CONTENT
-===================================================== -->
 
 <div class="content">
 
-<h1 class="reports-title">
-    Reports Module
-</h1>
+    <h1 class="reports-title">
+        Reports Module
+    </h1>
 
+    <div class="report-summary" id="summarySection">
 
-<!-- =================================================
-     SUMMARY
-================================================== -->
+        <div class="report-card">
 
-<div class="report-summary" id="summarySection">
+            <h3>
+                Total Products
+            </h3>
 
-    <div class="report-card">
-
-        <h3>
-            Total Products
-        </h3>
-
-        <p id="totalProducts">
-            Loading...
-        </p>
-
-    </div>
-
-
-    <div class="report-card">
-
-        <h3>
-            Total Sales
-        </h3>
-
-        <p id="totalSales">
-            Loading...
-        </p>
-
-    </div>
-
-
-    <div class="report-card">
-
-        <h3>
-            Low Stocks
-        </h3>
-
-        <p id="lowStocks">
-            Loading...
-        </p>
-
-    </div>
-
-
-</div>
-
-
-<!-- =================================================
-     SALES FILTER
-================================================== -->
-
-<div class="report-section">
-
-    <h2>
-        Sales Report Filter
-    </h2>
-
-    <p class="section-description">
-        Select a date range to display sales transactions recorded within the selected period.
-    </p>
-
-
-    <div class="filter-container">
-
-
-        <div class="filter-group">
-
-            <label for="fromDate">
-                From Date
-            </label>
-
-            <input
-                type="text"
-                id="fromDate"
-                placeholder="Select date"
-                readonly
-            >
-
-        </div>
-
-
-        <div class="filter-group">
-
-            <label for="toDate">
-                To Date
-            </label>
-
-            <input
-                type="text"
-                id="toDate"
-                placeholder="Select date"
-                readonly
-            >
-
-        </div>
-
-
-        <button
-            class="report-button filter-button"
-            onclick="filterReport()"
-        >
-            Filter
-        </button>
-
-
-        <button
-            class="report-button clear-button"
-            onclick="clearFilter()"
-        >
-            Clear
-        </button>
-
-
-    </div>
-
-
-    <div
-        id="filterStatus"
-        class="filter-status"
-    ></div>
-
-
-    <button
-    class="report-button print-button"
-    onclick="printSalesReport()"
->
-    Print Report
-</button>
-
-</div>
-
-
-<!-- =================================================
-     SALES REPORT
-     MOVED DIRECTLY UNDER SALES FILTER
-================================================== -->
-
-<div class="report-section">
-
-    <h2>
-        Sales Report
-    </h2>
-
-    <p class="section-description">
-        Recorded sales transactions from the system.
-    </p>
-
-
-    <div class="table-wrapper">
-
-
-        <table class="report-table">
-
-
-            <thead>
-
-                <tr>
-
-                    <th>
-                        ID
-                    </th>
-
-                    <th>
-                        Product
-                    </th>
-
-                    <th>
-                        Quantity
-                    </th>
-
-                    <th>
-                        Total Amount
-                    </th>
-
-                    <th>
-                        Date
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody id="salesReportTable">
-
-                <tr>
-
-                    <td
-                        colspan="5"
-                        class="empty-row"
-                    >
-                        Loading sales records...
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-
-        </table>
-
-
-    </div>
-
-
-</div>
-
-
-<!-- =================================================
-     SALES TREND
-================================================== -->
-
-<div class="report-section" id="salesTrendSection">
-
-
-    <h2>
-        Sales Trend
-    </h2>
-
-
-    <p class="section-description">
-        Shows the products with the highest recorded sales quantity based on sales transactions in the system.
-    </p>
-
-
-    <div class="trend-summary">
-
-
-        <div class="trend-card">
-
-            <span class="trend-card-title">
-                Top-Selling Product
-            </span>
-
-            <span
-                id="topSellingProduct"
-                class="trend-card-value"
-            >
+            <p id="totalProducts">
                 Loading...
-            </span>
-
-            <span class="trend-card-subtitle">
-                Most sold product
-            </span>
+            </p>
 
         </div>
 
 
-        <div class="trend-card">
+        <div class="report-card">
 
-            <span class="trend-card-title">
-                Highest Quantity Sold
-            </span>
+            <h3>
+                Total Sales
+            </h3>
 
-            <span
-                id="highestQuantitySold"
-                class="trend-card-value"
+            <p id="totalSales">
+                Loading...
+            </p>
+
+
+        </div>
+
+
+        <div class="report-card">
+
+            <h3>
+                Low Stocks
+            </h3>
+
+            <p id="lowStocks">
+                Loading...
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="report-section">
+
+        <h2>
+            Sales Report Filter
+        </h2>
+
+        <p class="section-description">
+            Select a date range to display sales transactions recorded within the selected period.
+        </p>
+
+
+
+        <div class="filter-container">
+
+            <div class="filter-group">
+
+                <label for="fromDate">
+                    From Date
+                </label>
+
+                <input
+                    type="text"
+                    id="fromDate"
+                    placeholder="Select date"
+                    readonly
+                >
+
+            </div>
+
+
+            <div class="filter-group">
+
+                <label for="toDate">
+                    To Date
+                </label>
+
+                <input
+                    type="text"
+                    id="toDate"
+                    placeholder="Select date"
+                    readonly
+                >
+
+
+            </div>
+
+
+            <button
+                class="report-button filter-button"
+                onclick="filterReport()"
             >
-                0 pcs
-            </span>
-
-            <span class="trend-card-subtitle">
-                In a single product
-            </span>
-
-        </div>
+                Filter
+            </button>
 
 
-        <div class="trend-card">
-
-            <span class="trend-card-title">
-                Total Quantity Sold
-            </span>
-
-            <span
-                id="totalQuantitySold"
-                class="trend-card-value"
+            <button
+                class="report-button clear-button"
+                onclick="clearFilter()"
             >
-                0 pcs
-            </span>
-
-            <span class="trend-card-subtitle">
-                Across all recorded sales
-            </span>
+                Clear
+            </button>
 
         </div>
 
 
-    </div>
+        <div
+            id="filterStatus"
+            class="filter-status"
+        ></div>
 
 
-    <div class="table-wrapper">
+        <button
+            class="report-button print-button"
+            onclick="printSalesReport()"
+        >
+            Print Report
 
-
-        <table class="report-table">
-
-
-            <thead>
-
-                <tr>
-
-                    <th>
-                        Rank
-                    </th>
-
-                    <th>
-                        Product
-                    </th>
-
-                    <th>
-                        Quantity Sold
-                    </th>
-
-                    <th>
-                        Sales Level
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody id="trendTable">
-
-                <tr>
-
-                    <td
-                        colspan="4"
-                        class="empty-row"
-                    >
-                        Loading sales trend...
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-
-        </table>
-
+        </button>
 
     </div>
 
+    <div class="report-section">
 
-</div>
+        <h2>
+            Sales Report
+        </h2>
 
-
-<!-- =================================================
-     INVENTORY REPORT
-     LAST SECTION
-================================================== -->
-
-<div class="report-section" id="inventorySection">
-
-
-    <h2>
-        Inventory Report
-    </h2>
+        <p class="section-description">
+            Recorded sales transactions from the system.
+        </p>
 
 
-    <p class="section-description">
-        Current inventory records and available stock information.
-    </p>
+        <div class="table-wrapper">
+
+            <table class="report-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Product</th>
 
 
-    <div class="table-wrapper">
+                        <th>Quantity</th>
+
+                        <th>Total Amount</th>
+
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
 
 
-        <table class="report-table">
+                <tbody id="salesReportTable">
 
+                    <tr>
 
-            <thead>
+                        <td colspan="5" class="empty-row">
+                            Loading sales records...
+                        </td>
 
-                <tr>
+                    </tr>
 
-                    <th>
-                        ID
-                    </th>
+                </tbody>
 
-                    <th>
-                        Product Name
-                    </th>
+            </table>
 
-                    <th>
-                        Category
-                    </th>
-
-                    <th>
-                        Stock
-                    </th>
-
-                    <th>
-                        Price
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody id="reportTable">
-
-                <tr>
-
-                    <td
-                        colspan="5"
-                        class="empty-row"
-                    >
-                        Loading inventory records...
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-
-        </table>
-
+        </div>
 
     </div>
 
+    <div class="report-section" id="salesFlowSection">
+
+        <h2>
+            Sales Flow
+        </h2>
+
+        <p class="section-description">
+            Graphical view of recorded sales by day, week, month, or year.
+        </p>
+
+
+        <div class="sales-flow-controls">
+
+            <div class="filter-group">
+
+                <label for="flowPeriod">
+                    Sales Period
+                </label>
+
+                <select id="flowPeriod" onchange="updateFlowDateInput()">
+
+                    <option value="daily">Daily</option>
+
+                    <option value="weekly">Weekly</option>
+
+                    <option value="monthly">Monthly</option>
+
+                    <option value="yearly">Yearly</option>
+
+                </select>
+
+
+            </div>
+
+
+            <div class="filter-group">
+
+                <label for="flowDate" id="flowDateLabel">
+                    Select Date
+                </label>
+
+                <input type="date" id="flowDate">
+
+            </div>
+
+
+            <button
+                class="report-button filter-button"
+                onclick="loadSalesFlow()"
+            >
+                Show Graph
+            </button>
+
+        </div>
+
+
+        <div class="sales-flow-chart-wrapper">
+
+            <canvas id="salesFlowChart"></canvas>
+
+        </div>
+
+
+
+        <div id="flowStatus" class="flow-status">
+            Select a period and click Show Graph.
+        </div>
+
+    </div>
+
+    <div class="report-section" id="salesTrendSection">
+
+        <h2>
+            Sales Trend
+        </h2>
+
+        <p class="section-description">
+            Shows the products with the highest recorded sales quantity based on sales transactions in the system.
+        </p>
+
+
+        <div class="trend-summary">
+
+            <div class="trend-card">
+
+                <span class="trend-card-title">
+                    Top-Selling Product
+                </span>
+
+                <span id="topSellingProduct" class="trend-card-value">
+                    Loading...
+
+                </span>
+
+                <span class="trend-card-subtitle">
+                    Most sold product
+                </span>
+
+            </div>
+
+
+            <div class="trend-card">
+
+                <span class="trend-card-title">
+                    Highest Quantity Sold
+                </span>
+
+                <span id="highestQuantitySold" class="trend-card-value">
+                    0 pcs
+                </span>
+
+                <span class="trend-card-subtitle">
+                    In a single product
+                </span>
+
+            </div>
+
+
+            <div class="trend-card">
+
+                <span class="trend-card-title">
+                    Total Quantity Sold
+                </span>
+
+
+                <span id="totalQuantitySold" class="trend-card-value">
+                    0 pcs
+                </span>
+
+                <span class="trend-card-subtitle">
+                    Across all recorded sales
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="report-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Rank</th>
+
+                        <th>Product</th>
+
+                        <th>Quantity Sold</th>
+
+                        <th>Sales Level</th>
+
+                    </tr>
+
+                </thead>
+
+
+
+                <tbody id="trendTable">
+
+                    <tr>
+
+                        <td colspan="4" class="empty-row">
+                            Loading sales trend...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="report-section" id="inventorySection">
+
+        <h2>
+            Inventory Report
+        </h2>
+
+        <p class="section-description">
+
+            Current inventory records and available stock information.
+        </p>
+
+
+        <div class="table-wrapper">
+
+            <table class="report-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Product Name</th>
+
+                        <th>Category</th>
+
+                        <th>Stock</th>
+
+                        <th>Price</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="reportTable">
+
+                    <tr>
+
+                        <td colspan="5" class="empty-row">
+
+                            Loading inventory records...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
-</div>
 
 <script>
-
-    /* =====================================================
-       SIDEBAR
-    ===================================================== */
 
     const sidebar =
         document.querySelector(".sidebar");
@@ -1022,6 +1167,7 @@
     if (sidebar && content) {
 
         sidebar.classList.add("hide");
+
 
 
         sidebar.addEventListener("mouseenter", () => {
@@ -1043,16 +1189,13 @@
 
     }
 
-
-    /* =====================================================
-       FLATPICKR - CUSTOM CALENDAR
-    ===================================================== */
-
     flatpickr("#fromDate", {
         dateFormat: "Y-m-d",
         closeOnSelect: true,
         allowInput: false
     });
+
+
 
     flatpickr("#toDate", {
         dateFormat: "Y-m-d",
@@ -1060,10 +1203,28 @@
         allowInput: false
     });
 
+    function markFieldError(field) {
+        if (!field) return;
+        field.classList.add("input-error");
+        field.setAttribute("aria-invalid", "true");
+    }
 
-    /* =====================================================
-       FORMAT MONEY
-    ===================================================== */
+    function clearFieldError(field) {
+        if (!field) return;
+        field.classList.remove("input-error");
+        field.removeAttribute("aria-invalid");
+    }
+
+    ["fromDate", "toDate", "flowDate"].forEach(id => {
+        const field = document.getElementById(id);
+
+        if (field) {
+            field.addEventListener("change", () => clearFieldError(field));
+            field.addEventListener("input", () => clearFieldError(field));
+        }
+    });
+
+    let salesFlowChart = null;
 
     function formatMoney(value) {
 
@@ -1079,9 +1240,143 @@
     }
 
 
-    /* =====================================================
-       FORMAT DATE
-    ===================================================== */
+    function localDateKey(dateValue) {
+
+        let date;
+
+        if (dateValue instanceof Date) {
+
+            date = new Date(dateValue);
+
+        } else {
+
+            let raw =
+                String(dateValue || "");
+
+            raw =
+                raw.replace(" ", "T");
+
+            date =
+                new Date(raw);
+
+        }
+
+
+        if (isNaN(date.getTime())) {
+
+            return "";
+
+        }
+
+
+        const year =
+            date.getFullYear();
+
+
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+    function parseSaleDate(value) {
+
+        if (!value) {
+
+            return null;
+
+        }
+
+
+
+        if (value instanceof Date) {
+
+            return isNaN(value.getTime())
+                ? null
+                : new Date(value);
+
+        }
+
+
+        let raw =
+            String(value);
+
+        raw =
+            raw.replace(" ", "T");
+
+
+        const date =
+            new Date(raw);
+
+
+        if (isNaN(date.getTime())) {
+
+            return null;
+
+
+        }
+
+
+        return date;
+
+    }
+
+    function formatExactTime(date) {
+
+        if (!date) {
+
+            return "";
+
+        }
+
+
+        return date.toLocaleTimeString(
+            "en-PH",
+            {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true
+            }
+        );
+
+
+    }
+
+    function formatExactDateTime(date) {
+
+        if (!date) {
+
+            return "";
+
+        }
+
+
+        return date.toLocaleString(
+            "en-PH",
+            {
+                year: "numeric",
+                month: "short",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true
+            }
+        );
+
+    }
 
     function formatDate(dateValue) {
 
@@ -1093,10 +1388,10 @@
 
 
         const date =
-            new Date(dateValue);
+            parseSaleDate(dateValue);
 
 
-        if (isNaN(date.getTime())) {
+        if (!date) {
 
             return dateValue;
 
@@ -1111,15 +1406,11 @@
                 day: "2-digit",
                 hour: "2-digit",
                 minute: "2-digit"
+
             }
         );
 
     }
-
-
-    /* =====================================================
-       LOAD PRODUCTS + SUMMARY
-    ===================================================== */
 
     async function loadReport() {
 
@@ -1144,6 +1435,7 @@
                 await response.json();
 
 
+
             document.getElementById(
                 "totalProducts"
             ).textContent =
@@ -1161,11 +1453,9 @@
                     Number(product.quantity) || 0;
 
 
-                if (quantity <= 10) {
-
-                    lowStocks++;
-
-                }
+                if (quantity >= 1 && quantity <= 10) {
+                        lowStocks++;
+}
 
 
                 const stockClass =
@@ -1175,6 +1465,7 @@
 
 
                 rows += `
+
 
                     <tr>
 
@@ -1207,6 +1498,7 @@
 
             document.getElementById(
                 "lowStocks"
+
             ).textContent =
                 lowStocks;
 
@@ -1240,6 +1532,7 @@
             );
 
 
+
             document.getElementById(
                 "totalProducts"
             ).textContent =
@@ -1271,12 +1564,8 @@
 
         }
 
+
     }
-
-
-    /* =====================================================
-       LOAD SALES
-    ===================================================== */
 
     async function getSales() {
 
@@ -1299,57 +1588,30 @@
 
     }
 
+async function loadSalesSummary() {
+    try {
+        const response = await fetch(
+            "http://localhost:5000/analytics/overview?period=all"
+        );
 
-    /* =====================================================
-       LOAD SALES SUMMARY
-    ===================================================== */
-
-    async function loadSalesSummary() {
-
-        try {
-
-            const sales =
-                await getSales();
-
-
-            let totalSales = 0;
-
-
-            sales.forEach(sale => {
-
-                totalSales +=
-                    Number(sale.total) || 0;
-
-            });
-
-
-            document.getElementById(
-                "totalSales"
-            ).textContent =
-                "₱" + formatMoney(totalSales);
-
-
-        } catch (error) {
-
-            console.error(
-                "Sales Summary Error:",
-                error
-            );
-
-
-            document.getElementById(
-                "totalSales"
-            ).textContent =
-                "Error";
-
+        if (!response.ok) {
+            throw new Error("Failed to load sales summary.");
         }
 
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error("Invalid analytics response.");
+        }
+
+        document.getElementById("totalSales").textContent =
+            "₱" + formatMoney(data.summary.netSales);
+
+    } catch (error) {
+        console.error("Sales Summary Error:", error);
+        document.getElementById("totalSales").textContent = "Error";
     }
-
-
-    /* =====================================================
-       SALES REPORT
-    ===================================================== */
+}
 
     async function loadSalesReport() {
 
@@ -1361,6 +1623,7 @@
 
             displaySales(
                 sales
+
             );
 
 
@@ -1393,11 +1656,6 @@
 
     }
 
-
-    /* =====================================================
-       DISPLAY SALES
-    ===================================================== */
-
     function displaySales(sales) {
 
         let rows = "";
@@ -1424,6 +1682,7 @@
                     <td>
                         ₱${formatMoney(sale.total)}
                     </td>
+
 
                     <td>
                         ${formatDate(sale.sale_date)}
@@ -1457,18 +1716,8 @@
 
             `;
 
+
     }
-
-
-    /* =====================================================
-       SALES TREND
-
-       Groups sales by product and calculates:
-       - total quantity sold per product
-       - top-selling product
-       - highest quantity
-       - total quantity sold
-    ===================================================== */
 
     async function loadSalesTrend() {
 
@@ -1494,6 +1743,7 @@
 
                 const quantity =
                     Number(sale.quantity) || 0;
+
 
 
                 totalQuantity += quantity;
@@ -1527,6 +1777,7 @@
 
 
             const highestQuantity =
+
                 ranking.length > 0
                     ? ranking[0][1]
                     : 0;
@@ -1557,6 +1808,7 @@
                 ranking.length > 0
                     ? ranking[0][1]
                     : 1;
+
 
 
             ranking.forEach(
@@ -1591,6 +1843,7 @@
                             </td>
 
                             <td class="quantity-value">
+
                                 ${quantity} pcs
                             </td>
 
@@ -1624,6 +1877,7 @@
 
                 rows ||
 
+
                 `
 
                     <tr>
@@ -1655,6 +1909,7 @@
 
 
             document.getElementById(
+
                 "highestQuantitySold"
             ).textContent =
                 "Error";
@@ -1687,11 +1942,6 @@
 
     }
 
-
-    /* =====================================================
-       FILTER SALES BY DATE
-    ===================================================== */
-
     async function filterReport() {
 
         const fromDate =
@@ -1706,28 +1956,23 @@
             ).value;
 
 
-        if (
-            fromDate === "" ||
-            toDate === ""
-        ) {
+        const fromDateInput = document.getElementById("fromDate");
+        const toDateInput = document.getElementById("toDate");
 
-            alert(
-                "Please select both From Date and To Date."
-            );
+        clearFieldError(fromDateInput);
+        clearFieldError(toDateInput);
 
+        if (fromDate === "" || toDate === "") {
+            if (fromDate === "") markFieldError(fromDateInput);
+            if (toDate === "") markFieldError(toDateInput);
             return;
-
         }
 
-
         if (fromDate > toDate) {
+            markFieldError(fromDateInput);
 
-            alert(
-                "From Date cannot be later than To Date."
-            );
-
+            markFieldError(toDateInput);
             return;
-
         }
 
 
@@ -1740,47 +1985,24 @@
             const filteredSales =
                 sales.filter(sale => {
 
-                    const saleDate =
-                        new Date(
+                    const saleOnly =
+                        localDateKey(
                             sale.sale_date
                         );
 
 
-                    if (
-                        isNaN(
-                            saleDate.getTime()
-                        )
-                    ) {
+                    if (!saleOnly) {
 
                         return false;
 
                     }
 
 
-                    const year =
-                        saleDate.getFullYear();
-
-
-                    const month =
-                        String(
-                            saleDate.getMonth() + 1
-                        ).padStart(2, "0");
-
-
-                    const day =
-                        String(
-                            saleDate.getDate()
-                        ).padStart(2, "0");
-
-
-                    const saleOnly =
-                        `${year}-${month}-${day}`;
-
-
                     return (
                         saleOnly >= fromDate &&
                         saleOnly <= toDate
                     );
+
 
                 });
 
@@ -1812,18 +2034,13 @@
             );
 
 
-            alert(
-                "Unable to filter sales records."
-            );
+            markFieldError(document.getElementById("fromDate"));
+            markFieldError(document.getElementById("toDate"));
+
 
         }
 
     }
-
-
-    /* =====================================================
-       CLEAR FILTER
-    ===================================================== */
 
     function clearFilter() {
 
@@ -1847,36 +2064,1160 @@
 
     }
 
-    /* =====================================================
-       PRINT SALES REPORT
-    ===================================================== */
-
     function printSalesReport() {
 
         const fromDate =
-            document.getElementById("fromDate").value;
+            document.getElementById(
+                "fromDate"
+            ).value;
+
 
         const toDate =
-            document.getElementById("toDate").value;
+            document.getElementById(
+                "toDate"
+            ).value;
+
+
+        const fromDateInput = document.getElementById("fromDate");
+        const toDateInput = document.getElementById("toDate");
+
+        clearFieldError(fromDateInput);
+        clearFieldError(toDateInput);
 
         if (fromDate === "" || toDate === "") {
-
-            alert(
-                "Please select a date (From Date and To Date) first before printing."
-            );
-
+            if (fromDate === "") markFieldError(fromDateInput);
+            if (toDate === "") markFieldError(toDateInput);
             return;
-
         }
+
+
 
         window.print();
 
     }
 
+    function updateFlowDateInput() {
 
-    /* =====================================================
-       INITIAL LOAD
-    ===================================================== */
+        const period =
+            document.getElementById(
+                "flowPeriod"
+            ).value;
+
+
+        const label =
+            document.getElementById(
+                "flowDateLabel"
+            );
+
+
+        const input =
+            document.getElementById(
+                "flowDate"
+            );
+
+
+        const today =
+            new Date();
+
+
+
+        const todayKey =
+            localDateKey(today);
+
+
+        const monthKey =
+            todayKey.slice(0, 7);
+
+
+        const yearKey =
+            String(
+                today.getFullYear()
+            );
+
+
+        if (period === "monthly") {
+
+            input.type = "month";
+
+            input.value =
+                monthKey;
+
+            label.textContent =
+                "Select Month";
+
+
+        } else if (period === "yearly") {
+
+            input.type = "number";
+
+            input.min = "2000";
+
+
+            input.max = "2100";
+
+            input.placeholder = "YYYY";
+
+            input.value =
+                yearKey;
+
+            label.textContent =
+                "Select Year";
+
+
+        } else if (period === "weekly") {
+
+            input.type = "date";
+
+            input.value =
+                todayKey;
+
+            input.placeholder = "";
+
+            label.textContent =
+                "Select Any Date in Week";
+
+
+        } else {
+
+            input.type = "date";
+
+            input.value =
+                todayKey;
+
+
+            input.placeholder = "";
+
+            label.textContent =
+                "Select Date";
+
+        }
+
+    }
+
+    function getWeekStart(date) {
+
+        const result =
+            new Date(date);
+
+
+        result.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        const day =
+            result.getDay();
+
+
+
+        const difference =
+            day === 0
+                ? -6
+                : 1 - day;
+
+
+        result.setDate(
+            result.getDate() +
+            difference
+        );
+
+
+        return result;
+
+    }
+
+    function getWeekEnd(date) {
+
+        const result =
+            getWeekStart(date);
+
+
+        result.setDate(
+            result.getDate() + 6
+        );
+
+
+
+        result.setHours(
+            23,
+            59,
+            59,
+            999
+        );
+
+
+        return result;
+
+    }
+
+    function getTransactionTooltipLines(transactions) {
+
+        if (
+            !transactions ||
+            transactions.length === 0
+        ) {
+
+            return [
+                " No sales"
+            ];
+
+        }
+
+
+
+        const lines = [];
+
+
+        transactions.forEach(sale => {
+
+            const time =
+                formatExactDateTime(
+                    sale.date
+                );
+
+
+            const product =
+                sale.product ||
+                "Unknown Product";
+
+
+            const quantity =
+                Number(
+                    sale.quantity
+                ) || 0;
+
+
+            const total =
+                Number(
+                    sale.total
+                ) || 0;
+
+
+            lines.push(
+                ` ${time}`
+            );
+
+
+
+            lines.push(
+                ` Product: ${product}`
+            );
+
+
+            lines.push(
+                ` Quantity: ${quantity} pcs`
+            );
+
+
+            lines.push(
+                ` Sales: ₱${formatMoney(total)}`
+            );
+
+        });
+
+
+        return lines;
+
+    }
+
+    async function loadSalesFlow() {
+
+        const period =
+            document.getElementById(
+                "flowPeriod"
+            ).value;
+
+
+        const selectedValue =
+            document.getElementById(
+                "flowDate"
+            ).value;
+
+
+        const flowDateInput = document.getElementById("flowDate");
+        clearFieldError(flowDateInput);
+
+        if (!selectedValue) {
+            markFieldError(flowDateInput);
+            return;
+        }
+
+
+        try {
+
+            const sales =
+                await getSales();
+
+
+
+            let labels = [];
+
+            let grouped = {};
+
+            let transactionsByLabel = {};
+
+            let flowDescription = "";
+
+            if (period === "daily") {
+
+                for (
+                    let hour = 0;
+                    hour < 24;
+                    hour++
+                ) {
+
+                    const key =
+                        String(hour)
+                            .padStart(2, "0") +
+                        ":00";
+
+
+                    labels.push(key);
+
+
+                    grouped[key] = 0;
+
+                    transactionsByLabel[key] = [];
+
+                }
+
+
+                sales.forEach(sale => {
+
+                    const saleDate =
+                        parseSaleDate(
+                            sale.sale_date
+                        );
+
+
+                    if (!saleDate) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        localDateKey(
+                            saleDate
+                        ) !== selectedValue
+                    ) {
+
+                        return;
+
+                    }
+
+
+
+                    const hour =
+                        saleDate.getHours();
+
+
+                    const key =
+                        String(hour)
+                            .padStart(2, "0") +
+                        ":00";
+
+
+                    const saleTotal =
+                        Number(
+                            sale.total
+                        ) || 0;
+
+
+                    grouped[key] +=
+                        saleTotal;
+
+
+                    transactionsByLabel[key].push({
+
+                        id:
+                            sale.id,
+
+                        product:
+                            sale.product_name ||
+                            "Unknown Product",
+
+                        quantity:
+                            Number(
+
+                                sale.quantity
+                            ) || 0,
+
+                        total:
+                            saleTotal,
+
+                        date:
+                            saleDate
+
+                    });
+
+                });
+
+
+                flowDescription =
+                    `Daily sales flow for ${selectedValue}`;
+
+            }
+
+            else if (
+                period === "weekly"
+            ) {
+
+                const selected =
+                    new Date(
+
+                        selectedValue +
+                        "T12:00:00"
+                    );
+
+
+                const start =
+                    getWeekStart(
+                        selected
+                    );
+
+
+                const end =
+                    getWeekEnd(
+                        selected
+                    );
+
+
+                labels = [
+
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday"
+
+                ];
+
+
+                labels.forEach(day => {
+
+
+                    grouped[day] = 0;
+
+                    transactionsByLabel[day] = [];
+
+                });
+
+
+                sales.forEach(sale => {
+
+                    const saleDate =
+                        parseSaleDate(
+                            sale.sale_date
+                        );
+
+
+                    if (!saleDate) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        saleDate < start ||
+                        saleDate > end
+                    ) {
+
+                        return;
+
+                    }
+
+
+
+                    const dayIndex =
+                        (
+                            saleDate.getDay() +
+                            6
+                        ) % 7;
+
+
+                    const dayLabel =
+                        labels[dayIndex];
+
+
+                    const saleTotal =
+                        Number(
+                            sale.total
+                        ) || 0;
+
+
+                    grouped[dayLabel] +=
+                        saleTotal;
+
+
+                    transactionsByLabel[
+                        dayLabel
+                    ].push({
+
+                        id:
+                            sale.id,
+
+                        product:
+                            sale.product_name ||
+                            "Unknown Product",
+
+
+                        quantity:
+                            Number(
+                                sale.quantity
+                            ) || 0,
+
+                        total:
+                            saleTotal,
+
+                        date:
+                            saleDate
+
+                    });
+
+                });
+
+
+                flowDescription =
+                    `Weekly sales flow: ${localDateKey(start)} to ${localDateKey(end)}`;
+
+                   } 
+
+            else if (
+                period === "monthly"
+            ) {
+
+                const parts =
+
+                    selectedValue.split("-");
+
+
+                const year =
+                    Number(parts[0]);
+
+
+                const month =
+                    Number(parts[1]);
+
+
+                const daysInMonth =
+                    new Date(
+                        year,
+                        month,
+                        0
+                    ).getDate();
+
+
+                for (
+                    let day = 1;
+                    day <= daysInMonth;
+                    day++
+                ) {
+
+                    const key =
+                        String(day)
+                            .padStart(2, "0");
+
+
+                    labels.push(key);
+
+
+                    grouped[key] = 0;
+
+                    transactionsByLabel[key] = [];
+
+                }
+
+
+                sales.forEach(sale => {
+
+                    const saleDate =
+                        parseSaleDate(
+                            sale.sale_date
+                        );
+
+
+                    if (!saleDate) {
+
+                        return;
+
+                    }
+
+
+                    const saleKey =
+                        localDateKey(
+                            saleDate
+                        );
+
+
+                    if (
+                        !saleKey.startsWith(
+                            selectedValue
+                        )
+
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const key =
+                        String(
+                            saleDate.getDate()
+                        ).padStart(2, "0");
+
+
+                    const saleTotal =
+                        Number(
+                            sale.total
+                        ) || 0;
+
+
+                    grouped[key] +=
+                        saleTotal;
+
+
+                    transactionsByLabel[key]
+                        .push({
+
+                            id:
+                                sale.id,
+
+                            product:
+                                sale.product_name ||
+                                "Unknown Product",
+
+
+                            quantity:
+                                Number(
+                                    sale.quantity
+                                ) || 0,
+
+                            total:
+                                saleTotal,
+
+                            date:
+                                saleDate
+
+                        });
+
+                });
+
+
+                flowDescription =
+                    `Monthly sales flow for ${selectedValue}`;
+
+            }
+
+            else if (
+                period === "yearly"
+            ) {
+
+
+                labels = [
+
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec"
+
+                ];
+
+
+                labels.forEach(month => {
+
+                    grouped[month] = 0;
+
+                    transactionsByLabel[month] = [];
+
+                });
+
+
+                sales.forEach(sale => {
+
+                    const saleDate =
+                        parseSaleDate(
+
+                            sale.sale_date
+                        );
+
+
+                    if (!saleDate) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        String(
+                            saleDate.getFullYear()
+                        ) !==
+                        String(selectedValue)
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const month =
+                        saleDate.toLocaleDateString(
+                            "en-PH",
+                            {
+                                month: "short"
+                            }
+                        );
+
+
+
+                    const saleTotal =
+                        Number(
+                            sale.total
+                        ) || 0;
+
+
+                    grouped[month] +=
+                        saleTotal;
+
+
+                    transactionsByLabel[month]
+                        .push({
+
+                            id:
+                                sale.id,
+
+                            product:
+                                sale.product_name ||
+                                "Unknown Product",
+
+                            quantity:
+                                Number(
+                                    sale.quantity
+                                ) || 0,
+
+                            total:
+                                saleTotal,
+
+                            date:
+                                saleDate
+
+                        });
+
+
+                });
+
+
+                flowDescription =
+                    `Yearly sales flow for ${selectedValue}`;
+
+            }
+
+            Object.keys(
+                transactionsByLabel
+            ).forEach(key => {
+
+                transactionsByLabel[key].sort(
+                    (a, b) =>
+                        a.date - b.date
+                );
+
+            });
+
+            const values =
+                labels.map(label => {
+
+
+                    return Number(
+                        (
+                            grouped[label] ||
+                            0
+                        ).toFixed(2)
+                    );
+
+                });
+
+            if (salesFlowChart) {
+
+                salesFlowChart.destroy();
+
+            }
+
+            const canvas =
+                document.getElementById(
+                    "salesFlowChart"
+                );
+
+
+
+            salesFlowChart =
+                new Chart(
+                    canvas,
+                    {
+
+                        type: "line",
+
+
+                        data: {
+
+                            labels: labels,
+
+
+                            datasets: [
+
+                                {
+
+                                    label:
+                                        "Sales (₱)",
+
+                                    data:
+                                        values,
+
+                                    borderColor:
+                                        "#24479b",
+
+                                    backgroundColor:
+                                        "rgba(36, 71, 155, 0.15)",
+
+                                    borderWidth:
+                                        3,
+
+
+                                    fill:
+                                        true,
+
+                                    tension:
+                                        0.3,
+
+                                    pointRadius:
+                                        4,
+
+                                    pointHoverRadius:
+                                        7
+
+                                }
+
+                            ]
+
+                        },
+
+
+                        options: {
+
+                            responsive:
+                                true,
+
+                            maintainAspectRatio:
+                                false,
+
+
+                            interaction: {
+
+                                intersect:
+                                    false,
+
+
+                                mode:
+                                    "index"
+
+                            },
+
+
+                            plugins: {
+
+                                legend: {
+
+                                    display:
+                                        true
+
+                                },
+
+
+                                tooltip: {
+
+                                    displayColors:
+                                        false,
+
+
+                                    callbacks: {
+
+                                        title:
+                                            function(context) {
+
+                                                if (
+                                                    !context ||
+                                                    context.length === 0
+                                                ) {
+
+
+                                                    return "";
+
+                                                }
+
+
+                                                const index =
+                                                    context[0].dataIndex;
+
+
+                                                const label =
+                                                    labels[index];
+
+
+                                                if (
+
+                                                    period === "daily"
+                                                ) {
+
+                                                    return label;
+
+                                                }
+
+
+                                                if (
+                                                    period === "weekly"
+                                                ) {
+
+                                                    return label;
+
+                                                }
+
+
+                                                if (
+                                                    period === "monthly"
+                                                ) {
+
+                                                    return "Day " + label;
+
+                                                }
+
+
+                                                if (
+                                                    period === "yearly"
+                                                ) {
+
+                                                    return label;
+
+
+                                                }
+
+
+                                                return label;
+
+                                            },
+
+
+                                        label:
+                                            function(context) {
+
+                                                const index =
+                                                    context.dataIndex;
+
+
+                                                const transactions =
+                                                    transactionsByLabel[
+                                                        labels[index]
+                                                    ] || [];
+
+
+                                                if (
+                                                    transactions.length === 0
+                                                ) {
+
+                                                    return " Sales: ₱" +
+                                                        Number(
+                                                            context.parsed.y ||
+                                                            0
+                                                        ).toLocaleString(
+                                                            "en-PH",
+                                                            {
+
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }
+                                                        );
+
+                                                }
+
+
+                                                return (
+                                                    " Total Sales: ₱" +
+                                                    Number(
+                                                        context.parsed.y ||
+                                                        0
+                                                    ).toLocaleString(
+                                                        "en-PH",
+                                                        {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2
+                                                        }
+                                                    )
+                                                );
+
+                                            },
+
+
+                                        afterLabel:
+                                            function(context) {
+
+                                                const index =
+                                                    context.dataIndex;
+
+
+
+                                                const transactions =
+                                                    transactionsByLabel[
+                                                        labels[index]
+                                                    ] || [];
+
+
+                                                return getTransactionTooltipLines(
+                                                    transactions
+                                                );
+
+                                            }
+
+                                    }
+
+                                }
+
+                            },
+
+
+                            scales: {
+
+                                x: {
+
+                                    ticks: {
+
+                                        maxRotation:
+                                            45,
+
+                                        minRotation:
+                                            0,
+
+                                        autoSkip:
+
+                                            true,
+
+                                        maxTicksLimit:
+                                            period === "daily"
+                                                ? 24
+                                                : period === "monthly"
+                                                    ? 31
+                                                    : period === "weekly"
+                                                        ? 7
+                                                        : 12
+
+                                    }
+
+                                },
+
+
+                                y: {
+
+                                    beginAtZero:
+                                        true,
+
+                                    grace:
+                                        "10%",
+
+                                    ticks: {
+
+                                        callback:
+                                            function(value) {
+
+                                                return (
+                                                    "₱" +
+                                                    Number(
+
+                                                        value
+                                                    ).toLocaleString(
+                                                        "en-PH"
+                                                    )
+                                                );
+
+                                            }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+            const totalForView =
+                values.reduce(
+                    (
+                        sum,
+                        value
+                    ) =>
+                        sum + value,
+                    0
+
+                );
+
+
+            const transactionCount =
+                Object.values(
+                    transactionsByLabel
+                ).reduce(
+                    (
+                        total,
+                        list
+                    ) =>
+                        total + list.length,
+                    0
+                );
+
+
+            const status =
+                document.getElementById(
+                    "flowStatus"
+                );
+
+
+            status.textContent =
+                `${flowDescription} — ${transactionCount} transaction(s) shown. Total: ₱${formatMoney(totalForView)}.`;
+
+        } catch (error) {
+
+            console.error(
+                "Sales Flow Error:",
+                error
+            );
+
+
+
+            document.getElementById(
+                "flowStatus"
+            ).textContent =
+                "Unable to load the sales flow.";
+
+        }
+
+    }
+
+    updateFlowDateInput();
 
     loadReport();
 
@@ -1888,7 +3229,7 @@
 
 </script>
 
-</script>
+
 
 </body>
 

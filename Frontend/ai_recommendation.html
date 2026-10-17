@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Recommendations - Tot's Motorshop</title>
+
+    <link rel="icon" href="logo.png">
+
+    <link rel="stylesheet" href="style.css">
+
+
+    <style>
+
+        .ai-page {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+        }
+
+        .ai-page .content {
+            padding: 30px 32px 50px !important;
+        }
+
+        .ai-page .ai-title {
+            margin: 0 0 20px;
+            font-size: 32px !important;
+            font-weight: 700;
+            color: #ffffff;
+
+        }
+
+        .ai-page .ai-box {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 14px;
+            padding: 24px 26px;
+            margin-bottom: 22px;
+            box-shadow: 0 3px 16px rgba(0, 0, 0, 0.18);
+            box-sizing: border-box;
+        }
+
+        .ai-page .ai-box h2 {
+            margin: 0 0 6px;
+            font-size: 21px !important;
+            font-weight: 700;
+            color: #1e3a8a;
+            text-align: left;
+        }
+
+        .ai-page .ai-desc {
+            margin: 0 0 16px;
+            font-size: 14px !important;
+            line-height: 1.5;
+            color: #6b7280;
+            text-align: left;
+        }
+
+
+        .ai-page .ai-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: #1e3a8a;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .ai-page .ai-btn:hover {
+            background: #172f6e;
+        }
+
+        .ai-page .ai-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .ai-page #aiMessage {
+            margin-top: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .ai-page #aiMessage.error   { color: #dc2626; }
+        .ai-page #aiMessage.loading { color: #1e3a8a; }
+
+        .ai-page .ai-summary {
+            padding: 15px 18px;
+            margin-bottom: 14px;
+            background: #eff6ff;
+            border-left: 5px solid #2563eb;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1f2937;
+            text-align: left;
+        }
+
+        .ai-page .ai-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .ai-page .ai-chip {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            white-space: nowrap;
+        }
+
+
+        .ai-page .ai-chip.ai {
+            background: #ede9fe;
+            border-color: #ddd6fe;
+            color: #5b21b6;
+        }
+
+        .ai-page .ai-notice {
+            display: none;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .ai-page .ai-notice.show {
+            display: block;
+        }
+
+        .ai-page .ai-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .ai-page .ai-stat {
+            padding: 16px 18px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        .ai-page .ai-stat span {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #64748b;
+            text-align: left;
+        }
+
+        .ai-page .ai-stat strong {
+            display: block;
+            font-size: 22px;
+            line-height: 1.2;
+            color: #1e3a8a;
+            text-align: left;
+        }
+
+        .ai-page .ai-stat small {
+            display: block;
+
+            margin-top: 5px;
+            font-size: 12px;
+            color: #6b7280;
+            text-align: left;
+        }
+
+        .ai-page .ai-stat.good strong { color: #15803d; }
+        .ai-page .ai-stat.bad strong  { color: #dc2626; }
+        .ai-page .ai-stat.warn strong { color: #d97706; }
+
+        .ai-page .ai-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .ai-page .ai-filter {
+            padding: 8px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            background: #ffffff;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+
+        .ai-page .ai-filter:hover {
+            background: #eef4ff;
+        }
+
+        .ai-page .ai-filter.active {
+            background: #1e3a8a;
+            border-color: #1e3a8a;
+            color: #ffffff;
+        }
+
+        .ai-page .ai-table-wrapper {
+            width: 100%;
+            max-height: 620px;
+            overflow: auto;
+            border: 1px solid #dbe3ef;
+            border-radius: 10px;
+        }
+
+        .ai-page .ai-table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        .ai-page .ai-table th,
+
+        .ai-page .ai-table td {
+            text-align: left !important;
+            vertical-align: middle;
+        }
+
+        .ai-page .ai-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            padding: 13px 14px;
+            background: #1e3a8a;
+            color: #ffffff;
+            font-size: 12px !important;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .ai-page .ai-table tbody td {
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+            font-size: 14px !important;
+        }
+
+        .ai-page .ai-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .ai-page .ai-table tbody tr:hover {
+            background: #eef4ff;
+
+        }
+
+        .ai-page .ai-table td.num {
+            text-align: right !important;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .ai-page .ai-table th.num {
+            text-align: right !important;
+        }
+
+        .ai-page .ai-table td.ai-empty {
+            text-align: center !important;
+            padding: 32px !important;
+            color: #6b7280;
+        }
+
+        .ai-page .ai-pic {
+            display: block;
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .ai-page .ai-product {
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+
+        .ai-page .ai-cat {
+            margin-top: 3px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .ai-page .ai-trend-note {
+            margin-top: 6px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #6b7280;
+        }
+
+        .ai-page .ai-rec {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .ai-page .ai-type {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 3px 9px;
+            border-radius: 6px;
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .ai-page .ai-desc-cell {
+            min-width: 300px;
+
+            line-height: 1.55;
+        }
+
+        .ai-page .badge {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .ai-page .badge.rising    { background: #dcfce7; color: #166534; }
+        .ai-page .badge.stable    { background: #dbeafe; color: #1e40af; }
+        .ai-page .badge.declining { background: #fee2e2; color: #991b1b; }
+        .ai-page .badge.none      { background: #f1f5f9; color: #475569; }
+
+        .ai-page .badge.high   { background: #fee2e2; color: #991b1b; }
+        .ai-page .badge.medium { background: #fef3c7; color: #92400e; }
+        .ai-page .badge.low    { background: #dcfce7; color: #166534; }
+
+        .ai-page .ai-footnote {
+
+            margin: 16px 0 0;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #1e3a8a;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #475569;
+            text-align: left;
+        }
+
+        @media (max-width: 1000px) {
+
+            .ai-page .ai-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .ai-page .content {
+                padding: 22px 15px 40px !important;
+            }
+
+            .ai-page .ai-title {
+
+                font-size: 26px !important;
+            }
+
+            .ai-page .ai-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-page .ai-box {
+                padding: 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="ai-page">
+
+<div class="sidebar">
+
+    <div class="sidebar-header">
+
+        <img src="logo.png" class="sidebar-logo" alt="Tot's Motorshop">
+
+        <h2>Tot's Motorshop</h2>
+
+
+    </div>
+
+    <ul>
+
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="supplier.html">Suppliers</a></li>
+        <li><a href="purchase-order.html">Purchase Orders</a></li>
+        <li><a href="stock_in.html">Stock In</a></li>
+        <li><a href="sales.html">Sales</a></li>
+        <li><a href="sales-return.html">Sales Return</a></li>
+        <li><a href="sales-refund.html">Sales Refund</a></li>
+        <li><a href="reports.html">Reports</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="ai_recommendation.html">AI Recommendations</a></li>
+        <li><a href="login.html">Logout</a></li>
+
+    </ul>
+
+</div>
+
+<div class="content">
+
+    <h1 class="ai-title">AI Recommendations</h1>
+
+    <div class="ai-box">
+
+        <h2>Generate AI Recommendations</h2>
+
+        <p class="ai-desc">
+            Analyzes inventory, sales, supplier, and return data to suggest
+            restocking, product movement, and business actions based on the
+            sales trend.
+        </p>
+
+        <button id="generateBtn" class="ai-btn" onclick="generateRecommendations()">
+            Generate AI Recommendations
+        </button>
+
+        <div id="aiMessage"></div>
+
+    </div>
+
+    <div class="ai-box" id="resultBox" style="display:none;">
+
+        <h2>Recommendations</h2>
+
+        <div id="aiSummary" class="ai-summary"></div>
+
+        <div id="aiChips" class="ai-chips"></div>
+
+        <div id="aiNotice" class="ai-notice"></div>
+
+
+        <div class="ai-stats">
+
+            <div class="ai-stat" id="statTrendBox">
+                <span>Overall Sales Trend</span>
+                <strong id="statTrend">-</strong>
+                <small id="statTrendNote"></small>
+            </div>
+
+            <div class="ai-stat bad">
+                <span>Need Restocking</span>
+                <strong id="statRestock">-</strong>
+                <small>Running out within 7 days</small>
+            </div>
+
+            <div class="ai-stat good">
+                <span>Fast-Moving</span>
+                <strong id="statFast">-</strong>
+                <small>Best-selling products</small>
+            </div>
+
+            <div class="ai-stat warn">
+                <span>Slow-Moving</span>
+                <strong id="statSlow">-</strong>
+                <small>No or very low sales</small>
+            </div>
+
+        </div>
+
+        <div id="aiFilters" class="ai-filters"></div>
+
+        <div class="ai-table-wrapper">
+
+
+            <table class="ai-table">
+
+                <thead>
+                    <tr>
+                        <th>Picture</th>
+                        <th>Product</th>
+                        <th>Sales Trend</th>
+                        <th class="num">Stock</th>
+                        <th>Recommendation</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+
+                <tbody id="aiBody">
+                    <tr><td colspan="7" class="ai-empty">No recommendations yet.</td></tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <p class="ai-footnote" id="aiFootnote"></p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+   const AI_API_URL = "http://localhost:5000/ai/recommendations";
+
+    const IMAGE_FOLDERS = ["images/", "images/products/"];
+    const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
+    const FALLBACK_IMAGE = "logo.png";
+
+    const FILTERS = ["All", "Restock", "Review", "Fast-Moving", "Declining", "Slow-Moving"];
+
+    let allRows = [];
+    let activeFilter = "All";
+
+    const aiSidebar = document.querySelector(".sidebar");
+    const aiContent = document.querySelector(".content");
+
+    aiSidebar.classList.add("hide");
+
+    aiSidebar.addEventListener("mouseenter", () => {
+        aiSidebar.classList.remove("hide");
+        aiContent.classList.add("expand");
+    });
+
+    aiSidebar.addEventListener("mouseleave", () => {
+        aiSidebar.classList.add("hide");
+
+        aiContent.classList.remove("expand");
+    });
+
+    function escapeHtml(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+    function formatMoney(value) {
+
+        return Number(value || 0).toLocaleString("en-PH", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+    }
+
+    function formatNumber(value) {
+
+        return Number(value || 0).toLocaleString("en-PH");
+
+
+    }
+
+    function setText(id, text) {
+
+        document.getElementById(id).textContent = text;
+
+    }
+
+    function makeImageBase(name) {
+    return String(name || "")
+        .trim()
+        .replace(/ – /g, " ")
+        .replace(/ - /g, " ")
+        .replace(/ /g, "-")
+        .replace(/\//g, "-")
+        .toLowerCase();
+}
+
+   function getImageBase(image, productName) {
+    const value = String(image ?? "").trim();
+
+    if (value === "") {
+        return makeImageBase(productName);
+    }
+
+    const fileName = value.split("/").pop();
+
+    return fileName.replace(/\.(jpg|jpeg|png|webp|gif)$/i, "");
+}
+
+    function nextImage(img) {
+
+        const base = img.dataset.base || "";
+        const total = IMAGE_FOLDERS.length * IMAGE_EXTENSIONS.length;
+        const step = Number(img.dataset.step || 0) + 1;
+
+        if (base === "" || step >= total) {
+
+            img.onerror = null;
+            img.src = FALLBACK_IMAGE;
+
+            return;
+
+        }
+
+        img.dataset.step = step;
+
+        const folder = IMAGE_FOLDERS[Math.floor(step / IMAGE_EXTENSIONS.length)];
+        const extension = IMAGE_EXTENSIONS[step % IMAGE_EXTENSIONS.length];
+
+        img.src = folder + encodeURIComponent(base) + extension;
+
+    }
+
+    async function generateRecommendations() {
+
+        const btn = document.getElementById("generateBtn");
+        const message = document.getElementById("aiMessage");
+        const resultBox = document.getElementById("resultBox");
+
+        btn.disabled = true;
+        message.className = "loading";
+        message.textContent = "Analyzing inventory, sales, supplier, and return data. Please wait...";
+        resultBox.style.display = "none";
+
+        try {
+
+            const response = await fetch(AI_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+
+                message.className = "error";
+                message.textContent =
+                    result.message || "Failed to generate recommendations.";
+
+                return;
+
+
+            }
+
+            message.className = "";
+            message.textContent = "";
+
+            showRecommendations(result);
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.className = "error";
+            message.textContent =
+                "Cannot connect to the server. Make sure the backend is running.";
+
+        } finally {
+
+            btn.disabled = false;
+
+        }
+
+    }
+
+    function arrowFor(label) {
+
+        if (label === "Rising") return "▲";
+
+        if (label === "Declining") return "▼";
+        if (label === "Stable") return "▬";
+
+        return "—";
+
+    }
+
+    function showRecommendations(result) {
+
+        allRows = result.recommendations || [];
+
+        activeFilter = "All";
+
+        setText("aiSummary", result.summary || "");
+
+        const check = result.dataCheck || {};
+
+        let chips = `
+            <span class="ai-chip">Inventory: ${formatNumber(check.inventory)}</span>
+            <span class="ai-chip">Sales: ${formatNumber(check.sales)}</span>
+            <span class="ai-chip">Suppliers: ${formatNumber(check.suppliers)}</span>
+            <span class="ai-chip">Returns: ${formatNumber(check.returns)}</span>
+            <span class="ai-chip">Refunds: ${formatNumber(check.refunds)}</span>
+            <span class="ai-chip">Open Purchase Orders: ${formatNumber(check.pendingOrders)}</span>
+        `;
+
+        if (result.aiUsed) {
+            chips += `<span class="ai-chip ai">🤖 Descriptions written by AI</span>`;
+        }
+
+
+        document.getElementById("aiChips").innerHTML = chips;
+
+        const notice = document.getElementById("aiNotice");
+
+        if (result.aiNote) {
+
+            notice.textContent = result.aiNote;
+            notice.classList.add("show");
+
+        } else {
+
+            notice.textContent = "";
+            notice.classList.remove("show");
+
+        }
+
+        const overall = result.overall || {};
+
+        const changeText =
+            overall.change === null || overall.change === undefined
+                ? ""
+                : " (" + (overall.change > 0 ? "+" : "") + overall.change + "%)";
+
+        setText(
+            "statTrend",
+            arrowFor(overall.label) + " " + (overall.label || "-") + changeText
+        );
+
+        setText(
+            "statTrendNote",
+
+            "₱" + formatMoney(overall.recentSales) + " in the last " +
+            overall.windowDays + " days vs ₱" +
+            formatMoney(overall.previousSales) + " before"
+        );
+
+        const trendBox = document.getElementById("statTrendBox");
+
+        trendBox.classList.remove("good", "bad", "warn");
+
+        if (overall.label === "Rising") trendBox.classList.add("good");
+        if (overall.label === "Declining") trendBox.classList.add("bad");
+
+        const stats = result.stats || {};
+
+        setText("statRestock", formatNumber(stats.restock));
+        setText("statFast", formatNumber(stats.fast));
+        setText("statSlow", formatNumber(stats.slow));
+
+        renderFilters();
+        renderTable();
+
+        setText(
+            "aiFootnote",
+            "These recommendations are based on the recorded inventory, " +
+            "sales, supplier, and return data. Their accuracy depends on how " +
+            "complete and accurate the recorded data is. Sales trend compares " +
+            "the sales of the last " + (overall.windowDays || "N") +
+            " days with the " + (overall.windowDays || "N") +
+            " days before it (net of returns). Generated on " +
+            new Date().toLocaleString("en-PH") + "."
+
+        );
+
+        document.getElementById("resultBox").style.display = "block";
+
+    }
+
+    function renderFilters() {
+
+        const html = FILTERS.map(name => {
+
+            const count =
+                name === "All"
+                    ? allRows.length
+                    : allRows.filter(row => row.type === name).length;
+
+            return `
+                <button
+                    type="button"
+                    class="ai-filter ${name === activeFilter ? "active" : ""}"
+                    data-filter="${escapeHtml(name)}"
+                >
+                    ${escapeHtml(name)} (${count})
+                </button>
+            `;
+
+        }).join("");
+
+
+        const container = document.getElementById("aiFilters");
+
+        container.innerHTML = html;
+
+        container.querySelectorAll(".ai-filter").forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                activeFilter = button.dataset.filter;
+
+                renderFilters();
+                renderTable();
+
+            });
+
+        });
+
+    }
+
+    function trendClass(label) {
+
+        if (label === "Rising") return "rising";
+        if (label === "Declining") return "declining";
+        if (label === "Stable") return "stable";
+
+        return "none";
+
+
+    }
+
+    function renderTable() {
+
+        const rows =
+            activeFilter === "All"
+                ? allRows
+                : allRows.filter(row => row.type === activeFilter);
+
+        const body = document.getElementById("aiBody");
+
+        if (rows.length === 0) {
+
+            body.innerHTML = `
+                <tr>
+                    <td colspan="7" class="ai-empty">
+                        No recommendations needed in this group right now.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+        body.innerHTML = rows.map(row => {
+
+            const base = getImageBase(row.image, row.product_name);
+
+            const imagePath =
+                IMAGE_FOLDERS[0] + encodeURIComponent(base) + IMAGE_EXTENSIONS[0];
+
+
+            const trend = row.trend || {};
+
+            const changeText =
+                trend.change === null || trend.change === undefined
+                    ? ""
+                    : " " + (trend.change > 0 ? "+" : "") + trend.change + "%";
+
+            const trendNote =
+                trend.label === "No Sales"
+                    ? "No sales recorded"
+                    : "Last " + trend.windowDays + " days: " +
+                      formatNumber(trend.recent) + " pcs<br>" +
+                      "Before that: " + formatNumber(trend.previous) + " pcs";
+
+            const priority = String(row.priority || "Low").toLowerCase();
+
+            return `
+
+                <tr>
+
+                    <td>
+                        <img
+                            class="ai-pic"
+                            src="${escapeHtml(imagePath)}"
+                            data-base="${escapeHtml(base)}"
+                            data-step="0"
+                            alt="${escapeHtml(row.product_name)}"
+                            loading="lazy"
+                            onerror="nextImage(this)"
+                        >
+                    </td>
+
+
+                    <td>
+                        <div class="ai-product">${escapeHtml(row.product_name)}</div>
+                        <div class="ai-cat">${escapeHtml(row.category)}</div>
+                    </td>
+
+                    <td>
+                        <span class="badge ${trendClass(trend.label)}">
+                            ${arrowFor(trend.label)} ${escapeHtml(trend.label)}${escapeHtml(changeText)}
+                        </span>
+                        <div class="ai-trend-note">${trendNote}</div>
+                    </td>
+
+                    <td class="num">${formatNumber(row.stock)}</td>
+
+                    <td>
+                        <div class="ai-rec">${escapeHtml(row.recommendation)}</div>
+                        <span class="ai-type">${escapeHtml(row.type)}</span>
+                    </td>
+
+                    <td class="ai-desc-cell">${escapeHtml(row.description)}</td>
+
+                    <td>
+                        <span class="badge ${priority}">${escapeHtml(row.priority)}</span>
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+    }
+
+
+</script>
+
+</body>
+
+</html>

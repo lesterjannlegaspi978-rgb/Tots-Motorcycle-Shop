@@ -1,0 +1,2841 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Stock In - Tot's Motorshop</title>
+
+    <link
+        rel="icon"
+        href="logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <style>
+
+        .stock-in-page {
+
+            width: 100%;
+        }
+
+        .stock-in-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stock-in-header h1 {
+            margin: 0;
+        }
+
+        .stock-in-form-box {
+
+            background: rgba(255, 255, 255, 0.95);
+
+            border-radius: 12px;
+
+            padding: 25px;
+
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.12);
+
+        }
+
+
+        .stock-in-form-box h2 {
+
+            margin-top: 0;
+
+            margin-bottom: 20px;
+
+            color: #1f3c88;
+
+        }
+
+        .stock-in-form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            margin-bottom: 18px;
+
+        }
+
+
+
+        .stock-in-form-group label {
+
+            font-weight: 600;
+
+            margin-bottom: 7px;
+
+            color: #333;
+
+        }
+
+
+        .stock-in-form-group select {
+
+            width: 100%;
+
+            padding: 11px 13px;
+
+            border: 1px solid #cfd6e4;
+
+            border-radius: 7px;
+
+            font-size: 14px;
+
+            background: #fff;
+
+            outline: none;
+
+            transition: 0.2s;
+
+            box-sizing: border-box;
+
+
+        }
+
+
+        .stock-in-form-group select:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 2px rgba(37, 99, 235, 0.10);
+
+        }
+
+
+        .field-help {
+
+            margin-top: 5px;
+
+            font-size: 12px;
+
+            color: #777;
+
+        }
+
+        .po-info-box {
+
+            display: grid;
+
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-top: 10px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .po-info-card {
+
+            background: #f7f9fc;
+
+            border: 1px solid #e1e6ef;
+
+            border-radius: 8px;
+
+            padding: 13px;
+
+        }
+
+
+        .po-info-card span {
+
+            display: block;
+
+            font-size: 12px;
+
+
+            color: #777;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .po-info-card strong {
+
+            color: #1f3c88;
+
+            font-size: 14px;
+
+        }
+
+        .stock-in-message {
+
+            display: none;
+
+            padding: 11px 14px;
+
+            border-radius: 7px;
+
+            margin-bottom: 18px;
+
+            font-size: 13px;
+
+
+            font-weight: 600;
+
+        }
+
+
+        .stock-in-message.success {
+
+            display: block;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+            border: 1px solid #86efac;
+
+        }
+
+
+        .stock-in-message.error {
+
+            display: block;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            border: 1px solid #fca5a5;
+
+        }
+
+        .stock-in-items-title {
+
+            color: #1f3c88;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .stock-in-table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .stock-in-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            background: #fff;
+
+            border-radius: 8px;
+
+
+            overflow: hidden;
+
+        }
+
+
+        .stock-in-table th {
+
+            background: #1f3c88;
+
+            color: #fff;
+
+            padding: 10px;
+
+            font-size: 12px;
+
+            text-align: center;
+
+            white-space: nowrap;
+
+        }
+
+
+        .stock-in-table td {
+
+            padding: 10px;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            font-size: 12px;
+
+            text-align: center;
+
+
+        }
+
+
+        .stock-in-table tr:last-child td {
+
+            border-bottom: none;
+
+        }
+
+
+        .stock-in-table input {
+
+            width: 110px;
+
+            padding: 7px 9px;
+
+            border: 1px solid #cfd6e4;
+
+            border-radius: 5px;
+
+            text-align: center;
+
+            outline: none;
+
+        }
+
+
+        .stock-in-table input:focus {
+
+            border-color: #2563eb;
+
+
+        }
+
+
+        .remaining-quantity {
+
+            font-weight: 700;
+
+        }
+
+
+        .received-input {
+
+            font-weight: 600;
+
+        }
+
+
+        .empty-row {
+
+            text-align: center;
+
+            padding: 25px !important;
+
+            color: #777;
+
+        }
+
+
+        .stock-in-actions {
+
+            display: flex;
+
+            gap: 10px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .stock-in-actions button {
+
+            border: none;
+
+            border-radius: 6px;
+
+            padding: 10px 16px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        .btn-record-stock {
+
+            background: #2563eb;
+
+
+            color: white;
+
+        }
+
+
+        .btn-record-stock:hover {
+
+            background: #1d4ed8;
+
+        }
+
+
+        .btn-record-stock:disabled {
+
+            background: #94a3b8;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .btn-clear-stock {
+
+            background: #6b7280;
+
+            color: white;
+
+        }
+
+
+        .btn-clear-stock:hover {
+
+
+            background: #4b5563;
+
+        }
+
+        .stock-review-box {
+
+            display: none;
+
+            margin-top: 5px;
+
+            padding: 20px;
+
+            background: #eff6ff;
+
+            border: 1px solid #bfdbfe;
+
+            border-left: 5px solid #2563eb;
+
+            border-radius: 10px;
+
+        }
+
+
+        .stock-review-box.show {
+
+            display: block;
+
+
+        }
+
+
+        .stock-review-box h3 {
+
+            margin: 0 0 4px 0;
+
+            color: #1f3c88;
+
+            font-size: 17px;
+
+        }
+
+
+        .stock-review-sub {
+
+            margin: 0 0 14px 0;
+
+            font-size: 13px;
+
+            color: #475569;
+
+        }
+
+
+        .stock-review-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(170px, 1fr));
+
+
+            gap: 12px;
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .stock-review-item {
+
+            background: #ffffff;
+
+            border: 1px solid #dbeafe;
+
+            border-radius: 8px;
+
+            padding: 10px 12px;
+
+        }
+
+
+        .stock-review-label {
+
+            display: block;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.04em;
+
+            color: #64748b;
+
+
+            margin-bottom: 3px;
+
+        }
+
+
+        .stock-review-value {
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            color: #1e293b;
+
+        }
+
+
+        .review-items-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            margin-bottom: 16px;
+
+        }
+
+
+        .review-items-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+
+            background: #ffffff;
+
+            border: 1px solid #dbeafe;
+
+            border-radius: 8px;
+
+            overflow: hidden;
+
+        }
+
+
+        .review-items-table th {
+
+            background: #dbeafe;
+
+            color: #1e3a8a;
+
+            padding: 8px 10px;
+
+            font-size: 12px;
+
+            text-align: left;
+
+        }
+
+
+        .review-items-table td {
+
+            padding: 8px 10px;
+
+            border-bottom: 1px solid #e5e7eb;
+
+
+            font-size: 12px;
+
+            color: #333;
+
+        }
+
+
+        .review-items-table tr:last-child td {
+
+            border-bottom: none;
+
+        }
+
+
+        .review-items-table .qty-col {
+
+            text-align: right;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+        }
+
+
+        .stock-review-buttons {
+
+            display: flex;
+
+            gap: 10px;
+
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .confirm-stock-btn,
+        .back-stock-btn {
+
+            border: none;
+
+            padding: 11px 22px;
+
+            border-radius: 7px;
+
+            color: white;
+
+            font-weight: 600;
+
+            font-size: 13px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+
+        .confirm-stock-btn {
+
+            background: #16a34a;
+
+        }
+
+
+
+        .confirm-stock-btn:hover {
+
+            background: #15803d;
+
+        }
+
+
+        .confirm-stock-btn:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .back-stock-btn {
+
+            background: #6b7280;
+
+        }
+
+
+        .back-stock-btn:hover {
+
+            background: #4b5563;
+
+        }
+
+        .stock-in-list-box {
+
+            background: rgba(255, 255, 255, 0.95);
+
+            border-radius: 12px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.12);
+
+        }
+
+
+        .stock-in-list-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .stock-in-list-header h2 {
+
+
+            margin: 0;
+
+            color: #1f3c88;
+
+        }
+
+
+        .stock-in-count {
+
+            font-size: 12px;
+
+            color: #1f3c88;
+
+            font-weight: 600;
+
+        }
+
+
+        .stock-in-list-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+        }
+
+
+        .stock-in-list-table {
+
+            width: 100%;
+
+
+            border-collapse: collapse;
+
+            background: white;
+
+            border-radius: 8px;
+
+            overflow: hidden;
+
+        }
+
+
+        .stock-in-list-table th {
+
+            background: #1f3c88;
+
+            color: white;
+
+            padding: 10px;
+
+            font-size: 12px;
+
+            text-align: center;
+
+            white-space: nowrap;
+
+        }
+
+
+        .stock-in-list-table td {
+
+            padding: 10px;
+
+
+            border-bottom: 1px solid #e5e7eb;
+
+            font-size: 12px;
+
+            text-align: center;
+
+        }
+
+
+        .stock-in-status {
+
+            display: inline-block;
+
+            padding: 4px 8px;
+
+            border-radius: 5px;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+        }
+
+
+        .no-stock-ins {
+
+            text-align: center;
+
+
+            padding: 25px !important;
+
+            color: #777;
+
+        }
+
+        @media (max-width: 900px) {
+
+            .po-info-box {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="sidebar">
+
+    <div class="sidebar-header">
+
+        <img
+            src="logo.png"
+            class="sidebar-logo"
+        >
+
+        <h2>Tot's Motorshop</h2>
+
+    </div>
+
+
+    <ul>
+
+        <li>
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="inventory.html">
+                Inventory
+            </a>
+        </li>
+
+        <li>
+            <a href="supplier.html">
+                Suppliers
+            </a>
+        </li>
+
+        <li>
+            <a href="purchase-order.html">
+                Purchase Orders
+            </a>
+        </li>
+
+       <li>
+         <a href="stock_in.html" class="active">
+                  Stock In
+         </a>
+       </li>
+
+        <li>
+            <a href="sales.html">
+                Sales
+            </a>
+        </li>
+
+        <li>
+
+            <a href="sales-return.html">Sales Return</a>
+
+        </li>
+
+<li>
+    <a href="sales-refund.html">
+        Sales Refund
+    </a>
+</li>
+
+        <li>
+            <a href="reports.html">
+                Reports
+            </a>
+        </li>
+
+        <li>
+            <a href="analytics.html">
+                Analytics
+            </a>
+        </li>
+
+        <li>
+            <a href="ai_recommendation.html">AI Recommendations</a>
+        </li>
+
+        <li>
+            <a href="login.html">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+<div class="content">
+
+
+    <div class="stock-in-page">
+
+        <div class="stock-in-header">
+
+            <h1>
+
+                Stock In Management
+
+
+            </h1>
+
+        </div>
+
+        <div class="stock-in-form-box">
+
+
+            <h2>
+
+                Record Stock In
+
+            </h2>
+
+            <div
+                id="stockInMessage"
+                class="stock-in-message"
+            ></div>
+
+            <div class="stock-in-form-group">
+
+
+                <label for="purchaseOrderSelect">
+
+                    Purchase Order
+                    <span style="color:#dc2626;">
+                        *
+                    </span>
+
+                </label>
+
+
+                <select
+                    id="purchaseOrderSelect"
+                >
+
+                    <option value="">
+
+                        Select Purchase Order
+
+                    </option>
+
+                </select>
+
+
+                <span class="field-help">
+
+                    Select a pending Purchase Order to record received products.
+
+                </span>
+
+            </div>
+
+            <div
+                id="poInformation"
+                class="po-info-box"
+                style="display:none;"
+            >
+
+
+                <div class="po-info-card">
+
+                    <span>
+                        PO Number
+                    </span>
+
+                    <strong
+                        id="poNumberInfo"
+                    >
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="po-info-card">
+
+                    <span>
+                        Supplier
+                    </span>
+
+                    <strong
+                        id="supplierInfo"
+
+                    >
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="po-info-card">
+
+                    <span>
+                        Order Date
+                    </span>
+
+                    <strong
+                        id="orderDateInfo"
+                    >
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+            <h3 class="stock-in-items-title">
+
+                Products Received
+
+            </h3>
+
+
+
+            <div class="stock-in-table-wrapper">
+
+                <table class="stock-in-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Product
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Ordered
+                            </th>
+
+                            <th>
+                                Already Received
+                            </th>
+
+                            <th>
+                                Remaining
+
+                            </th>
+
+                            <th>
+                                Quantity Received
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="stockInItemsBody"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="empty-row"
+                            >
+
+                                Select a Purchase Order first.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+            </div>
+
+            <div
+                class="stock-in-actions"
+                id="stockInActions"
+            >
+
+                <button
+                    type="button"
+                    id="recordStockInButton"
+                    class="btn-record-stock"
+                    disabled
+                >
+
+                    Record Stock In
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="clearStockInButton"
+                    class="btn-clear-stock"
+                >
+
+                    Clear
+
+                </button>
+
+
+            </div>
+
+            <div
+                id="stockReviewBox"
+                class="stock-review-box"
+            >
+
+                <h3>
+
+                    Review Stock In
+
+                </h3>
+
+                <p class="stock-review-sub">
+
+                    Please check the received quantities below before confirming.
+
+                </p>
+
+
+                <div class="stock-review-grid">
+
+                    <div class="stock-review-item">
+
+                        <span class="stock-review-label">
+                            PO Number
+                        </span>
+
+
+                        <span
+                            class="stock-review-value"
+                            id="reviewPoNumber"
+                        ></span>
+
+                    </div>
+
+
+                    <div class="stock-review-item">
+
+                        <span class="stock-review-label">
+                            Supplier
+                        </span>
+
+                        <span
+                            class="stock-review-value"
+                            id="reviewSupplier"
+                        ></span>
+
+                    </div>
+
+
+                    <div class="stock-review-item">
+
+                        <span class="stock-review-label">
+                            Products
+                        </span>
+
+                        <span
+                            class="stock-review-value"
+                            id="reviewProducts"
+
+                        ></span>
+
+                    </div>
+
+
+                    <div class="stock-review-item">
+
+                        <span class="stock-review-label">
+                            Total Quantity Received
+                        </span>
+
+                        <span
+                            class="stock-review-value"
+                            id="reviewQuantity"
+                        ></span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="review-items-wrapper">
+
+                    <table class="review-items-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Product
+                                </th>
+
+
+                                <th style="text-align:right;">
+                                    Quantity Received
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody
+                            id="reviewItemsBody"
+                        ></tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="stock-review-buttons">
+
+                    <button
+                        type="button"
+                        id="confirmStockInButton"
+                        class="confirm-stock-btn"
+                    >
+
+                        Confirm Stock In
+
+                    </button>
+
+
+                    <button
+
+                        type="button"
+                        id="backStockInButton"
+                        class="back-stock-btn"
+                    >
+
+                        Back
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="stock-in-list-box">
+
+
+            <div class="stock-in-list-header">
+
+                <h2>
+
+                    Stock In List
+
+                </h2>
+
+
+
+                <span
+                    id="stockInCount"
+                    class="stock-in-count"
+                >
+
+                    0 Stock In Transactions
+
+                </span>
+
+            </div>
+
+
+            <div class="stock-in-list-wrapper">
+
+                <table class="stock-in-list-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Stock In Number
+                            </th>
+
+                            <th>
+                                PO Number
+                            </th>
+
+
+                            <th>
+                                Supplier Code
+                            </th>
+
+                            <th>
+                                Supplier Name
+                            </th>
+
+                            <th>
+                                Stock In Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="stockInListBody"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="no-stock-ins"
+                            >
+
+
+                                No Stock In transactions found.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_URL =
+    "http://localhost:5000";
+
+
+const sidebar =
+    document.querySelector(".sidebar");
+
+
+const content =
+    document.querySelector(".content");
+
+
+if (
+    sidebar &&
+    content
+) {
+
+    sidebar.classList.add("hide");
+
+
+    sidebar.addEventListener(
+        "mouseenter",
+        () => {
+
+            sidebar.classList.remove("hide");
+
+            content.classList.add("expand");
+
+        }
+    );
+
+
+    sidebar.addEventListener(
+
+        "mouseleave",
+        () => {
+
+            sidebar.classList.add("hide");
+
+            content.classList.remove("expand");
+
+        }
+    );
+
+}
+
+
+let selectedPurchaseOrder = null;
+
+let selectedItems = [];
+
+
+const purchaseOrderSelect =
+    document.getElementById(
+        "purchaseOrderSelect"
+    );
+
+
+
+const poInformation =
+    document.getElementById(
+        "poInformation"
+    );
+
+
+const poNumberInfo =
+    document.getElementById(
+        "poNumberInfo"
+    );
+
+
+const supplierInfo =
+    document.getElementById(
+        "supplierInfo"
+    );
+
+
+const orderDateInfo =
+    document.getElementById(
+        "orderDateInfo"
+    );
+
+
+const stockInItemsBody =
+    document.getElementById(
+        "stockInItemsBody"
+    );
+
+
+const stockInMessage =
+    document.getElementById(
+
+        "stockInMessage"
+    );
+
+
+const recordStockInButton =
+    document.getElementById(
+        "recordStockInButton"
+    );
+
+
+const clearStockInButton =
+    document.getElementById(
+        "clearStockInButton"
+    );
+
+
+const stockInActions =
+    document.getElementById(
+        "stockInActions"
+    );
+
+
+const stockReviewBox =
+    document.getElementById(
+        "stockReviewBox"
+    );
+
+
+const confirmStockInButton =
+    document.getElementById(
+        "confirmStockInButton"
+    );
+
+
+
+const backStockInButton =
+    document.getElementById(
+        "backStockInButton"
+    );
+
+
+const reviewItemsBody =
+    document.getElementById(
+        "reviewItemsBody"
+    );
+
+
+const stockInListBody =
+    document.getElementById(
+        "stockInListBody"
+    );
+
+
+const stockInCount =
+    document.getElementById(
+        "stockInCount"
+    );
+
+function showMessage(
+    message,
+
+    type
+) {
+
+    stockInMessage.textContent =
+        message;
+
+
+    stockInMessage.className =
+        "stock-in-message " +
+        type;
+
+}
+
+
+function clearMessage() {
+
+    stockInMessage.textContent =
+        "";
+
+
+    stockInMessage.className =
+        "stock-in-message";
+
+}
+
+function showReview(
+    items
+
+) {
+
+    const totalQuantity =
+        items.reduce(
+            (sum, item) =>
+                sum + item.quantity_received,
+            0
+        );
+
+
+    document.getElementById(
+        "reviewPoNumber"
+    ).textContent =
+        selectedPurchaseOrder.po_number ||
+        "-";
+
+
+    document.getElementById(
+        "reviewSupplier"
+    ).textContent =
+        `${selectedPurchaseOrder.supplier_code || ""} - ${selectedPurchaseOrder.supplier_name || ""}`;
+
+
+    document.getElementById(
+        "reviewProducts"
+    ).textContent =
+        items.length +
+        (
+            items.length === 1
+                ? " product"
+                : " products"
+        );
+
+
+
+    document.getElementById(
+        "reviewQuantity"
+    ).textContent =
+        totalQuantity.toLocaleString(
+            "en-PH"
+        );
+
+
+    reviewItemsBody.innerHTML =
+        "";
+
+
+    items.forEach(
+        item => {
+
+            const source =
+                selectedItems.find(
+                    selected =>
+                        Number(selected.product_id) ===
+                        Number(item.product_id)
+                );
+
+
+            const productName =
+                source
+                    ? source.product_name
+                    : "Product #" + item.product_id;
+
+
+            const row =
+
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+
+                    ${escapeHtml(
+                        productName
+                    )}
+
+                </td>
+
+
+                <td class="qty-col">
+
+                    ${item.quantity_received}
+
+                </td>
+
+            `;
+
+
+            reviewItemsBody.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+
+    stockInActions.style.display =
+        "none";
+
+
+    stockReviewBox.classList.add(
+        "show"
+    );
+
+
+    stockReviewBox.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+
+}
+
+
+function hideReview() {
+
+    stockReviewBox.classList.remove(
+        "show"
+    );
+
+
+    stockInActions.style.display =
+        "flex";
+
+}
+
+async function loadPurchaseOrders() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/stock-in/purchase-orders`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Failed to load Purchase Orders."
+            );
+
+        }
+
+
+        purchaseOrderSelect.innerHTML = `
+
+            <option value="">
+
+                Select Purchase Order
+
+
+            </option>
+
+        `;
+
+
+        data.forEach(
+            po => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    po.id;
+
+
+                option.textContent =
+
+                    `${po.po_number} - ${po.supplier_code} - ${po.supplier_name}`;
+
+
+                purchaseOrderSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+
+    } catch (error) {
+
+        console.error(
+            "Load Purchase Orders Error:",
+            error
+        );
+
+
+        showMessage(
+            "Unable to load Purchase Orders.",
+            "error"
+        );
+
+    }
+
+}
+
+async function loadPurchaseOrderDetails(
+    purchaseOrderId
+) {
+
+    if (!purchaseOrderId) {
+
+        clearPurchaseOrderForm();
+
+        return;
+
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                `${API_URL}/stock-in/purchase-orders/${purchaseOrderId}`
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+
+                data.message ||
+                "Failed to load Purchase Order details."
+
+            );
+
+        }
+
+
+        selectedPurchaseOrder =
+            data.purchase_order;
+
+
+
+        selectedItems =
+            data.items || [];
+
+
+        displayPurchaseOrderInformation();
+
+
+        displayItems();
+
+
+    } catch (error) {
+
+        console.error(
+            "Purchase Order Details Error:",
+            error
+        );
+
+
+        showMessage(
+            error.message ||
+            "Unable to load Purchase Order details.",
+            "error"
+        );
+
+    }
+
+}
+
+function displayPurchaseOrderInformation() {
+
+    if (!selectedPurchaseOrder) {
+
+        poInformation.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    poInformation.style.display =
+        "grid";
+
+
+    poNumberInfo.textContent =
+        selectedPurchaseOrder.po_number ||
+        "-";
+
+
+    supplierInfo.textContent =
+
+        `${selectedPurchaseOrder.supplier_code || ""} - ${selectedPurchaseOrder.supplier_name || ""}`;
+
+
+    orderDateInfo.textContent =
+        formatDate(
+            selectedPurchaseOrder.order_date
+        );
+
+
+}
+
+function displayItems() {
+
+    stockInItemsBody.innerHTML =
+        "";
+
+
+    if (
+        !selectedItems ||
+        selectedItems.length === 0
+    ) {
+
+        stockInItemsBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="empty-row"
+                >
+
+                    No products found in this Purchase Order.
+
+                </td>
+
+
+            </tr>
+
+        `;
+
+
+        recordStockInButton.disabled =
+            true;
+
+
+        return;
+
+    }
+
+
+    let hasRemaining =
+        false;
+
+
+    selectedItems.forEach(
+        (item, index) => {
+
+            const ordered =
+                Number(
+                    item.ordered_quantity
+                ) || 0;
+
+
+            const received =
+                Number(
+                    item.received_quantity
+                ) || 0;
+
+
+
+            const remaining =
+                Number(
+                    item.remaining_quantity
+                ) || 0;
+
+
+            if (remaining > 0) {
+
+                hasRemaining =
+                    true;
+
+            }
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+
+                    ${index + 1}
+
+                </td>
+
+
+                <td>
+
+
+                    ${escapeHtml(
+                        item.product_name
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        item.category || "-"
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${ordered}
+
+                </td>
+
+
+                <td>
+
+                    ${received}
+
+                </td>
+
+
+                <td>
+
+
+                    <span
+                        class="remaining-quantity"
+                    >
+
+                        ${remaining}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        remaining > 0
+
+                        ?
+
+                        `
+
+                        <input
+
+                            type="number"
+
+                            min="0"
+
+                            max="${remaining}"
+
+                            value=""
+
+                            class="received-input"
+
+
+                            data-product-id="${item.product_id}"
+
+                            placeholder="Enter qty"
+
+                        >
+
+                        `
+
+                        :
+
+                        `<span>Completed</span>`
+
+                    }
+
+                </td>
+
+            `;
+
+
+            stockInItemsBody.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    if (!hasRemaining) {
+
+        showMessage(
+            "All products in this Purchase Order have already been received.",
+            "error"
+
+        );
+
+    }
+
+
+    recordStockInButton.disabled =
+        !hasRemaining;
+
+
+    attachQuantityValidation();
+
+}
+
+function attachQuantityValidation() {
+
+    const inputs =
+        document.querySelectorAll(
+            ".received-input"
+        );
+
+
+    inputs.forEach(
+        input => {
+
+            input.addEventListener(
+                "input",
+                () => {
+
+                    hideReview();
+
+
+                    const max =
+                        Number(
+                            input.max
+                        ) || 0;
+
+
+                    const value =
+                        Number(
+                            input.value
+                        ) || 0;
+
+
+                    if (
+                        value > max
+                    ) {
+
+                        input.value =
+                            max;
+
+                    }
+
+
+                    if (
+                        value < 0
+                    ) {
+
+
+                        input.value =
+                            0;
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+}
+
+function collectReceivedItems() {
+
+    const inputs =
+        document.querySelectorAll(
+            ".received-input"
+        );
+
+
+    const items = [];
+
+
+    inputs.forEach(
+        input => {
+
+
+            const quantity =
+                Number(
+                    input.value
+                ) || 0;
+
+
+            const productId =
+                Number(
+                    input.dataset.productId
+                );
+
+
+            if (
+                quantity > 0
+            ) {
+
+                items.push({
+
+                    product_id:
+                        productId,
+
+                    quantity_received:
+                        quantity
+
+                });
+
+            }
+
+        }
+    );
+
+
+
+    return items;
+
+}
+
+function recordStockIn() {
+
+    clearMessage();
+
+
+    if (
+        !selectedPurchaseOrder
+    ) {
+
+        showMessage(
+            "Please select a Purchase Order.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const items =
+        collectReceivedItems();
+
+
+
+    if (
+        items.length === 0
+    ) {
+
+        showMessage(
+            "Please enter at least one received quantity.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    showReview(
+        items
+    );
+
+}
+
+async function submitStockIn() {
+
+    clearMessage();
+
+
+
+    if (
+        !selectedPurchaseOrder
+    ) {
+
+        hideReview();
+
+
+        showMessage(
+            "Please select a Purchase Order.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const items =
+        collectReceivedItems();
+
+
+    if (
+        items.length === 0
+    ) {
+
+        hideReview();
+
+
+        showMessage(
+            "Please enter at least one received quantity.",
+            "error"
+        );
+
+
+        return;
+
+    }
+
+
+    confirmStockInButton.disabled =
+        true;
+
+
+    confirmStockInButton.textContent =
+        "Recording...";
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                `${API_URL}/stock-in/create`,
+
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+
+                    body:
+                        JSON.stringify({
+
+                            purchase_order_id:
+                                Number(
+                                    selectedPurchaseOrder.id
+                                ),
+
+                            items:
+                                items
+
+                        })
+
+                }
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+
+                data.message ||
+                "Failed to record Stock-In."
+
+            );
+
+
+        }
+
+
+        hideReview();
+
+
+        showMessage(
+
+            `${data.message} Stock-In Number: ${data.stock_in.stock_in_number}`,
+
+            "success"
+
+        );
+
+
+        stockInMessage.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        purchaseOrderSelect.value =
+            "";
+
+
+        selectedPurchaseOrder =
+            null;
+
+
+
+        selectedItems =
+            [];
+
+
+        poInformation.style.display =
+            "none";
+
+
+        stockInItemsBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="empty-row"
+                >
+
+                    Select a Purchase Order first.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        recordStockInButton.disabled =
+            true;
+
+        await loadPurchaseOrders();
+
+        await loadStockInList();
+
+
+    } catch (error) {
+
+        console.error(
+            "Record Stock-In Error:",
+            error
+        );
+
+
+        hideReview();
+
+
+        showMessage(
+
+            error.message ||
+            "Failed to record Stock-In transaction.",
+
+            "error"
+
+        );
+
+
+        stockInMessage.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+
+        });
+
+    }
+    finally {
+
+        confirmStockInButton.disabled =
+            false;
+
+
+        confirmStockInButton.textContent =
+            "Confirm Stock In";
+
+    }
+
+}
+
+function clearPurchaseOrderForm() {
+
+    hideReview();
+
+
+    selectedPurchaseOrder =
+        null;
+
+
+    selectedItems =
+        [];
+
+
+
+    purchaseOrderSelect.value =
+        "";
+
+
+    poInformation.style.display =
+        "none";
+
+
+    stockInItemsBody.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="7"
+                class="empty-row"
+            >
+
+                Select a Purchase Order first.
+
+            </td>
+
+        </tr>
+
+    `;
+
+
+    recordStockInButton.disabled =
+        true;
+
+
+
+    clearMessage();
+
+}
+
+async function loadStockInList() {
+
+    try {
+
+        const response =
+            await fetch(
+
+                `${API_URL}/stock-in/all`
+
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+
+                data.message ||
+                "Failed to load Stock-In transactions."
+
+
+            );
+
+        }
+
+
+        stockInListBody.innerHTML =
+            "";
+
+
+        stockInCount.textContent =
+
+            `${data.length} Stock In Transaction${data.length === 1 ? "" : "s"}`;
+
+
+        if (
+            data.length === 0
+        ) {
+
+            stockInListBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="no-stock-ins"
+                    >
+
+                        No Stock In transactions found.
+
+                    </td>
+
+                </tr>
+
+
+            `;
+
+
+            return;
+
+        }
+
+
+        data.forEach(
+            stockIn => {
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                row.innerHTML = `
+
+                    <td>
+
+                        ${stockIn.id}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            stockIn.stock_in_number
+                        )}
+
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            stockIn.po_number
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            stockIn.supplier_code
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            stockIn.supplier_name
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+
+                        ${formatDate(
+                            stockIn.stock_in_date
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="stock-in-status"
+                        >
+
+                            ${escapeHtml(
+                                stockIn.status
+                            )}
+
+                        </span>
+
+                    </td>
+
+                `;
+
+
+                stockInListBody.appendChild(
+                    row
+                );
+
+            }
+        );
+
+
+
+    } catch (error) {
+
+        console.error(
+            "Stock-In List Error:",
+            error
+        );
+
+
+        stockInListBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="no-stock-ins"
+                >
+
+                    Unable to load Stock-In transactions.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+function formatDate(
+    value
+) {
+
+    if (!value) {
+
+        return "-";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return value;
+
+    }
+
+
+    return date.toLocaleString(
+        "en-PH",
+        {
+
+
+            month:
+                "short",
+
+            day:
+                "numeric",
+
+            year:
+                "numeric",
+
+            hour:
+                "numeric",
+
+            minute:
+                "2-digit"
+
+        }
+    );
+
+}
+
+function escapeHtml(
+    value
+) {
+
+    if (
+        value === null ||
+
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+
+            "&#039;"
+        );
+
+}
+
+purchaseOrderSelect.addEventListener(
+    "change",
+    () => {
+
+        hideReview();
+
+
+        clearMessage();
+
+
+        loadPurchaseOrderDetails(
+
+            purchaseOrderSelect.value
+
+        );
+
+    }
+);
+
+
+recordStockInButton.addEventListener(
+    "click",
+
+    recordStockIn
+);
+
+
+confirmStockInButton.addEventListener(
+    "click",
+    submitStockIn
+);
+
+
+backStockInButton.addEventListener(
+    "click",
+    hideReview
+);
+
+
+clearStockInButton.addEventListener(
+    "click",
+    clearPurchaseOrderForm
+);
+
+async function initializePage() {
+
+    await loadPurchaseOrders();
+
+    await loadStockInList();
+
+
+}
+
+
+initializePage();
+
+</script>
+
+
+</body>
+
+</html>

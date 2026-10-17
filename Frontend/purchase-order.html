@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Purchase Order - Tot's Motorshop</title>
+
+    <link
+        rel="icon"
+        href="logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+
+    <style>
+
+        .purchase-order-page {
+
+            width: 100%;
+        }
+
+
+        .purchase-order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+
+        .purchase-order-header h1 {
+            margin: 0;
+        }
+
+        .purchase-form-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+        }
+
+
+        .purchase-form-box h2 {
+            margin-top: 0;
+
+            margin-bottom: 20px;
+            color: #1f3c88;
+        }
+
+
+        .purchase-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 22px;
+        }
+
+
+        .purchase-form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .purchase-form-group.full-width {
+            grid-column: 1 / 3;
+        }
+
+
+        .purchase-form-group label {
+            font-weight: 600;
+            margin-bottom: 7px;
+            color: #333;
+        }
+
+
+        .purchase-form-group select,
+        .purchase-form-group input {
+
+            width: 100%;
+            padding: 11px 13px;
+            border: 1px solid #cfd6e4;
+            border-radius: 7px;
+            font-size: 14px;
+            background: #fff;
+            outline: none;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+
+
+        .purchase-form-group select:focus,
+        .purchase-form-group input:focus {
+            border-color: #2563eb;
+            box-shadow:
+                0 0 0 2px
+                rgba(37, 99, 235, 0.12);
+        }
+
+
+        .field-help {
+            font-size: 11px;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        .product-selection-box {
+            margin-top: 20px;
+            padding: 18px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+
+        .product-selection-box h3 {
+            margin-top: 0;
+            color: #1f3c88;
+            font-size: 16px;
+        }
+
+
+        .product-selection-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+
+        .product-selection-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .product-selection-group label {
+            font-weight: 600;
+
+            margin-bottom: 7px;
+            color: #333;
+            font-size: 13px;
+        }
+
+
+        .product-selection-group select,
+        .product-selection-group input {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1px solid #cfd6e4;
+            border-radius: 7px;
+            font-size: 14px;
+            background: white;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+
+        .product-selection-group select:focus,
+        .product-selection-group input:focus {
+            border-color: #2563eb;
+        }
+
+
+        .add-item-btn {
+            border: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+
+        .add-item-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .purchase-message {
+            display: none;
+            margin-top: 15px;
+            padding: 10px 13px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+
+        .purchase-message.success {
+            display: block;
+            color: #166534;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+
+
+
+        .purchase-message.error {
+            display: block;
+            color: #991b1b;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
+
+        .purchase-items-box {
+            margin-top: 25px;
+        }
+
+
+        .purchase-items-box h3 {
+            color: #1f3c88;
+            margin-bottom: 15px;
+        }
+
+
+        .purchase-items-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+
+        .purchase-items-table {
+            width: 100%;
+            border-collapse: collapse;
+
+            min-width: 800px;
+        }
+
+
+        .purchase-items-table th {
+            background: #1f3c88;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+
+        .purchase-items-table td {
+            padding: 11px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+            color: #333;
+        }
+
+
+        .purchase-items-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+
+        .no-items {
+            text-align: center;
+            padding: 25px !important;
+            color: #777;
+        }
+
+
+
+        .remove-item-btn {
+            border: none;
+            padding: 7px 12px;
+            border-radius: 6px;
+            background: #dc2626;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+
+        .remove-item-btn:hover {
+            background: #b91c1c;
+        }
+
+        .purchase-button-row {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+
+        .create-po-btn,
+        .clear-po-btn {
+
+            border: none;
+            padding: 11px 22px;
+            border-radius: 7px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+
+        .create-po-btn {
+            background: #2563eb;
+        }
+
+
+        .create-po-btn:hover {
+            background: #1d4ed8;
+        }
+
+
+        .create-po-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+
+        .clear-po-btn {
+            background: #6b7280;
+        }
+
+
+        .clear-po-btn:hover {
+
+            background: #4b5563;
+        }
+
+        .po-review-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 5px solid #2563eb;
+            border-radius: 10px;
+        }
+
+
+        .po-review-box.show {
+            display: block;
+        }
+
+
+        .po-review-box h3 {
+            margin: 0 0 4px 0;
+            color: #1f3c88;
+            font-size: 17px;
+        }
+
+
+        .po-review-sub {
+
+            margin: 0 0 14px 0;
+            font-size: 13px;
+            color: #475569;
+        }
+
+
+        .po-review-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+
+        .po-review-item {
+            background: #ffffff;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+
+        .po-review-label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #64748b;
+            margin-bottom: 3px;
+        }
+
+
+
+        .po-review-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+
+        .po-review-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+
+        .confirm-po-btn,
+        .back-po-btn {
+            border: none;
+            padding: 11px 22px;
+            border-radius: 7px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+
+        .confirm-po-btn {
+            background: #16a34a;
+        }
+
+
+        .confirm-po-btn:hover {
+
+            background: #15803d;
+        }
+
+
+        .confirm-po-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+
+        .back-po-btn {
+            background: #6b7280;
+        }
+
+
+        .back-po-btn:hover {
+            background: #4b5563;
+        }
+
+        .purchase-list-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+        }
+
+
+
+        .purchase-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+
+        .purchase-list-header h2 {
+            margin: 0;
+            color: #1f3c88;
+        }
+
+
+        .purchase-count {
+            background: #eef4ff;
+            color: #1f3c88;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        .purchase-list-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+
+        .purchase-list-table {
+            width: 100%;
+
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+
+        .purchase-list-table th {
+            background: #1f3c88;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+
+        .purchase-list-table td {
+            padding: 11px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+            color: #333;
+        }
+
+
+        .purchase-list-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+
+        .po-number-badge {
+            display: inline-block;
+            background: #eef4ff;
+            color: #1f3c88;
+            padding: 4px 8px;
+
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+
+        .status-badge {
+            display: inline-block;
+            background: #fff7ed;
+            color: #c2410c;
+            padding: 4px 9px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        .no-purchase-orders {
+            text-align: center;
+            padding: 25px !important;
+            color: #777;
+        }
+
+        @media (max-width: 800px) {
+
+            .purchase-form-grid {
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .purchase-form-group.full-width {
+                grid-column: 1;
+            }
+
+
+            .product-selection-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .purchase-order-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="sidebar">
+
+    <div class="sidebar-header">
+
+        <img src="logo.png" class="sidebar-logo">
+
+        <h2>Tot's Motorshop</h2>
+
+    </div>
+
+
+    <ul>
+
+        <li>
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+        </li>
+
+
+        <li>
+            <a href="inventory.html">
+                Inventory
+            </a>
+        </li>
+
+
+        <li>
+            <a href="supplier.html">
+                Suppliers
+            </a>
+
+        </li>
+
+        <li>
+            <a href="purchase-order.html">
+                Purchase Orders
+            </a>
+        </li>
+
+        <li>
+            <a href="stock_in.html">
+                Stock In
+            </a>
+        </li>
+
+
+        <li>
+            <a href="sales.html">
+                Sales
+            </a>
+        </li>
+
+         <li>
+
+            <a href="sales-return.html">Sales Return</a>
+
+        </li>
+
+<li>
+    <a href="sales-refund.html">
+        Sales Refund
+    </a>
+</li>
+
+        <li>
+            <a href="reports.html">
+                Reports
+            </a>
+        </li>
+
+
+        <li>
+            <a href="analytics.html">
+                Analytics
+            </a>
+        </li>
+
+        <li>
+            <a href="ai_recommendation.html">AI Recommendations</a>
+        </li>
+
+        <li>
+            <a href="login.html">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+<div class="content">
+
+
+    <div class="purchase-order-page">
+
+        <div class="purchase-order-header">
+
+            <h1>
+
+                Purchase Order Management
+
+            </h1>
+
+        </div>
+
+        <div class="purchase-form-box">
+
+
+
+            <h2>
+
+                Create Purchase Order
+
+            </h2>
+
+
+            <div class="purchase-form-grid">
+
+                <div class="purchase-form-group full-width">
+
+                    <label for="supplierSelect">
+
+                        Supplier
+                        <span style="color:#dc2626;">*</span>
+
+                    </label>
+
+
+                    <select
+                        id="supplierSelect"
+                    >
+
+                        <option value="">
+
+                            Select Supplier
+
+
+                        </option>
+
+                    </select>
+
+
+                    <span class="field-help">
+
+                        Select the supplier for this Purchase Order.
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+            <div class="product-selection-box">
+
+
+                <h3>
+
+                    Add Products
+
+                </h3>
+
+
+                <div class="product-selection-grid">
+
+
+                    <div class="product-selection-group">
+
+                        <label for="productSelect">
+
+                            Product
+
+                        </label>
+
+
+                        <select
+                            id="productSelect"
+                        >
+
+                            <option value="">
+
+                                Select Product
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="product-selection-group">
+
+
+                        <label for="productQuantity">
+
+                            Quantity
+
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="productQuantity"
+                            min="1"
+                            step="1"
+                            placeholder="Enter quantity"
+                        >
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="add-item-btn"
+                        onclick="addPurchaseItem()"
+                    >
+
+                        Add Product
+
+                    </button>
+
+
+                </div>
+
+                <div
+                    id="purchaseMessage"
+                    class="purchase-message"
+                ></div>
+
+                <div class="purchase-items-box">
+
+
+                    <h3>
+
+                        Purchase Order Items
+
+                    </h3>
+
+
+                    <div class="purchase-items-wrapper">
+
+
+                        <table class="purchase-items-table">
+
+
+                            <thead>
+
+
+                                <tr>
+
+                                    <th>
+                                        #
+                                    </th>
+
+                                    <th>
+                                        Product
+                                    </th>
+
+                                    <th>
+                                        Category
+                                    </th>
+
+                                    <th>
+                                        Quantity
+                                    </th>
+
+                                    <th>
+                                        Unit Price
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+
+                                id="purchaseItemsBody"
+                            >
+
+                                <tr>
+
+                                    <td
+                                        colspan="6"
+                                        class="no-items"
+                                    >
+
+                                        No products added yet.
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+
+                        </table>
+
+                    </div>
+
+
+                </div>
+
+                <div
+
+                    class="purchase-button-row"
+                    id="purchaseButtonRow"
+                >
+
+
+                    <button
+                        type="button"
+                        class="create-po-btn"
+                        id="createPoButton"
+                        onclick="createPurchaseOrder()"
+                    >
+
+                        Create Purchase Order
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="clear-po-btn"
+                        onclick="clearPurchaseOrderForm()"
+                    >
+
+                        Clear
+
+                    </button>
+
+
+                </div>
+
+                <div
+                    id="poReviewBox"
+                    class="po-review-box"
+                >
+
+                    <h3>
+
+                        Review Purchase Order
+
+                    </h3>
+
+                    <p class="po-review-sub">
+
+                        Please check the details below before confirming.
+
+                    </p>
+
+
+                    <div class="po-review-grid">
+
+                        <div class="po-review-item">
+
+                            <span class="po-review-label">
+                                Supplier
+                            </span>
+
+                            <span
+                                class="po-review-value"
+                                id="reviewSupplier"
+
+                            ></span>
+
+                        </div>
+
+
+                        <div class="po-review-item">
+
+                            <span class="po-review-label">
+                                Products
+                            </span>
+
+                            <span
+                                class="po-review-value"
+                                id="reviewProducts"
+                            ></span>
+
+                        </div>
+
+
+                        <div class="po-review-item">
+
+                            <span class="po-review-label">
+                                Total Quantity
+                            </span>
+
+                            <span
+                                class="po-review-value"
+                                id="reviewQuantity"
+                            ></span>
+
+                        </div>
+
+
+
+                        <div class="po-review-item">
+
+                            <span class="po-review-label">
+                                Estimated Total
+                            </span>
+
+                            <span
+                                class="po-review-value"
+                                id="reviewTotal"
+                            ></span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="po-review-buttons">
+
+                        <button
+                            type="button"
+                            class="confirm-po-btn"
+                            id="confirmPoButton"
+                            onclick="submitPurchaseOrder()"
+                        >
+
+                            Confirm Order
+
+                        </button>
+
+
+                        <button
+
+                            type="button"
+                            class="back-po-btn"
+                            onclick="hideReview()"
+                        >
+
+                            Back
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+        <div class="purchase-list-box">
+
+
+            <div class="purchase-list-header">
+
+
+                <h2>
+
+
+                    Purchase Order List
+
+                </h2>
+
+
+                <span
+                    class="purchase-count"
+                    id="purchaseOrderCount"
+                >
+
+                    0 Purchase Orders
+
+                </span>
+
+
+            </div>
+
+
+            <div class="purchase-list-wrapper">
+
+
+                <table class="purchase-list-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+
+                            <th>
+                                PO Number
+                            </th>
+
+                            <th>
+                                Supplier Code
+                            </th>
+
+                            <th>
+                                Supplier Name
+                            </th>
+
+                            <th>
+                                Order Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="purchaseOrderTableBody"
+                    >
+
+                        <tr>
+
+                            <td
+
+                                colspan="6"
+                                class="no-purchase-orders"
+                            >
+
+                                No Purchase Orders found.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+const API_URL =
+    "http://localhost:5000";
+
+
+const sidebar =
+    document.querySelector(".sidebar");
+
+
+const content =
+    document.querySelector(".content");
+
+
+if (sidebar && content) {
+
+    sidebar.classList.add("hide");
+
+
+    sidebar.addEventListener(
+        "mouseenter",
+        () => {
+
+            sidebar.classList.remove("hide");
+
+            content.classList.add("expand");
+
+        }
+
+    );
+
+
+    sidebar.addEventListener(
+        "mouseleave",
+        () => {
+
+            sidebar.classList.add("hide");
+
+            content.classList.remove("expand");
+
+        }
+    );
+
+}
+
+
+let suppliers = [];
+
+let products = [];
+
+let purchaseItems = [];
+
+const supplierSelect =
+    document.getElementById(
+        "supplierSelect"
+    );
+
+
+const productSelect =
+    document.getElementById(
+        "productSelect"
+    );
+
+
+const productQuantity =
+    document.getElementById(
+        "productQuantity"
+    );
+
+
+const purchaseItemsBody =
+    document.getElementById(
+        "purchaseItemsBody"
+    );
+
+
+const purchaseMessage =
+    document.getElementById(
+        "purchaseMessage"
+    );
+
+
+const createPoButton =
+    document.getElementById(
+
+        "createPoButton"
+    );
+
+
+const confirmPoButton =
+    document.getElementById(
+        "confirmPoButton"
+    );
+
+
+const purchaseButtonRow =
+    document.getElementById(
+        "purchaseButtonRow"
+    );
+
+
+const poReviewBox =
+    document.getElementById(
+        "poReviewBox"
+    );
+
+
+const purchaseOrderTableBody =
+    document.getElementById(
+        "purchaseOrderTableBody"
+    );
+
+
+const purchaseOrderCount =
+    document.getElementById(
+        "purchaseOrderCount"
+    );
+
+function showMessage(
+    message,
+    type
+) {
+
+    purchaseMessage.textContent =
+        message;
+
+
+    purchaseMessage.className =
+        "purchase-message " + type;
+
+}
+
+
+function clearMessage() {
+
+    purchaseMessage.textContent =
+        "";
+
+
+    purchaseMessage.className =
+        "purchase-message";
+
+}
+
+function showReview(selectedSupplier) {
+
+    const totalQuantity =
+        purchaseItems.reduce(
+            (sum, item) =>
+                sum + item.quantity,
+            0
+        );
+
+
+    const estimatedTotal =
+        purchaseItems.reduce(
+            (sum, item) =>
+                sum + (item.quantity * item.price),
+            0
+        );
+
+
+    document.getElementById(
+        "reviewSupplier"
+    ).textContent =
+        `${selectedSupplier.supplier_code} - ${selectedSupplier.supplier_name}`;
+
+
+    document.getElementById(
+        "reviewProducts"
+    ).textContent =
+
+        purchaseItems.length +
+        (
+            purchaseItems.length === 1
+                ? " product"
+                : " products"
+        );
+
+
+    document.getElementById(
+        "reviewQuantity"
+    ).textContent =
+        totalQuantity.toLocaleString("en-PH");
+
+
+    document.getElementById(
+        "reviewTotal"
+    ).textContent =
+        "₱" +
+        estimatedTotal.toLocaleString(
+            "en-PH",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+
+    purchaseButtonRow.style.display =
+        "none";
+
+
+    poReviewBox.classList.add(
+
+        "show"
+    );
+
+
+    poReviewBox.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+
+}
+
+
+function hideReview() {
+
+    poReviewBox.classList.remove(
+        "show"
+    );
+
+
+    purchaseButtonRow.style.display =
+        "flex";
+
+}
+
+supplierSelect.addEventListener(
+    "change",
+    hideReview
+);
+
+async function loadSuppliers() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/purchase-orders/suppliers`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load suppliers."
+            );
+
+        }
+
+
+        suppliers =
+            await response.json();
+
+
+        supplierSelect.innerHTML = `
+
+            <option value="">
+
+
+                Select Supplier
+
+            </option>
+
+        `;
+
+
+        suppliers.forEach(
+            supplier => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    supplier.id;
+
+
+                option.textContent =
+                    `${supplier.supplier_code} - ${supplier.supplier_name}`;
+
+
+                supplierSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "LOAD SUPPLIERS ERROR:",
+            error
+        );
+
+
+        showMessage(
+            "Unable to load suppliers.",
+            "error"
+        );
+
+    }
+
+}
+
+async function loadProducts() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/purchase-orders/products`
+            );
+
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load products."
+            );
+
+        }
+
+
+        products =
+            await response.json();
+
+
+        productSelect.innerHTML = `
+
+            <option value="">
+
+                Select Product
+
+            </option>
+
+        `;
+
+
+        products.forEach(
+            product => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+
+                option.value =
+                    product.id;
+
+
+                option.textContent =
+                    `${product.product_name} | ${product.category}`;
+
+
+                productSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "LOAD PRODUCTS ERROR:",
+            error
+        );
+
+
+        showMessage(
+            "Unable to load products.",
+            "error"
+        );
+
+    }
+
+
+}
+
+function addPurchaseItem() {
+
+    hideReview();
+
+    clearMessage();
+
+
+    const productId =
+        Number(
+            productSelect.value
+        );
+
+
+    const quantity =
+        Number(
+            productQuantity.value
+        );
+
+
+    if (!productId) {
+
+        showMessage(
+            "Please select a product.",
+            "error"
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isInteger(quantity) ||
+        quantity <= 0
+    ) {
+
+        showMessage(
+            "Quantity must be a whole number greater than 0.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const product =
+        products.find(
+            item =>
+                Number(item.id) === productId
+        );
+
+
+    if (!product) {
+
+        showMessage(
+            "Selected product could not be found.",
+
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const alreadyAdded =
+        purchaseItems.some(
+            item =>
+                Number(item.product_id) === productId
+        );
+
+
+    if (alreadyAdded) {
+
+        showMessage(
+            "This product is already added to the Purchase Order.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    purchaseItems.push({
+
+        product_id:
+            product.id,
+
+
+        product_name:
+            product.product_name,
+
+        category:
+            product.category,
+
+        quantity:
+            quantity,
+
+        price:
+            Number(product.price) || 0
+
+    });
+
+
+    renderPurchaseItems();
+
+
+    productSelect.value =
+        "";
+
+
+    productQuantity.value =
+        "";
+
+
+    showMessage(
+        "Product added to Purchase Order.",
+        "success"
+    );
+
+}
+
+function renderPurchaseItems() {
+
+    purchaseItemsBody.innerHTML =
+        "";
+
+
+    if (
+        purchaseItems.length === 0
+    ) {
+
+        purchaseItemsBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="no-items"
+                >
+
+                    No products added yet.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    purchaseItems.forEach(
+        (item, index) => {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+
+                    ${index + 1}
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        item.product_name
+                    )}
+
+                </td>
+
+
+
+                <td>
+
+                    ${escapeHtml(
+                        item.category
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${item.quantity}
+
+                </td>
+
+
+                <td>
+
+                    ₱${item.price.toFixed(2)}
+
+                </td>
+
+
+                <td>
+
+                    <button
+                        type="button"
+                        class="remove-item-btn"
+                        onclick="removePurchaseItem(${index})"
+                    >
+
+
+                        Remove
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            purchaseItemsBody.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+function removePurchaseItem(index) {
+
+    hideReview();
+
+
+    purchaseItems.splice(
+        index,
+        1
+    );
+
+
+
+    renderPurchaseItems();
+
+
+    clearMessage();
+
+}
+
+function createPurchaseOrder() {
+
+    clearMessage();
+
+
+    const supplierId =
+        Number(
+            supplierSelect.value
+        );
+
+
+    if (!supplierId) {
+
+        showMessage(
+            "Please select a supplier.",
+            "error"
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        !Array.isArray(
+            purchaseItems
+        ) ||
+        purchaseItems.length === 0
+    ) {
+
+        showMessage(
+            "Please add at least one product.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const selectedSupplier =
+        suppliers.find(
+            supplier =>
+                Number(supplier.id) ===
+                supplierId
+        );
+
+
+    if (!selectedSupplier) {
+
+
+        showMessage(
+            "Selected supplier could not be found.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    showReview(
+        selectedSupplier
+    );
+
+}
+
+async function submitPurchaseOrder() {
+
+    clearMessage();
+
+
+    const supplierId =
+        Number(
+            supplierSelect.value
+        );
+
+
+
+    if (
+        !supplierId ||
+        purchaseItems.length === 0
+    ) {
+
+        hideReview();
+
+        showMessage(
+            "Please select a supplier and add at least one product.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    confirmPoButton.disabled =
+        true;
+
+
+    confirmPoButton.textContent =
+        "Creating...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/purchase-orders/create`,
+
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            supplier_id:
+                                supplierId,
+
+                            items:
+                                purchaseItems.map(
+                                    item => ({
+
+                                        product_id:
+                                            item.product_id,
+
+                                        quantity:
+                                            item.quantity
+
+                                    })
+                                )
+
+                        })
+
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            hideReview();
+
+
+            showMessage(
+                result.message ||
+                "Unable to create Purchase Order.",
+                "error"
+            );
+
+
+            purchaseMessage.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+            return;
+
+        }
+
+
+
+        hideReview();
+
+
+        showMessage(
+            `Purchase Order ${result.purchase_order.po_number} created successfully!`,
+            "success"
+        );
+
+
+        purchaseMessage.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+
+        purchaseItems =
+            [];
+
+
+        renderPurchaseItems();
+
+
+        supplierSelect.value =
+            "";
+
+
+        productSelect.value =
+            "";
+
+
+
+        productQuantity.value =
+            "";
+
+
+        await loadPurchaseOrders();
+
+    }
+    catch (error) {
+
+        console.error(
+            "CREATE PURCHASE ORDER ERROR:",
+            error
+        );
+
+
+        hideReview();
+
+
+        showMessage(
+            "Unable to connect to the server.",
+            "error"
+        );
+
+    }
+    finally {
+
+        confirmPoButton.disabled =
+            false;
+
+
+        confirmPoButton.textContent =
+            "Confirm Order";
+
+
+    }
+
+}
+
+async function loadPurchaseOrders() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/purchase-orders/all`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load Purchase Orders."
+            );
+
+        }
+
+
+        const purchaseOrders =
+            await response.json();
+
+
+
+        purchaseOrderTableBody.innerHTML =
+            "";
+
+
+        const count =
+            Array.isArray(
+                purchaseOrders
+            )
+                ? purchaseOrders.length
+                : 0;
+
+
+        purchaseOrderCount.textContent =
+            count +
+            (
+                count === 1
+                    ? " Purchase Order"
+                    : " Purchase Orders"
+            );
+
+
+        if (
+            !Array.isArray(
+                purchaseOrders
+            ) ||
+            purchaseOrders.length === 0
+        ) {
+
+            purchaseOrderTableBody.innerHTML = `
+
+                <tr>
+
+
+                    <td
+                        colspan="6"
+                        class="no-purchase-orders"
+                    >
+
+                        No Purchase Orders found.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        purchaseOrders.forEach(
+            purchaseOrder => {
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                const formattedDate =
+                    purchaseOrder.order_date
+                        ? new Date(
+                            purchaseOrder.order_date
+
+                        ).toLocaleString(
+                            "en-PH",
+                            {
+                                dateStyle:
+                                    "medium",
+                                timeStyle:
+                                    "short"
+                            }
+                        )
+                        : "";
+
+
+                row.innerHTML = `
+
+                    <td>
+
+                        ${purchaseOrder.id ?? ""}
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="po-number-badge"
+                        >
+
+                            ${escapeHtml(
+                                purchaseOrder.po_number
+                            )}
+
+                        </span>
+
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            purchaseOrder.supplier_code
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            purchaseOrder.supplier_name
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHtml(
+                            formattedDate
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+
+                        <span
+                            class="status-badge"
+                        >
+
+                            ${escapeHtml(
+                                purchaseOrder.status
+                            )}
+
+                        </span>
+
+                    </td>
+
+                `;
+
+
+                purchaseOrderTableBody.appendChild(
+                    row
+                );
+
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "LOAD PURCHASE ORDERS ERROR:",
+            error
+        );
+
+
+
+        purchaseOrderCount.textContent =
+            "0 Purchase Orders";
+
+
+        purchaseOrderTableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="no-purchase-orders"
+                >
+
+                    Unable to load Purchase Orders.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+function clearPurchaseOrderForm() {
+
+
+    hideReview();
+
+
+    supplierSelect.value =
+        "";
+
+
+    productSelect.value =
+        "";
+
+
+    productQuantity.value =
+        "";
+
+
+    purchaseItems =
+        [];
+
+
+    renderPurchaseItems();
+
+
+    clearMessage();
+
+}
+
+function escapeHtml(value) {
+
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+async function initializePurchaseOrderPage() {
+
+    await Promise.all([
+
+        loadSuppliers(),
+
+        loadProducts(),
+
+        loadPurchaseOrders()
+
+    ]);
+
+
+    renderPurchaseItems();
+
+}
+
+
+initializePurchaseOrderPage();
+
+
+</script>
+
+
+</body>
+
+</html>

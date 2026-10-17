@@ -1,87 +1,171 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
     <title>Sales Records</title>
-
     <link rel="icon" href="logo.png">
-
     <link rel="stylesheet" href="style.css">
 
+    <style>
+        .sales-filter {
+            width: 100%;
+            margin: 15px 0 20px 0;
+            padding: 0;
+        }
+
+        .sales-filter-title {
+            color: #244294;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .sales-filter-description {
+            color: #666;
+            font-size: 11px;
+            margin-bottom: 14px;
+        }
+
+        .sales-filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+            width: 100%;
+        }
+
+        .sales-filter-field {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .sales-filter-field label {
+            color: #333;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .sales-filter-field input {
+            width: 100%;
+            height: 36px;
+            padding: 0 10px;
+            border: 1px solid #cfd5df;
+            border-radius: 4px;
+            background: #fff;
+            color: #333;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+
+        .sales-filter-field input:focus {
+            outline: none;
+            border-color: #244294;
+            box-shadow: 0 0 0 2px rgba(36, 66, 148, 0.08);
+        }
+
+        .sales-filter-buttons {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+        }
+
+        .sales-filter-btn {
+            height: 36px;
+            padding: 0 17px;
+            border: none;
+            border-radius: 4px;
+            background: #244294;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .sales-filter-btn:hover {
+            background: #1d377f;
+        }
+
+        .sales-clear-btn {
+            height: 36px;
+            padding: 0 17px;
+            border: none;
+            border-radius: 4px;
+            background: #e5e7eb;
+            color: #374151;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .sales-clear-btn:hover {
+            background: #d1d5db;
+        }
+
+        .sales-filter-result {
+            margin-top: 8px;
+            color: #777;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .sales-page .input-error {
+            border: 1px solid #dc2626 !important;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12) !important;
+        }
+
+        @media (max-width: 800px) {
+            .sales-filter-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .sales-filter-buttons {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .sales-filter-row {
+                grid-template-columns: 1fr;
+            }
+
+            .sales-filter-buttons {
+                grid-column: span 1;
+            }
+        }
+    </style>
 </head>
 
 <body class="sales-page">
 
-
 <div class="sidebar">
-
     <div class="sidebar-header">
-
-        <img
-            src="logo.png"
-            class="sidebar-logo"
-        >
-
+        <img src="logo.png" class="sidebar-logo">
         <h2>Tot's Motorshop</h2>
-
     </div>
 
-
     <ul>
-
-        <li>
-            <a href="dashboard.html">
-                Dashboard
-            </a>
-        </li>
-
-        <li>
-            <a href="inventory.html">
-                Inventory
-            </a>
-        </li>
-
-        <li>
-            <a href="sales.html">
-                Sales
-            </a>
-        </li>
-
-        <li>
-            <a href="reports.html">
-                Reports
-            </a>
-        </li>
-
-        <li>
-            <a href="analytics.html">
-                Analytics
-            </a>
-        </li>
-
-        <li>
-            <a href="login.html">
-                Logout
-            </a>
-        </li>
-
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="supplier.html">Suppliers</a></li>
+        <li><a href="purchase-order.html">Purchase Orders</a></li>
+        <li><a href="stock_in.html">Stock In</a></li>
+        <li><a href="sales.html">Sales</a></li>
+        <li><a href="sales-return.html">Sales Return</a></li>
+        <li><a href="sales-refund.html">Sales Refund</a></li>
+        <li><a href="reports.html">Reports</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="ai_recommendation.html">AI Recommendations</a></li>
+        <li><a href="login.html">Logout</a></li>
     </ul>
-
 </div>
 
-
-
 <div class="content">
-
-
     <h1>Sales Records</h1>
 
-
-    <!-- SALES RECORDING SECTION -->
-
     <div class="report-box">
-
         <h2>Record Sales Transaction</h2>
 
         <p>
@@ -89,68 +173,28 @@
             update the available inventory stock.
         </p>
 
-
         <br>
 
+        <label for="product_id">Select Product</label>
 
-        <!-- PRODUCT -->
-
-        <label for="product_id">
-            Select Product
-        </label>
-
-        <select
-            id="product_id"
-            onchange="showProductInfo()"
-        >
-
-            <option value="">
-                Select a product
-            </option>
-
+        <select id="product_id" onchange="showProductInfo()">
+            <option value="">Select a product</option>
         </select>
 
-
-        <!-- AVAILABLE STOCK -->
-
         <p>
-
-            <b>
-                Available Stock:
-            </b>
-
-            <span id="availableStock">
-                0
-            </span>
-
+            <b>Available Stock:</b>
+            <span id="availableStock">0</span>
             pcs
-
         </p>
-
-
-        <!-- PRICE -->
 
         <p>
-
-            <b>
-                Unit Price:
-            </b>
-
-            ₱<span id="productPrice">
-                0.00
-            </span>
-
+            <b>Unit Price:</b>
+            ₱<span id="productPrice">0.00</span>
         </p>
-
 
         <br>
 
-
-        <!-- QUANTITY -->
-
-        <label for="quantity">
-            Quantity Sold
-        </label>
+        <label for="quantity">Quantity Sold</label>
 
         <input
             type="number"
@@ -161,808 +205,506 @@
             onchange="computeTotal()"
         >
 
-
-        <!-- TOTAL -->
-
         <p>
-
-            <b>
-                Total Sales Amount:
-            </b>
-
-            ₱<span id="saleTotal">
-                0.00
-            </span>
-
+            <b>Total Sales Amount:</b>
+            ₱<span id="saleTotal">0.00</span>
         </p>
-
 
         <br>
 
-
-        <!-- RECORD SALE BUTTON -->
-
-        <button
-            id="recordSaleBtn"
-            onclick="processSale()"
-        >
+        <button id="recordSaleBtn" onclick="processSale()">
             Record Sale
         </button>
-
-
     </div>
-
-
 
     <br><br>
 
-
-
-    <!-- SALES RECORDS -->
-
     <div class="report-box">
-
         <h2>Sales Records</h2>
 
-        <p>
-            List of recorded sales transactions.
-        </p>
-
+        <p>List of recorded sales transactions.</p>
 
         <br>
 
+        <div class="sales-filter">
+            <div class="sales-filter-title">
+                Sales Report Filter
+            </div>
+
+            <div class="sales-filter-description">
+                Select a date range to display sales transactions within the selected period.
+            </div>
+
+            <div class="sales-filter-row">
+                <div class="sales-filter-field">
+                    <label for="filterFromDate">From Date</label>
+                    <input type="date" id="filterFromDate">
+                </div>
+
+                <div class="sales-filter-field">
+                    <label for="filterToDate">To Date</label>
+                    <input type="date" id="filterToDate">
+                </div>
+
+                <div class="sales-filter-buttons">
+                    <button
+                        type="button"
+                        class="sales-filter-btn"
+                        onclick="filterSales()"
+                    >
+                        Filter
+                    </button>
+
+                    <button
+                        type="button"
+                        class="sales-clear-btn"
+                        onclick="resetSalesFilter()"
+                    >
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <div id="salesFilterResult" class="sales-filter-result">
+                Showing all sales records.
+            </div>
+        </div>
 
         <table>
-
             <thead>
-
                 <tr>
-
-                    <th>
-                        ID
-                    </th>
-
-                    <th>
-                        Product Name
-                    </th>
-
-                    <th>
-                        Quantity Sold
-                    </th>
-
-                    <th>
-                        Total Amount
-                    </th>
-
-                    <th>
-                        Date
-                    </th>
-
+                    <th>ID</th>
+                    <th>Product Name</th>
+                    <th>Quantity Sold</th>
+                    <th>Total Amount</th>
+                    <th>Date</th>
                 </tr>
-
             </thead>
 
-
-            <tbody id="salesTable">
-
-            </tbody>
-
+            <tbody id="salesTable"></tbody>
         </table>
-
     </div>
-
-
 </div>
-
-
 
 <script>
 
-
-/* =========================================
-   SIDEBAR
-========================================= */
-
-const sidebar =
-    document.querySelector(".sidebar");
-
-const content =
-    document.querySelector(".content");
-
+const sidebar = document.querySelector(".sidebar");
+const content = document.querySelector(".content");
 
 sidebar.classList.add("hide");
 
-
 sidebar.addEventListener("mouseenter", () => {
-
     sidebar.classList.remove("hide");
-
     content.classList.add("expand");
-
 });
-
 
 sidebar.addEventListener("mouseleave", () => {
-
     sidebar.classList.add("hide");
-
     content.classList.remove("expand");
-
 });
 
-
-
-/* =========================================
-   VARIABLES
-========================================= */
-
 let allProducts = [];
+let allSales = [];
 
+function formatMoney(value) {
+    const number = Number(value) || 0;
 
+    return number.toLocaleString("en-PH", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
 
-/* =========================================
-   PROCESS / RECORD SALE
-========================================= */
+function markFieldError(field) {
+    if (!field) return;
 
-async function processSale(){
+    field.classList.add("input-error");
+    field.setAttribute("aria-invalid", "true");
+}
 
-    const product_id =
-        document.getElementById("product_id").value;
+function clearFieldError(field) {
+    if (!field) return;
 
-    const quantity =
-        document.getElementById("quantity").value;
+    field.classList.remove("input-error");
+    field.removeAttribute("aria-invalid");
+}
 
+[
+    "product_id",
+    "quantity",
+    "filterFromDate",
+    "filterToDate"
+].forEach(id => {
+    const field = document.getElementById(id);
 
-    /* CHECK PRODUCT */
+    if (field) {
+        field.addEventListener("change", () => clearFieldError(field));
+        field.addEventListener("input", () => clearFieldError(field));
+    }
+});
 
-    if(product_id === ""){
+async function processSale() {
+    const product_id = document.getElementById("product_id").value;
+    const quantity = document.getElementById("quantity").value;
 
-        alert(
-            "Please select a product."
-        );
+    const productField = document.getElementById("product_id");
+    const quantityField = document.getElementById("quantity");
 
+    clearFieldError(productField);
+    clearFieldError(quantityField);
+
+    if (product_id === "") {
+        markFieldError(productField);
         return;
-
     }
 
-
-    /* CHECK QUANTITY */
-
-    if(quantity === ""){
-
-        alert(
-            "Please enter quantity sold."
-        );
-
+    if (quantity === "") {
+        markFieldError(quantityField);
         return;
-
     }
 
+    const saleQuantity = Number(quantity);
 
-    const saleQuantity =
-        Number(quantity);
-
-
-    /* CHECK ZERO / NEGATIVE */
-
-    if(saleQuantity <= 0){
-
-        alert(
-            "Quantity must be greater than 0."
-        );
-
+    if (saleQuantity <= 0) {
+        markFieldError(quantityField);
         return;
-
     }
 
+    const product = allProducts.find(p => p.id == product_id);
 
-    /* FIND PRODUCT */
-
-    const product =
-        allProducts.find(
-            p => p.id == product_id
-        );
-
-
-    if(!product){
-
-        alert(
-            "Product not found."
-        );
-
+    if (!product) {
+        markFieldError(productField);
         return;
-
     }
 
+    const availableStock = Number(product.quantity);
 
-    /* CHECK AVAILABLE STOCK */
-
-    const availableStock =
-        Number(product.quantity);
-
-
-    if(saleQuantity > availableStock){
-
-        alert(
-            "Insufficient stock.\n\n" +
-            "Available stock: " +
-            availableStock +
-            " pcs"
-        );
-
+    if (saleQuantity > availableStock) {
+        markFieldError(quantityField);
         return;
-
     }
 
-
-    /* DISABLE BUTTON */
-
-    const saleButton =
-        document.getElementById(
-            "recordSaleBtn"
-        );
+    const saleButton = document.getElementById("recordSaleBtn");
 
     saleButton.disabled = true;
-
-    saleButton.innerText =
-        "Recording Sale...";
-
-
-    try{
-
-
-        /* SEND SALE TO BACKEND */
-
-        const response =
-            await fetch(
-                "http://localhost:5000/sales/add",
-                {
-
-                    method:"POST",
-
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:JSON.stringify({
-
-                        product_id:
-                            product_id,
-
-                        quantity:
-                            saleQuantity
-
-                    })
-
-                }
-            );
-
-
-        /* CHECK SERVER RESPONSE */
-
-        const data =
-            await response.json();
-
-
-        /* SUCCESS */
-
-        if(data.success){
-
-            alert(
-                data.message ||
-                "Sale recorded successfully."
-            );
-
-
-            /* CLEAR QUANTITY */
-
-            document.getElementById(
-                "quantity"
-            ).value = "";
-
-
-            document.getElementById(
-                "saleTotal"
-            ).innerHTML = "0.00";
-
-
-            /* RELOAD PRODUCTS */
-
-            await loadProducts();
-
-
-            /* RELOAD SALES */
-
-            await loadSales();
-
-
-            /* UPDATE PRODUCT INFORMATION */
-
-            showProductInfo();
-
-
-        }else{
-
-            alert(
-                data.message ||
-                "Failed to record sale."
-            );
-
-        }
-
-
-    }catch(error){
-
-        console.error(
-            "Error recording sale:",
-            error
-        );
-
-
-        alert(
-            "Cannot connect to server.\n\n" +
-            "Make sure your Node.js server is running."
-        );
-
-
-    }finally{
-
-        saleButton.disabled = false;
-
-        saleButton.innerText =
-            "Record Sale";
-
-    }
-
-}
-
-
-
-/* =========================================
-   LOAD SALES RECORDS
-========================================= */
-
-async function loadSales(){
-
-    try{
-
-        const response =
-            await fetch(
-                "http://localhost:5000/sales/all"
-            );
-
-
-        const sales =
-            await response.json();
-
-
-        let rows = "";
-
-
-        if(
-            !Array.isArray(sales) ||
-            sales.length === 0
-        ){
-
-            rows = `
-
-                <tr>
-
-                    <td
-                        colspan="5"
-                        style="
-                            padding:20px;
-                            color:#6b7280;
-                            font-weight:600;
-                        "
-                    >
-
-                        No sales records yet.
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        }else{
-
-
-            sales.forEach(
-                sale => {
-
-                    rows += `
-
-                        <tr>
-
-                            <td>
-                                ${sale.id}
-                            </td>
-
-                            <td>
-                                ${sale.product_name}
-                            </td>
-
-                            <td>
-                                ${sale.quantity}
-                            </td>
-
-                            <td>
-                                ₱${parseFloat(
-                                    sale.total || 0
-                                ).toFixed(2)}
-                            </td>
-
-                            <td>
-                                ${sale.sale_date}
-                            </td>
-
-                        </tr>
-
-                    `;
-
-                }
-            );
-
-        }
-
-
-        document.getElementById(
-            "salesTable"
-        ).innerHTML = rows;
-
-
-    }catch(error){
-
-        console.error(
-            "Error loading sales:",
-            error
-        );
-
-
-        document.getElementById(
-            "salesTable"
-        ).innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="5"
-                    style="
-                        padding:20px;
-                        color:red;
-                        font-weight:bold;
-                    "
-                >
-
-                    Failed to load sales records.
-
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-}
-
-
-
-/* =========================================
-   LOAD PRODUCTS
-========================================= */
-
-async function loadProducts(){
-
-    try{
-
-        const response =
-            await fetch(
-                "http://localhost:5000/products/all"
-            );
-
-
-        const products =
-            await response.json();
-
-
-        allProducts =
-            products;
-
-
-        let options = `
-
-            <option value="">
-                Select a product
-            </option>
-
-        `;
-
-
-        products.forEach(
-            product => {
-
-                const stock =
-                    Number(product.quantity);
-
-
-                /* ONLY PRODUCTS WITH STOCK */
-
-                if(stock > 0){
-
-                    options += `
-
-                        <option
-                            value="${product.id}"
-                        >
-
-                            ${product.product_name}
-                            (${stock} pcs)
-
-                        </option>
-
-                    `;
-
-                }
-
+    saleButton.innerText = "Recording Sale...";
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:5000/sales/add",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    product_id: product_id,
+                    quantity: saleQuantity
+                })
             }
         );
 
+        const data = await response.json();
 
-        const productSelect =
-            document.getElementById(
-                "product_id"
-            );
+        if (data.success) {
+            clearFieldError(productField);
+            clearFieldError(quantityField);
 
+            document.getElementById("quantity").value = "";
+            document.getElementById("saleTotal").innerHTML = "0.00";
 
-        const saleButton =
-            document.getElementById(
-                "recordSaleBtn"
-            );
+            await loadProducts();
+            await loadSales();
 
+            showProductInfo();
+        } else {
+            markFieldError(productField);
+            markFieldError(quantityField);
+        }
 
-        if(options === `
+    } catch (error) {
+        console.error("Error recording sale:", error);
 
+        markFieldError(productField);
+        markFieldError(quantityField);
+
+    } finally {
+        saleButton.disabled = false;
+        saleButton.innerText = "Record Sale";
+    }
+}
+
+async function loadSales() {
+    try {
+        const response = await fetch(
+            "http://localhost:5000/sales/all"
+        );
+
+        const sales = await response.json();
+
+        allSales = Array.isArray(sales) ? sales : [];
+
+        displaySales(allSales);
+
+    } catch (error) {
+        console.error("Error loading sales:", error);
+
+        document.getElementById("salesTable").innerHTML = `
+            <tr>
+                <td
+                    colspan="5"
+                    style="padding:20px; color:red; font-weight:bold;"
+                >
+                    Failed to load sales records.
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function displaySales(sales) {
+    let rows = "";
+
+    if (!Array.isArray(sales) || sales.length === 0) {
+        rows = `
+            <tr>
+                <td
+                    colspan="5"
+                    style="padding:20px; color:#6b7280; font-weight:600;"
+                >
+                    No sales records found.
+                </td>
+            </tr>
+        `;
+    } else {
+        sales.forEach(sale => {
+            rows += `
+                <tr>
+                    <td>${sale.id}</td>
+                    <td>${sale.product_name}</td>
+                    <td>${sale.quantity}</td>
+                    <td>₱${formatMoney(sale.total)}</td>
+                    <td>${sale.sale_date}</td>
+                </tr>
+            `;
+        });
+    }
+
+    document.getElementById("salesTable").innerHTML = rows;
+}
+
+function filterSales() {
+    const fromDate = document.getElementById("filterFromDate").value;
+    const toDate = document.getElementById("filterToDate").value;
+
+    const fromDateField = document.getElementById("filterFromDate");
+    const toDateField = document.getElementById("filterToDate");
+
+    clearFieldError(fromDateField);
+    clearFieldError(toDateField);
+
+    if (fromDate && toDate && fromDate > toDate) {
+        markFieldError(fromDateField);
+        markFieldError(toDateField);
+        return;
+    }
+
+    const filteredSales = allSales.filter(sale => {
+        /* NO DATE FILTER */
+        if (!fromDate && !toDate) {
+            return true;
+        }
+
+        const saleDate = parseSaleDate(sale.sale_date);
+
+        if (!saleDate) {
+            return false;
+        }
+
+        const saleDateOnly = formatDateForFilter(saleDate);
+
+        if (fromDate && saleDateOnly < fromDate) {
+            return false;
+        }
+
+        if (toDate && saleDateOnly > toDate) {
+            return false;
+        }
+
+        return true;
+    });
+
+    displaySales(filteredSales);
+
+    document.getElementById("salesFilterResult").innerText =
+        "Showing " + filteredSales.length + " sales record(s).";
+}
+
+function resetSalesFilter() {
+    document.getElementById("filterFromDate").value = "";
+    document.getElementById("filterToDate").value = "";
+
+    clearFieldError(document.getElementById("filterFromDate"));
+    clearFieldError(document.getElementById("filterToDate"));
+
+    displaySales(allSales);
+
+    document.getElementById("salesFilterResult").innerText =
+        "Showing all sales records.";
+}
+
+function parseSaleDate(saleDate) {
+    if (!saleDate) {
+        return null;
+    }
+
+    const normalDate = new Date(saleDate);
+
+    if (!isNaN(normalDate.getTime())) {
+        return normalDate;
+    }
+
+    return null;
+}
+
+function formatDateForFilter(date) {
+    const year = date.getFullYear();
+
+    const month = String(
+        date.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+        date.getDate()
+    ).padStart(2, "0");
+
+    return year + "-" + month + "-" + day;
+}
+
+async function loadProducts() {
+    try {
+        const response = await fetch(
+            "http://localhost:5000/products/all"
+        );
+
+        const products = await response.json();
+
+        allProducts = products;
+
+        let options = `
             <option value="">
                 Select a product
             </option>
+        `;
 
-        `){
+        products.forEach(product => {
+            const stock = Number(product.quantity);
 
+            /* ONLY PRODUCTS WITH STOCK */
+            if (stock > 0) {
+                options += `
+                    <option value="${product.id}">
+                        ${product.product_name}
+                        (${stock} pcs)
+                    </option>
+                `;
+            }
+        });
+
+        const productSelect = document.getElementById("product_id");
+        const saleButton = document.getElementById("recordSaleBtn");
+
+        const availableProducts = products.filter(
+            product => Number(product.quantity) > 0
+        );
+
+        if (availableProducts.length === 0) {
             productSelect.innerHTML = `
-
                 <option value="">
                     No products available
                 </option>
-
             `;
 
             saleButton.disabled = true;
 
+            document.getElementById("availableStock").innerHTML = "0";
+            document.getElementById("productPrice").innerHTML = "0.00";
 
-        }else{
-
-            productSelect.innerHTML =
-                options;
-
+        } else {
+            productSelect.innerHTML = options;
             saleButton.disabled = false;
 
-        }
-
-
-        /* SHOW FIRST PRODUCT */
-
-        const availableProducts =
-            products.filter(
-                product =>
-                    Number(product.quantity) > 0
-            );
-
-
-        if(
-            availableProducts.length > 0
-        ){
-
-            productSelect.value =
-                availableProducts[0].id;
-
+            productSelect.value = availableProducts[0].id;
             showProductInfo();
-
-        }else{
-
-            document.getElementById(
-                "availableStock"
-            ).innerHTML = "0";
-
-            document.getElementById(
-                "productPrice"
-            ).innerHTML = "0.00";
-
         }
 
+    } catch (error) {
+        console.error("Error loading products:", error);
 
-    }catch(error){
-
-        console.error(
-            "Error loading products:",
-            error
-        );
-
-
-        document.getElementById(
-            "product_id"
-        ).innerHTML = `
-
+        document.getElementById("product_id").innerHTML = `
             <option value="">
                 Failed to load products
             </option>
-
         `;
 
+        document.getElementById("recordSaleBtn").disabled = true;
 
-        document.getElementById(
-            "recordSaleBtn"
-        ).disabled = true;
-
-
-        alert(
-            "Cannot load products.\n\n" +
-            "Make sure your Node.js server is running."
-        );
-
+        markFieldError(document.getElementById("product_id"));
     }
-
 }
 
+function showProductInfo() {
+    const id = document.getElementById("product_id").value;
 
+    const product = allProducts.find(p => p.id == id);
 
-/* =========================================
-   SHOW PRODUCT INFORMATION
-========================================= */
-
-function showProductInfo(){
-
-    const id =
-        document.getElementById(
-            "product_id"
-        ).value;
-
-
-    const product =
-        allProducts.find(
-            p => p.id == id
-        );
-
-
-    if(!product){
-
-        document.getElementById(
-            "availableStock"
-        ).innerHTML = "0";
-
-
-        document.getElementById(
-            "productPrice"
-        ).innerHTML = "0.00";
-
-
-        document.getElementById(
-            "saleTotal"
-        ).innerHTML = "0.00";
-
-
+    if (!product) {
+        document.getElementById("availableStock").innerHTML = "0";
+        document.getElementById("productPrice").innerHTML = "0.00";
+        document.getElementById("saleTotal").innerHTML = "0.00";
         return;
-
     }
 
+    clearFieldError(document.getElementById("product_id"));
 
-    /* STOCK */
-
-    document.getElementById(
-        "availableStock"
-    ).innerHTML =
+    document.getElementById("availableStock").innerHTML =
         product.quantity;
 
-
-    /* PRICE */
-
-    document.getElementById(
-        "productPrice"
-    ).innerHTML =
-        parseFloat(
-            product.price
-        ).toFixed(2);
-
-
-    /* COMPUTE */
+    document.getElementById("productPrice").innerHTML =
+        formatMoney(product.price);
 
     computeTotal();
-
 }
 
+function computeTotal() {
+    const id = document.getElementById("product_id").value;
 
+    const qty = Number(
+        document.getElementById("quantity").value
+    );
 
-/* =========================================
-   COMPUTE TOTAL
-========================================= */
+    const product = allProducts.find(p => p.id == id);
 
-function computeTotal(){
-
-    const id =
-        document.getElementById(
-            "product_id"
-        ).value;
-
-
-    const qty =
-        Number(
-            document.getElementById(
-                "quantity"
-            ).value
-        );
-
-
-    const product =
-        allProducts.find(
-            p => p.id == id
-        );
-
-
-    if(!product){
-
-        document.getElementById(
-            "saleTotal"
-        ).innerHTML =
-            "0.00";
-
+    if (!product) {
+        document.getElementById("saleTotal").innerHTML = "0.00";
         return;
-
     }
 
-
-    if(
-        !qty ||
-        qty <= 0
-    ){
-
-        document.getElementById(
-            "saleTotal"
-        ).innerHTML =
-            "0.00";
-
+    if (!qty || qty <= 0) {
+        document.getElementById("saleTotal").innerHTML = "0.00";
         return;
-
     }
 
+    const total = qty * Number(product.price);
 
-    const total =
-        qty *
-        Number(product.price);
-
-
-    document.getElementById(
-        "saleTotal"
-    ).innerHTML =
-        total.toFixed(2);
-
+    document.getElementById("saleTotal").innerHTML =
+        formatMoney(total);
 }
-
-
-
-/* =========================================
-   START PAGE
-========================================= */
 
 loadProducts();
-
 loadSales();
 
-
 </script>
-
-
 </body>
-
 </html>

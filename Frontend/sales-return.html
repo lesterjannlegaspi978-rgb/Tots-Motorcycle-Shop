@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sales Return - Tot's Motorshop</title>
+
+    <link rel="icon" href="logo.png">
+
+    <link rel="stylesheet" href="style.css">
+
+
+    <style>
+
+        .sales-return-page {
+            min-height: 100vh;
+        }
+
+        .sales-return-page .content {
+            margin-left: 35px !important;
+            padding: 35px !important;
+            width: calc(100% - 30px) !important;
+            box-sizing: border-box;
+            transition:
+                margin-left 0.3s ease,
+                width 0.3s ease;
+        }
+
+        .sales-return-page .content.expand {
+            margin-left: 250px !important;
+            width: calc(100% - 250px) !important;
+        }
+
+        .sales-return-page .page-title {
+            color: #ffffff !important;
+            font-size: 38px !important;
+            font-weight: 700 !important;
+            margin-top: 0 !important;
+            margin-bottom: 25px !important;
+        }
+
+        .sales-return-page .return-box {
+            width: 100%;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .sales-return-page .return-box h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #1f3c88;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .sales-return-page .return-description {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .sales-return-page .return-form-group {
+            width: 100%;
+            margin-bottom: 18px;
+        }
+
+        .sales-return-page .return-form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .sales-return-page .return-form-group select,
+        .sales-return-page .return-form-group input,
+        .sales-return-page .return-form-group textarea {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            padding: 11px 13px;
+            border: 1px solid #cfd6e4;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #111827;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .sales-return-page .return-form-group select:focus,
+        .sales-return-page .return-form-group input:focus,
+        .sales-return-page .return-form-group textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+        }
+
+        .sales-return-page .return-form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .sales-return-page .return-info {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 18px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            background: #f8f9fb;
+            border: 1px solid #dfe3e8;
+            border-radius: 7px;
+        }
+
+        .sales-return-page .return-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            width: 100%;
+        }
+
+        .sales-return-page .return-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .sales-return-page .return-info-item label {
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .sales-return-page .return-info-item span {
+            color: #1f3c88;
+            font-size: 14px;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .sales-return-page .return-summary {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 18px;
+            margin-top: 15px;
+            margin-bottom: 18px;
+            background: #f8f9fb;
+            border: 1px solid #dfe3e8;
+            border-radius: 7px;
+        }
+
+        .sales-return-page .return-summary p {
+            margin: 6px 0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .sales-return-page .return-summary-value {
+            color: #1f3c88;
+            font-weight: 700;
+        }
+
+        .sales-return-page .return-button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .sales-return-page .return-button:hover {
+            background: #1d4ed8;
+        }
+
+        .sales-return-page .return-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .sales-return-page .review-box {
+            display: none;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 5px solid #2563eb;
+            border-radius: 10px;
+        }
+
+        .sales-return-page .review-box.show {
+            display: block;
+        }
+
+        .sales-return-page .review-box h3 {
+            margin: 0 0 4px 0;
+            color: #1f3c88;
+            font-size: 17px;
+        }
+
+        .sales-return-page .review-sub {
+            margin: 0 0 14px 0;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .sales-return-page .review-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sales-return-page .review-item {
+            background: #ffffff;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            padding: 10px 12px;
+            min-width: 0;
+        }
+
+        .sales-return-page .review-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .sales-return-page .review-label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #64748b;
+            margin-bottom: 3px;
+        }
+
+        .sales-return-page .review-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            word-break: break-word;
+        }
+
+        .sales-return-page .review-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .sales-return-page .confirm-return-button,
+        .sales-return-page .back-return-button {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .sales-return-page .confirm-return-button {
+            background: #16a34a;
+        }
+
+        .sales-return-page .confirm-return-button:hover {
+            background: #15803d;
+        }
+
+        .sales-return-page .confirm-return-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .sales-return-page .back-return-button {
+            background: #6b7280;
+        }
+
+        .sales-return-page .back-return-button:hover {
+            background: #4b5563;
+        }
+
+        .sales-return-page .return-message {
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sales-return-page .return-success {
+            color: #198754;
+        }
+
+        .sales-return-page .return-error {
+            color: #dc2626;
+        }
+
+        .sales-return-page .records-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .sales-return-page .history-button {
+            background: #ffffff;
+            color: #1f3c88;
+            border: 1px solid #1f3c88;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sales-return-page .history-button:hover {
+            background: #eef4ff;
+        }
+
+        .sales-return-page .history-button.active {
+            background: #1f3c88;
+            color: #ffffff;
+        }
+
+        .sales-return-page .return-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .sales-return-page .return-table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+            background: white;
+            color: #111827;
+        }
+
+        .sales-return-page .return-table th {
+            padding: 12px;
+            background: #1e3a8a;
+            color: white;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .sales-return-page .return-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+            color: #111827;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .sales-return-page .return-table tbody tr:nth-child(even) td {
+            background: #f3f4f6;
+        }
+
+        .sales-return-page .return-table tbody tr:hover td {
+            background: #dbeafe;
+        }
+
+        .sales-return-page .no-return-records {
+            text-align: center;
+            padding: 20px !important;
+            color: #777 !important;
+        }
+
+        .sales-return-page .status-badge {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .sales-return-page .status-completed {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .sales-return-page .status-refunded {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        @media (max-width: 1000px) {
+
+            .sales-return-page .return-info-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+        @media (max-width: 768px) {
+
+            .sales-return-page .content {
+                margin-left: 25px !important;
+                width: calc(100% - 25px) !important;
+                padding: 25px 20px !important;
+            }
+
+            .sales-return-page .content.expand {
+                margin-left: 220px !important;
+                width: calc(100% - 220px) !important;
+            }
+
+            .sales-return-page .return-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sales-return-page .page-title {
+                font-size: 30px !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="sales-return-page">
+
+<div class="sidebar">
+
+    <div class="sidebar-header">
+
+        <img src="logo.png" class="sidebar-logo">
+
+        <h2>Tot's Motorshop</h2>
+
+    </div>
+
+    <ul>
+
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="supplier.html">Suppliers</a></li>
+        <li><a href="purchase-order.html">Purchase Orders</a></li>
+        <li><a href="stock_in.html">Stock In</a></li>
+        <li><a href="sales.html">Sales</a></li>
+        <li><a href="sales-return.html">Sales Return</a></li>
+        <li><a href="sales-refund.html">Sales Refund</a></li>
+        <li><a href="reports.html">Reports</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="ai_recommendation.html">AI Recommendations</a></li>
+        <li><a href="login.html">Logout</a></li>
+
+    </ul>
+
+</div>
+
+<div class="content">
+
+
+    <h1 class="page-title">Sales Return</h1>
+
+    <div class="return-box">
+
+        <h2>Process Sales Return</h2>
+
+        <p class="return-description">
+            Select a completed sales transaction and
+            record the returned product quantity.
+        </p>
+
+        <div class="return-form-group">
+
+            <label for="sale_id">Select Sales Transaction</label>
+
+            <select id="sale_id" onchange="loadSaleDetails()">
+
+                <option value="">Select a sales transaction</option>
+
+            </select>
+
+        </div>
+
+        <div
+            id="returnInfo"
+            class="return-info"
+            style="display:none;"
+        >
+
+            <div class="return-info-grid">
+
+                <div class="return-info-item">
+                    <label>Product</label>
+                    <span id="productName">-</span>
+                </div>
+
+                <div class="return-info-item">
+                    <label>Sold Quantity</label>
+                    <span id="soldQuantity">0</span>
+                </div>
+
+                <div class="return-info-item">
+                    <label>Already Returned</label>
+                    <span id="returnedQuantity">0</span>
+                </div>
+
+                <div class="return-info-item">
+                    <label>Remaining Returnable</label>
+                    <span id="remainingQuantity">0</span>
+                </div>
+
+                <div class="return-info-item">
+                    <label>Original Sale Amount</label>
+                    <span>₱<span id="saleAmount">0.00</span></span>
+                </div>
+
+                <div class="return-info-item">
+                    <label>Unit Sale Price</label>
+                    <span>₱<span id="unitPrice">0.00</span></span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="return-form-group">
+
+            <label for="quantity_returned">Quantity to Return</label>
+
+            <input
+                type="number"
+                id="quantity_returned"
+                min="1"
+                placeholder="Enter quantity to return"
+                oninput="computeRefund()"
+            >
+
+        </div>
+
+        <div class="return-form-group">
+
+            <label for="reason">Return Reason</label>
+
+            <textarea
+                id="reason"
+                placeholder="Enter reason for product return"
+                oninput="hideReview()"
+            ></textarea>
+
+        </div>
+
+        <div class="return-summary">
+
+            <p>
+                <strong>Return Quantity:</strong>
+
+                <span id="summaryQuantity" class="return-summary-value">0</span>
+
+                pcs
+            </p>
+
+            <p>
+                <strong>Refund Amount:</strong>
+
+                ₱<span id="refundAmount" class="return-summary-value">0.00</span>
+            </p>
+
+        </div>
+
+        <div id="returnActions">
+
+            <button
+                id="processReturnBtn"
+                class="return-button"
+                onclick="processReturn()"
+            >
+                Process Sales Return
+            </button>
+
+        </div>
+
+        <div id="reviewBox" class="review-box">
+
+            <h3>Review Sales Return</h3>
+
+            <p class="review-sub">
+                Please check the details below before confirming.
+            </p>
+
+            <div class="review-grid">
+
+                <div class="review-item">
+                    <span class="review-label">Sale</span>
+                    <span class="review-value" id="reviewSale"></span>
+                </div>
+
+                <div class="review-item">
+                    <span class="review-label">Product</span>
+                    <span class="review-value" id="reviewProduct"></span>
+                </div>
+
+                <div class="review-item">
+                    <span class="review-label">Quantity to Return</span>
+                    <span class="review-value" id="reviewQuantity"></span>
+                </div>
+
+                <div class="review-item">
+                    <span class="review-label">Refund Amount</span>
+                    <span class="review-value" id="reviewRefund"></span>
+                </div>
+
+                <div class="review-item full">
+                    <span class="review-label">Reason</span>
+                    <span class="review-value" id="reviewReason"></span>
+                </div>
+
+            </div>
+
+            <div class="review-buttons">
+
+                <button
+                    id="confirmReturnBtn"
+                    class="confirm-return-button"
+                    onclick="submitReturn()"
+                >
+                    Confirm Return
+                </button>
+
+                <button
+                    class="back-return-button"
+                    onclick="hideReview()"
+                >
+                    Back
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div id="returnMessage" class="return-message"></div>
+
+    </div>
+
+    <div class="return-box">
+
+        <div class="records-header">
+
+            <div>
+
+                <h2 id="recordsTitle">Sales Return Records</h2>
+
+                <p class="return-description" id="recordsDescription">
+                    Processed returns that are waiting for refund.
+                </p>
+
+            </div>
+
+            <button
+                id="historyButton"
+                class="history-button"
+                onclick="toggleHistory()"
+            >
+                View History
+            </button>
+
+        </div>
+
+        <div class="return-table-wrapper">
+
+            <table class="return-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Return ID</th>
+                        <th>Sale ID</th>
+                        <th>Product</th>
+                        <th>Quantity Returned</th>
+                        <th>Refund Amount</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Return Date</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="returnTableBody">
+
+                    <tr>
+                        <td colspan="8" class="no-return-records">
+                            Loading...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const sidebar = document.querySelector(".sidebar");
+const content = document.querySelector(".content");
+
+if (sidebar && content) {
+
+    sidebar.classList.add("hide");
+
+    sidebar.addEventListener("mouseenter", () => {
+        sidebar.classList.remove("hide");
+        content.classList.add("expand");
+    });
+
+    sidebar.addEventListener("mouseleave", () => {
+        sidebar.classList.add("hide");
+        content.classList.remove("expand");
+    });
+
+}
+
+const API_URL = "http://localhost:5000/sales-returns";
+
+let salesData = [];
+
+let selectedSale = null;
+
+let showHistory = false;
+
+function formatMoney(value) {
+
+    const number = Number(value) || 0;
+
+    return number.toLocaleString("en-PH", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+}
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+function showMessage(message, type) {
+
+    const messageBox = document.getElementById("returnMessage");
+
+    messageBox.textContent = message;
+
+    messageBox.className = "return-message";
+
+    if (type === "success") {
+
+        messageBox.classList.add("return-success");
+
+    } else {
+
+        messageBox.classList.add("return-error");
+
+    }
+
+}
+
+function clearMessage() {
+
+    const messageBox = document.getElementById("returnMessage");
+
+    messageBox.textContent = "";
+
+    messageBox.className = "return-message";
+
+}
+
+function showReview(data) {
+
+    const unitPrice =
+        Number(selectedSale.total) /
+        Number(selectedSale.sold_quantity);
+
+    const refund = unitPrice * data.quantity;
+
+    document.getElementById("reviewSale").textContent =
+        "Sale #" + selectedSale.sale_id;
+
+    document.getElementById("reviewProduct").textContent =
+        selectedSale.product_name;
+
+    document.getElementById("reviewQuantity").textContent =
+        data.quantity + (data.quantity === 1 ? " pc" : " pcs");
+
+    document.getElementById("reviewRefund").textContent =
+        "₱" + formatMoney(refund);
+
+    document.getElementById("reviewReason").textContent =
+        data.reason;
+
+    document.getElementById("returnActions").style.display = "none";
+
+    const box = document.getElementById("reviewBox");
+
+    box.classList.add("show");
+
+    box.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+
+}
+
+function hideReview() {
+
+    document.getElementById("reviewBox").classList.remove("show");
+
+    document.getElementById("returnActions").style.display = "block";
+
+}
+
+async function loadSales() {
+
+    try {
+
+        const response = await fetch(API_URL + "/sales");
+
+        const result = await response.json();
+
+        if (!result.success) {
+
+            showMessage(
+                result.message || "Failed to load sales.",
+                "error"
+            );
+
+            return;
+
+        }
+
+        salesData = result.data || [];
+
+        const select = document.getElementById("sale_id");
+
+        select.innerHTML = `
+            <option value="">Select a sales transaction</option>
+        `;
+
+        salesData.forEach(sale => {
+
+            const option = document.createElement("option");
+
+            option.value = sale.sale_id;
+
+            option.textContent =
+                `Sale #${sale.sale_id} - ${sale.product_name} - Sold: ${sale.sold_quantity} - Remaining: ${sale.remaining_quantity} - ${sale.sale_date}`;
+
+            select.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage("Cannot connect to the server.", "error");
+
+    }
+
+}
+
+function loadSaleDetails() {
+
+    hideReview();
+
+    const saleId = document.getElementById("sale_id").value;
+
+    const infoBox = document.getElementById("returnInfo");
+
+    if (!saleId) {
+
+        selectedSale = null;
+
+        infoBox.style.display = "none";
+
+        resetReturnFields();
+
+        return;
+
+    }
+
+    selectedSale = salesData.find(
+        sale => String(sale.sale_id) === String(saleId)
+    );
+
+    if (!selectedSale) {
+
+        infoBox.style.display = "none";
+
+        return;
+
+    }
+
+    infoBox.style.display = "block";
+
+    document.getElementById("productName").textContent =
+        selectedSale.product_name;
+
+    document.getElementById("soldQuantity").textContent =
+        selectedSale.sold_quantity;
+
+    document.getElementById("returnedQuantity").textContent =
+        selectedSale.returned_quantity;
+
+    document.getElementById("remainingQuantity").textContent =
+        selectedSale.remaining_quantity;
+
+    document.getElementById("saleAmount").textContent =
+        formatMoney(selectedSale.total);
+
+    const unitPrice =
+        Number(selectedSale.total) /
+        Number(selectedSale.sold_quantity);
+
+    document.getElementById("unitPrice").textContent =
+        formatMoney(unitPrice);
+
+    document.getElementById("quantity_returned").max =
+        selectedSale.remaining_quantity;
+
+    document.getElementById("quantity_returned").value = "";
+
+    document.getElementById("reason").value = "";
+
+    document.getElementById("summaryQuantity").textContent = "0";
+
+    document.getElementById("refundAmount").textContent = "0.00";
+
+    clearMessage();
+
+}
+
+function computeRefund() {
+
+    hideReview();
+
+    if (!selectedSale) {
+
+        return;
+
+    }
+
+    const input = document.getElementById("quantity_returned");
+
+    let quantity = Number(input.value);
+
+    const remaining = Number(selectedSale.remaining_quantity);
+
+    if (quantity < 0) {
+
+        quantity = 0;
+
+    }
+
+    if (quantity > remaining) {
+
+        quantity = remaining;
+
+        input.value = remaining;
+
+    }
+
+    const unitPrice =
+        Number(selectedSale.total) /
+        Number(selectedSale.sold_quantity);
+
+    const refund = unitPrice * quantity;
+
+    document.getElementById("summaryQuantity").textContent = quantity;
+
+    document.getElementById("refundAmount").textContent =
+        formatMoney(refund);
+
+}
+
+function validateReturnForm() {
+
+    clearMessage();
+
+    if (!selectedSale) {
+
+        showMessage("Please select a sales transaction.", "error");
+
+        return null;
+
+    }
+
+    const quantity = Number(
+        document.getElementById("quantity_returned").value
+    );
+
+    const reason = document.getElementById("reason").value.trim();
+
+    const remaining = Number(selectedSale.remaining_quantity);
+
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+
+        showMessage("Please enter a valid return quantity.", "error");
+
+        return null;
+
+    }
+
+    if (quantity > remaining) {
+
+        showMessage(
+            `Only ${remaining} item(s) can still be returned.`,
+            "error"
+        );
+
+        return null;
+
+    }
+
+    if (!reason) {
+
+        showMessage("Please enter the reason for the return.", "error");
+
+        return null;
+
+    }
+
+    return { quantity, reason };
+
+}
+
+function processReturn() {
+
+    const data = validateReturnForm();
+
+    if (!data) {
+
+        return;
+
+    }
+
+    showReview(data);
+
+}
+
+async function submitReturn() {
+
+    const data = validateReturnForm();
+
+    if (!data) {
+
+        hideReview();
+
+        return;
+
+    }
+
+    const confirmButton = document.getElementById("confirmReturnBtn");
+
+    confirmButton.disabled = true;
+
+    confirmButton.textContent = "Processing...";
+
+    try {
+
+        const response = await fetch(
+            API_URL + "/create",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    sale_id: selectedSale.sale_id,
+                    quantity_returned: data.quantity,
+                    reason: data.reason
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        hideReview();
+
+        if (!result.success) {
+
+            showMessage(
+                result.message || "Sales return failed.",
+                "error"
+            );
+
+            return;
+
+        }
+
+        showMessage(
+            `Sales Return Completed. ${data.quantity} pc(s) returned to inventory.`,
+            "success"
+        );
+
+        resetReturnFields();
+
+        await loadSales();
+
+        await loadReturnRecords();
+
+    } catch (error) {
+
+        console.error(error);
+
+        hideReview();
+
+        showMessage("Cannot connect to the server.", "error");
+
+    } finally {
+
+        confirmButton.disabled = false;
+
+        confirmButton.textContent = "Confirm Return";
+
+    }
+
+}
+
+function toggleHistory() {
+
+    showHistory = !showHistory;
+
+    const button = document.getElementById("historyButton");
+
+    const title = document.getElementById("recordsTitle");
+
+    const description = document.getElementById("recordsDescription");
+
+    if (showHistory) {
+
+        button.textContent = "Hide History";
+
+        button.classList.add("active");
+
+        title.textContent = "Sales Return History";
+
+        description.textContent =
+            "All sales return transactions, including those already refunded.";
+
+    } else {
+
+        button.textContent = "View History";
+
+        button.classList.remove("active");
+
+        title.textContent = "Sales Return Records";
+
+        description.textContent =
+            "Processed returns that are waiting for refund.";
+
+    }
+
+    loadReturnRecords();
+
+}
+
+async function loadReturnRecords() {
+
+    try {
+
+        const url =
+            API_URL + "/all" + (showHistory ? "?history=true" : "");
+
+        const response = await fetch(url);
+
+        const result = await response.json();
+
+        const tbody = document.getElementById("returnTableBody");
+
+        tbody.innerHTML = "";
+
+        if (
+            !result.success ||
+            !result.data ||
+            result.data.length === 0
+        ) {
+
+            tbody.innerHTML = `
+
+                <tr>
+                    <td colspan="8" class="no-return-records">
+                        ${
+                            showHistory
+                                ? "No sales return records found."
+                                : "No sales returns waiting for refund."
+                        }
+                    </td>
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+        result.data.forEach(returnRecord => {
+
+            const row = document.createElement("tr");
+
+            const statusClass =
+                returnRecord.status === "Refunded"
+                    ? "status-refunded"
+                    : "status-completed";
+
+            row.innerHTML = `
+
+                <td>${escapeHtml(returnRecord.id)}</td>
+
+                <td>${escapeHtml(returnRecord.sale_id)}</td>
+
+                <td>${escapeHtml(returnRecord.product_name)}</td>
+
+                <td>${escapeHtml(returnRecord.quantity_returned)}</td>
+
+                <td>₱${formatMoney(returnRecord.refund_amount)}</td>
+
+                <td>${escapeHtml(returnRecord.reason || "-")}</td>
+
+                <td>
+                    <span class="status-badge ${statusClass}">
+                        ${escapeHtml(returnRecord.status)}
+                    </span>
+                </td>
+
+                <td>${escapeHtml(returnRecord.return_date)}</td>
+
+            `;
+
+            tbody.appendChild(row);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("returnTableBody").innerHTML = `
+
+            <tr>
+                <td colspan="8" class="no-return-records">
+                    Failed to load return records.
+                </td>
+            </tr>
+
+        `;
+
+    }
+
+}
+
+function resetReturnFields() {
+
+    selectedSale = null;
+
+    document.getElementById("returnInfo").style.display = "none";
+
+    document.getElementById("quantity_returned").value = "";
+
+    document.getElementById("reason").value = "";
+
+    document.getElementById("summaryQuantity").textContent = "0";
+
+    document.getElementById("refundAmount").textContent = "0.00";
+
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
+
+    await loadSales();
+
+    await loadReturnRecords();
+
+});
+
+</script>
+
+</body>
+
+</html>

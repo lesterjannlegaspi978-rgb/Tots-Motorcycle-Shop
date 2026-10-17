@@ -1,91 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Tot's Motorshop Login</title>
 
     <link rel="icon" href="logo.png">
-
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .input-error {
+            border: 2px solid #dc2626 !important;
+        }
+
+        .login-box {
+            text-align: center;
+        }
+
+        .login-box input[type="text"],
+        .login-box input[type="password"] {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0 0 14px 0;
+        }
+
+        .login-box #loginBtn {
+            display: block;
+
+            width: 100%;
+            box-sizing: border-box;
+            margin: 6px 0 0 0;
+        }
+
+        .login-message {
+            min-height: 18px;
+            margin: 10px 0 0;
+            font-size: 13px;
+            text-align: center;
+            color: #dc2626;
+        }
+
+        .login-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            margin-top: 18px;
+            text-align: center;
+        }
+
+        .login-links .register-link,
+        .login-links .login-terms-link {
+            display: inline-block;
+            margin: 0 !important;
+            padding: 0;
+            text-align: center;
+        }
+
+
+        .login-links .login-terms-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin: 0 !important;
+            text-align: center;
+        }
+
+        .login-links .login-terms-checkbox input[type="checkbox"] {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .login-links .login-terms-checkbox input[type="checkbox"]:disabled {
+            cursor: not-allowed;
+        }
+
+        .password-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .password-container input {
+            width: 100%;
+            padding-right: 42px !important;
+            box-sizing: border-box;
+            margin: 0 !important;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6b7280;
+            display: none; 
+            font-size: 15px;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-password:hover {
+            color: #2563eb;
+        }
+
+    </style>
 
 </head>
-
 
 <body>
 
 <div class="login-container">
 
+
     <div class="login-box">
 
+        <img src="logo.png" class="login-logo" alt="Tot's Motorshop Logo">
 
-        <img
-            src="logo.png"
-            class="login-logo"
-            alt="Tot's Motorshop Logo"
-        >
+        <h2>Tot's Motorshop</h2>
 
 
-        <h2>
-            Tot's Motorshop
-        </h2>
+        <p class="subtitle">Sales And Inventory Monitoring System</p>
 
+        <input type="text" id="username" placeholder="Enter Username">
 
-        <p class="subtitle">
-            Sales And Inventory Monitoring System
-        </p>
+        <div class="password-container">
+            <input type="password" id="password" placeholder="Enter Password" oninput="handlePasswordInput(this)">
+            <i class="fa-solid fa-eye toggle-password" id="togglePasswordIcon" onclick="togglePasswordVisibility()"></i>
+        </div>
 
+        <button type="button" id="loginBtn" onclick="login()">Login</button>
 
-        <input
-            type="text"
-            id="username"
-            placeholder="Enter Username"
-        >
+        <p id="loginMessage" class="login-message"></p>
 
+        <div class="login-links">
 
-        <input
-            type="password"
-            id="password"
-            placeholder="Enter Password"
-        >
+            <a href="forgot-password.html" class="register-link">Forgot Password?</a>
 
+            <a href="register.html" class="register-link">Create Account</a>
 
-        <button
-            type="button"
-            onclick="login()"
-        >
-            Login
-        </button>
+            <button type="button" class="login-terms-link" onclick="openTerms()">
+                Terms and Conditions
+            </button>
 
+            <div class="login-terms-checkbox">
 
-        <br>
-        <br>
+                <input type="checkbox" id="termsCheckbox" name="termsCheckbox" autocomplete="off" disabled>
 
-        <a
-            href="register.html"
-            class="register-link"
-        >
-            Create Account
-        </a>
+                <label for="termsCheckbox">
+                    I agree to the Terms and Conditions
+                </label>
 
-        <button
-            type="button"
-            class="login-terms-link"
-            onclick="openTerms()"
-        >
-            Terms and Conditions
-        </button>
-
-        <div class="login-terms-checkbox">
-
-            <input
-                type="checkbox"
-                id="termsCheckbox"
-            >
-
-            <label for="termsCheckbox">
-                I agree to the Terms and Conditions
-            </label>
+            </div>
 
         </div>
 
@@ -94,409 +169,531 @@
 
 </div>
 
-
 <div id="termsPopup">
 
     <div class="terms-popup-box">
 
-
-        <h2>
-            Terms and Conditions
-        </h2>
-
+        <h2>Terms and Conditions</h2>
 
         <p class="terms-popup-intro">
-            Please read and understand the following terms and conditions before using Tot's Motorshop.
+            Please read and understand all Terms and Conditions before using
+            Tot's Motorshop Sales and Inventory Monitoring System.
         </p>
 
+        <div class="terms-popup-content" id="termsContent">
 
-        <div class="terms-popup-content">
-
-
-            <h3>
-                1. Purpose of the System
-            </h3>
+            <h3>1. Purpose and Authorized Use</h3>
 
             <p>
+
                 Tot's Motorshop Sales and Inventory Monitoring System
-                is designed to help manage products, inventory, sales,
-                and related motor shop transactions.
+                is designed to support authorized motorshop management
+                activities, including inventory monitoring, sales recording,
+                product management, reports, and related business records.
+                The system must only be used for legitimate and authorized
+                motorshop purposes.
             </p>
 
+            <h3>2. User Account and Account Security</h3>
+
+
+            <p>
+                Users are responsible for keeping their username, password,
+                and other account information confidential. Users must not
+                share their login credentials with unauthorized persons.
+                Any activity performed using an authorized account should
+                be properly monitored and reported when necessary.
+            </p>
 
             <h3>
-                2. Account Responsibility
+                3. Data Privacy and Personal Information
+                — Republic Act No. 10173
             </h3>
 
             <p>
-                Users are responsible for keeping their account
-                information secure and should not share their
-                login credentials with unauthorized persons.
+                Personal information collected through the system, such as
+                name, email address, cellphone number, username, and other
+                account information, shall be handled responsibly and only
+                for legitimate system and business purposes.
             </p>
 
+            <p>
+                The system recognizes the principles of the
+
+                <strong>Data Privacy Act of 2012 (RA 10173)</strong>,
+                which protects personal information and provides requirements
+                for lawful and responsible processing of personal data.
+            </p>
 
             <h3>
-                3. Inventory Management
+                4. Consumer Protection and Transaction Accuracy
+                — Republic Act No. 7394
+            </h3>
+
+
+            <p>
+                Product information, prices, quantities, and sales records
+                should be entered accurately. Users are responsible for
+                checking transaction information to help maintain reliable
+                business records and proper customer transactions.
+            </p>
+
+            <p>
+                The system recognizes the
+                <strong>Consumer Act of the Philippines (RA 7394)</strong>
+                as a relevant legal reference concerning consumer protection
+                and fair business practices.
+            </p>
+
+            <h3>
+                5. Electronic Transactions and Records
+                — Republic Act No. 8792
             </h3>
 
             <p>
-                Product information and inventory quantities should
-                be entered accurately to help maintain reliable
-                inventory records.
+                Electronic records and information generated or maintained
+                by the system should be handled accurately and responsibly.
+
+                Users must not intentionally alter, misuse, or falsify
+                electronic business records.
             </p>
 
+            <p>
+                The system recognizes the
+                <strong>Electronic Commerce Act of 2000 (RA 8792)</strong>
+                as a relevant legal reference concerning electronic data
+
+                messages, electronic documents, and electronic transactions.
+            </p>
 
             <h3>
-                4. Sales Transactions
+                6. Cybersecurity and Unauthorized Access
+                — Republic Act No. 10175
             </h3>
 
             <p>
-                Sales records should contain accurate product,
-                quantity, and transaction information.
+                Users must not attempt to access, modify, damage, interfere
+                with, or misuse system resources, accounts, databases, or
+                information without authorization.
             </p>
 
+            <p>
+                The system recognizes the
+                <strong>Cybercrime Prevention Act of 2012 (RA 10175)</strong>
+                as a relevant legal reference concerning unauthorized access,
+                interference, and other cybercrime-related activities.
+            </p>
 
             <h3>
-                5. System Usage
+                7. Internet Transactions and Online Conduct
+                — Republic Act No. 11967
+
             </h3>
 
             <p>
-                The system should only be used for legitimate
-                motorshop management and business-related purposes.
+                When the system is used for activities involving online
+                transactions or electronic business interactions, users must
+                provide accurate information and conduct transactions
+                responsibly.
+
             </p>
-
-
-            <h3>
-                6. Data Accuracy
-            </h3>
 
             <p>
-                Authorized users are responsible for checking the
-                accuracy of information entered into the system.
+                The system recognizes the
+                <strong>Internet Transactions Act of 2023 (RA 11967)</strong>
+                as a relevant legal reference concerning consumer and
+                merchant protection in internet transactions.
             </p>
 
-
-            <h3>
-                7. System Availability
-            </h3>
+            <h3>8. Inventory Management</h3>
 
             <p>
-                System availability may depend on the server,
-                database, network connection, and other technical
-                requirements.
+                Product names, categories, suppliers, quantities, prices,
+                and other inventory information should be entered and
+                maintained accurately. Users should verify information before
+                saving or updating inventory records.
             </p>
 
-
-            <h3>
-                8. Agreement
-            </h3>
+            <h3>9. Sales Transactions and Data Accuracy</h3>
 
             <p>
-                By selecting "Agree", you confirm that you have
-                read and understood these Terms and Conditions.
+                Sales transactions should contain accurate product,
+                quantity, price, total amount, and transaction information.
+                Users are responsible for checking the accuracy of records
+                before and after completing a transaction.
+
             </p>
 
+            <h3>10. System Availability and Limitations</h3>
+
+            <p>
+                System availability may depend on the server, database,
+
+                network connection, hardware, software, and other technical
+                requirements. The system may experience temporary
+                interruptions caused by maintenance, technical problems,
+                or other circumstances.
+            </p>
+
+            <h3>11. Agreement and Acceptance</h3>
+
+            <p>
+                By selecting "Agree", you confirm that you have read,
+                reviewed, and understood these Terms and Conditions and
+                agree to follow the rules governing the authorized use
+                of the system.
+            </p>
 
         </div>
 
         <div class="terms-popup-buttons">
 
-
             <button
                 type="button"
                 class="terms-agree"
+                id="termsAgreeButton"
                 onclick="agreeTerms()"
+                disabled
             >
+
                 ✓ Agree
             </button>
 
-
             <button
                 type="button"
+
                 class="terms-disagree"
                 onclick="disagreeTerms()"
             >
                 ✕ Disagree
             </button>
 
-
         </div>
 
-
-        <p
-            id="termsMessage"
-            class="terms-popup-message"
-        ></p>
-
+        <p id="termsMessage" class="terms-popup-message"></p>
 
     </div>
 
 </div>
 
 <script>
+    window.addEventListener('pageshow', function () {
+        if (localStorage.getItem("authToken")) {
+            window.location.replace("dashboard.html");
+        }
+    });
+
+   const API_URL = "http://localhost:5000/auth/login";
+    const TERMS_VERSION = "2026-09-19-v1";
+
+    let termsRead = false;
+
+    function resetTermsState() {
+        const checkbox = document.getElementById("termsCheckbox");
+        const agreeButton = document.getElementById("termsAgreeButton");
+
+        termsRead = false;
+        // ...
+
+    if (checkbox) {
+        checkbox.checked = false;
+        checkbox.disabled = true;
+
+    }
+
+    if (agreeButton) {
+        agreeButton.disabled = true;
+    }
+
+    localStorage.removeItem("termsRead");
+    localStorage.removeItem("termsReadVersion");
+    localStorage.removeItem("termsAccepted");
+    localStorage.removeItem("termsVersion");
+
+    sessionStorage.removeItem("termsRead");
+    sessionStorage.removeItem("termsReadVersion");
+
+}
+
+function setLoginMessage(text) {
+
+    document.getElementById("loginMessage").textContent = text;
+
+}
+
+function clearLoginErrors() {
+
+    document.getElementById("username").classList.remove("input-error");
+    document.getElementById("password").classList.remove("input-error");
+
+    setLoginMessage("");
+
+}
+
+function setTermsMessage(text, color) {
 
 
-function login() {
+    const message = document.getElementById("termsMessage");
 
-    const username =
-        document.getElementById("username").value.trim();
+    message.style.color = color;
+    message.innerText = text;
 
-    const password =
-        document.getElementById("password").value.trim();
+}
 
-    const termsCheckbox =
-        document.getElementById("termsCheckbox");
+function closeTerms() {
 
+    document.getElementById("termsPopup").style.display = "none";
+
+    document.getElementById("termsMessage").innerText = "";
+
+}
+
+async function login() {
+
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const termsCheckbox = document.getElementById("termsCheckbox");
+    const loginBtn = document.getElementById("loginBtn");
+
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    clearLoginErrors();
 
     if (!username || !password) {
 
-        alert(
-            "Please enter your username and password."
-        );
+        if (!username) usernameInput.classList.add("input-error");
+        if (!password) passwordInput.classList.add("input-error");
+
+
+        setLoginMessage("Please enter your username and password.");
 
         return;
+
     }
 
+    if (!termsRead || termsCheckbox.disabled || !termsCheckbox.checked) {
 
-    if (!termsCheckbox.checked) {
-
-        alert(
-            "Please agree to the Terms and Conditions first."
-        );
+        setLoginMessage("Please read and agree to the Terms and Conditions first.");
 
         return;
+
     }
 
+    loginBtn.disabled = true;
 
-    fetch(
-        "http://localhost:5000/auth/login",
-        {
+    try {
 
+        const response = await fetch(API_URL, {
             method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+        const data = await response.json();
 
-            body: JSON.stringify({
+        if (data.success) {
 
-                username: username,
-
-                password: password
-
-            })
-
-        }
-    )
+            localStorage.setItem("authToken", data.token);
+            localStorage.setItem("termsAccepted", "true");
+            localStorage.setItem("termsVersion", TERMS_VERSION);
 
 
-    .then(
-        response => response.json()
-    )
+          window.location.href = "dashboard.html";
 
-
-    .then(
-        data => {
-
-            if (data.success) {
-
-                localStorage.setItem(
-                    "authToken",
-                    data.token
-                );
-
-
-                localStorage.setItem(
-                    "termsAccepted",
-                    "true"
-                );
-
-
-                alert(
-                    "Login Successful"
-                );
-
-
-                window.location.href =
-                    "dashboard.html";
-
-            }
-
-            else {
-
-                alert(
-                    data.message ||
-                    "Wrong Username or Password"
-                );
-
-            }
+            return;
 
         }
-    )
 
+        usernameInput.classList.add("input-error");
+        passwordInput.classList.add("input-error");
 
-    .catch(
-        error => {
+        setLoginMessage(data.message || "Wrong username or password.");
 
-            console.error(
-                "Login Error:",
-                error
-            );
+    } catch (error) {
 
+        console.error("Login Error:", error);
 
-            alert(
-                "Cannot connect to the server. " +
-                "Please make sure your Node.js server is running."
-            );
+        setLoginMessage("Cannot connect to the server. Please make sure your server is running.");
 
-        }
-    );
+    }
+
+    loginBtn.disabled = false;
 
 }
 
+["username", "password"].forEach(id => {
+
+    const input = document.getElementById(id);
+
+    input.addEventListener("keydown", event => {
+        if (event.key === "Enter") login();
+    });
+
+
+    input.addEventListener("input", clearLoginErrors);
+
+});
 
 function openTerms() {
 
-    const popup =
-        document.getElementById("termsPopup");
+    const content = document.getElementById("termsContent");
+    const agreeButton = document.getElementById("termsAgreeButton");
 
-    popup.style.display = "flex";
+    document.getElementById("termsPopup").style.display = "flex";
+
+    content.scrollTop = 0;
+
+    setTermsMessage("", "");
+
+    if (!termsRead) {
+
+        agreeButton.disabled = true;
+
+        setTermsMessage(
+            "Please scroll to the bottom to read all Terms and Conditions.",
+            "#dc2626"
+        );
+
+    } else {
+
+        agreeButton.disabled = false;
+
+        setTermsMessage(
+            "You have already read the Terms and Conditions. You may click Agree.",
+            "#16a34a"
+        );
+
+
+    }
+
+    checkTermsRead(content);
 
 }
 
+function checkTermsRead(content) {
+
+    const reachedBottom =
+        content.scrollTop + content.clientHeight >=
+        content.scrollHeight - 10;
+
+    if (reachedBottom) {
+
+        termsRead = true;
+
+        document.getElementById("termsAgreeButton").disabled = false;
+
+        setTermsMessage(
+            "You have reached the end of the Terms and Conditions. You may now click Agree.",
+            "#16a34a"
+        );
+
+    }
+
+}
+
+document.getElementById("termsContent").addEventListener("scroll", function () {
+
+    checkTermsRead(this);
+
+
+});
 
 function agreeTerms() {
 
-    const checkbox =
-        document.getElementById(
-            "termsCheckbox"
-        );
+    const checkbox = document.getElementById("termsCheckbox");
 
+    if (!termsRead) {
 
-    const message =
-        document.getElementById(
-            "termsMessage"
-        );
-
-
-    if (!checkbox.checked) {
-
-        message.style.color =
-            "#dc2626";
-
-
-        message.innerText =
-            "Please check the box below Terms and Conditions first.";
-
+        setTermsMessage("Please read all Terms and Conditions first.", "#dc2626");
 
         return;
 
     }
 
+    checkbox.disabled = false;
+    checkbox.checked = false;
 
-    localStorage.setItem(
-        "termsAccepted",
-        "true"
+    setLoginMessage("");
+
+    setTermsMessage(
+        "Thank you for reading. You may now check the agreement box.",
+        "#16a34a"
     );
 
+    document.getElementById("termsAgreeButton").disabled = true;
 
-    message.style.color =
-        "#16a34a";
-
-
-    message.innerText =
-        "Terms accepted. You may now continue.";
-
-
-    setTimeout(
-        function() {
-
-            document.getElementById(
-                "termsPopup"
-            ).style.display = "none";
-
-
-            document.getElementById(
-                "termsMessage"
-            ).innerText = "";
-
-        },
-        700
-    );
+    setTimeout(closeTerms, 800);
 
 }
 
 function disagreeTerms() {
 
-    const checkbox =
-        document.getElementById(
-            "termsCheckbox"
-        );
 
+    resetTermsState();
 
-    const message =
-        document.getElementById(
-            "termsMessage"
-        );
-
-
-    checkbox.checked = false;
-
-
-    localStorage.removeItem(
-        "termsAccepted"
+    setTermsMessage(
+        "You must agree to the Terms and Conditions to continue.",
+        "#dc2626"
     );
 
-
-    message.style.color =
-        "#dc2626";
-
-
-    message.innerText =
-        "You must agree to the Terms and Conditions to continue.";
-
-
-    setTimeout(
-        function() {
-
-            document.getElementById(
-                "termsPopup"
-            ).style.display = "none";
-
-
-            document.getElementById(
-                "termsMessage"
-            ).innerText = "";
-
-        },
-        1200
-    );
+    setTimeout(closeTerms, 1200);
 
 }
 
-document.getElementById(
-    "termsPopup"
-).addEventListener(
-    "click",
-    function(event) {
+document.getElementById("termsPopup").addEventListener("click", function (event) {
 
-        if (
-            event.target === this
-        ) {
-
-            this.style.display =
-                "none";
-
-
-            document.getElementById(
-                "termsMessage"
-            ).innerText = "";
-
-        }
-
+    if (event.target === this) {
+        closeTerms();
     }
-);
 
+});
+
+resetTermsState();
+
+window.addEventListener("DOMContentLoaded", resetTermsState);
+
+window.addEventListener("load", function () {
+
+    resetTermsState();
+
+    setTimeout(resetTermsState, 150);
+    setTimeout(resetTermsState, 500);
+
+});
+
+
+window.addEventListener("pageshow", function () {
+
+    resetTermsState();
+
+    setTimeout(resetTermsState, 150);
+
+});
+
+function handlePasswordInput(input) {
+    const toggleIcon = document.getElementById("togglePasswordIcon");
+    if (input.value.trim().length > 0) {
+        toggleIcon.style.display = "block";
+    } else {
+        toggleIcon.style.display = "none";
+    }
+}
+
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById("password");
+    const toggleIcon = document.getElementById("togglePasswordIcon");
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash"); 
+    } else {
+        passwordInput.type = "password";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+    }
+}
 
 </script>
 
