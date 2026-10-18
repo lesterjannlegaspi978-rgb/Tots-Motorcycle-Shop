@@ -141,9 +141,12 @@ async function callGemini(prompt) {
 
             lastResponse = response;
 
+              const errorText = await response.clone().text();
+
             console.log(
                 "Gemini " + model + " failed:",
-                response.status
+                response.status,
+                errorText.slice(0, 600)
             );
 
             if (
