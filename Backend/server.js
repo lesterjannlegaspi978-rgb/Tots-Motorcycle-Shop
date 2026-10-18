@@ -43,13 +43,11 @@ app.use("/analytics", analytics);
 
 const path = require('path');
 
-// I-serve ang Frontend folder para sa HTML, CSS, at JS files
 app.use(express.static(path.join(__dirname, '../Frontend')));
 
-// Kapag binuksan ang main URL (/), ilabas ang login.html o index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../Frontend/index.html')); 
-  // Note: Kung login.html ang main page mo, gawin mong '../Frontend/login.html'
+  
 });
 
 app.listen(5000, () => {

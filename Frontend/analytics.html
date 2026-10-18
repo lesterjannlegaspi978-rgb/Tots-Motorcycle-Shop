@@ -792,8 +792,8 @@
         });
     }
 
-    const API_URL = "http://localhost:5000/analytics/overview";
-
+    const API_URL = "/analytics/overview";
+    
     async function fetchAnalytics() {
         const url = new URL(API_URL);
         url.searchParams.set("period", "all");

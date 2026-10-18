@@ -392,7 +392,7 @@ async function processSale() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/sales/add",
+            "/sales/add",
             {
                 method: "POST",
                 headers: {
@@ -438,7 +438,7 @@ async function processSale() {
 async function loadSales() {
     try {
         const response = await fetch(
-            "http://localhost:5000/sales/all"
+            "/sales/all"
         );
 
         const sales = await response.json();
@@ -585,7 +585,7 @@ function formatDateForFilter(date) {
 async function loadProducts() {
     try {
         const response = await fetch(
-            "http://localhost:5000/products/all"
+            "/products/all"
         );
 
         const products = await response.json();

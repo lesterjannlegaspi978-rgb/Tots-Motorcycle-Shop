@@ -1418,7 +1418,7 @@
 
             const response =
                 await fetch(
-                    "http://localhost:5000/products/all"
+                   "/products/all"
                 );
 
 
@@ -1571,7 +1571,7 @@
 
         const response =
             await fetch(
-                "http://localhost:5000/sales/all"
+                "/sales/all"
             );
 
 
@@ -1591,7 +1591,7 @@
 async function loadSalesSummary() {
     try {
         const response = await fetch(
-            "http://localhost:5000/analytics/overview?period=all"
+           "/analytics/overview?period=all"
         );
 
         if (!response.ok) {

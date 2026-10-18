@@ -208,7 +208,7 @@
 
     async function loadDashboard() {
         try {
-            const response = await fetch("http://localhost:5000/dashboard/stats");
+           const response = await fetch("/dashboard/stats");
 
             if (!response.ok) {
                 throw new Error("Dashboard stats failed.");
@@ -243,7 +243,7 @@
 
     async function loadDashboardProducts() {
         try {
-            const response = await fetch("http://localhost:5000/products/all");
+           const response = await fetch("/products/all");
 
             if (!response.ok) {
                 throw new Error("Products request failed.");
@@ -266,7 +266,7 @@
 
     async function loadDashboardSales() {
         try {
-            const response = await fetch("http://localhost:5000/sales/all");
+           const response = await fetch("/sales/all");
 
             if (!response.ok) {
                 throw new Error("Sales request failed.");
@@ -289,9 +289,7 @@
 
     async function loadFastMovingProducts() {
         try {
-            const response = await fetch(
-                "http://localhost:5000/dashboard/fast-moving"
-            );
+            const response = await fetch("/dashboard/fast-moving");
 
             if (!response.ok) {
                 throw new Error("Fast-moving products request failed.");
@@ -312,7 +310,7 @@
 
     async function loadRecentSales() {
         try {
-            const response = await fetch("http://localhost:5000/dashboard/recent-sales");
+           const response = await fetch("/dashboard/recent-sales");
 
             if (!response.ok) {
                 throw new Error("Recent sales request failed.");
@@ -352,7 +350,7 @@
 
     async function loadAlerts() {
         try {
-            const response = await fetch("http://localhost:5000/dashboard/alerts");
+            const response = await fetch("/dashboard/alerts");
 
             if (!response.ok) {
                 throw new Error("Alerts request failed.");
