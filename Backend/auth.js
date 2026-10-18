@@ -476,129 +476,40 @@ router.post("/register", async (req, res) => {
 
 });
 
-router.post("/login", (req, res) => {
+router.post('/login', (req, res) => {
+  const { username, password } = req.body;
 
-    const {
-        username,
-        password
-    } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: 'Please provide username and password' });
+  }
 
-    if (
-        !username ||
-        !password
-    ) {
-
-        return res.status(400).json({
-            success: false,
-            message:
-                "Please enter your username and password."
-        });
-
+  // Gamitin ang pool query
+  db.query('SELECT * FROM users WHERE username = ? OR email = ?', [username, username], async (err, results) => {
+    if (err) {
+      console.error('LOGIN DB ERROR:', err);
+      return res.status(500).json({ success: false, message: 'Server Error' });
     }
 
+    if (results.length === 0) {
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
+    }
 
-    const sql = `
-        SELECT *
-        FROM admins
-        WHERE username = ?
-        LIMIT 1
-    `;
+    const user = results[0];
 
+    // Kung plain text ang password
+    if (user.password !== password) {
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
+    }
 
-    db.query(
-        sql,
-        [username.trim()],
-        async (err, result) => {
-
-            if (err) {
-
-                console.log(
-                    "LOGIN DATABASE ERROR:"
-                );
-
-                console.log(err);
-
-                return res.status(500).json({
-                    success: false,
-                    message:
-                        "Server Error"
-                });
-
-            }
-
-            if (result.length === 0) {
-
-                return res.status(401).json({
-                    success: false,
-                    message:
-                        "Wrong Username or Password"
-                });
-
-            }
-
-
-            try {
-
-                const passwordMatch =
-                    await bcrypt.compare(
-                        password,
-                        result[0].password
-                    );
-
-
-                if (!passwordMatch) {
-
-                    return res.status(401).json({
-                        success: false,
-                        message:
-                            "Wrong Username or Password"
-                    });
-
-                }
-
-
-                const token =
-                    jwt.sign(
-                        {
-                            id: result[0].id,
-                            username:
-                                result[0].username
-                        },
-                        process.env.JWT_SECRET,
-                        {
-                            expiresIn: "2h"
-                        }
-                    );
-
-
-                return res.json({
-                    success: true,
-                    message:
-                        "Login Successful",
-                    token: token
-                });
-
-
-            } catch (error) {
-
-                console.log(
-                    "LOGIN SERVER ERROR:"
-                );
-
-                console.log(error);
-
-                return res.status(500).json({
-                    success: false,
-                    message:
-                        "Server Error"
-                });
-
-            }
-
-        }
-    );
-
+    // Success response
+    return res.json({
+      success: true,
+      token: 'sample-auth-token',
+      user: { id: user.id, username: user.username, role: user.role }
+    });
+  });
 });
+
 
 function runQuery(sql, params) {
 
