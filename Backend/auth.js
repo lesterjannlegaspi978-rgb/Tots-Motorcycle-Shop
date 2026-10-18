@@ -476,40 +476,79 @@ router.post("/register", async (req, res) => {
 
 });
 
-router.post('/login', (req, res) => {
-  const { username, password } = req.body;
+router.post("/login", async (req, res) => {
 
-  if (!username || !password) {
-    return res.status(400).json({ success: false, message: 'Please provide username and password' });
-  }
+    const { username, password } = req.body;
 
-  // Gamitin ang pool query
-  db.query('SELECT * FROM users WHERE username = ? OR email = ?', [username, username], async (err, results) => {
-    if (err) {
-      console.error('LOGIN DB ERROR:', err);
-      return res.status(500).json({ success: false, message: 'Server Error' });
+    if (!username || !password) {
+        return res.status(400).json({
+            success: false,
+            message: "Please provide username and password"
+        });
     }
 
-    if (results.length === 0) {
-      return res.status(401).json({ success: false, message: 'Invalid username or password' });
+    try {
+
+        const results = await new Promise((resolve, reject) => {
+            db.query(
+                "SELECT * FROM admins WHERE LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?) LIMIT 1",
+                [username.trim(), username.trim()],
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                }
+            );
+        });
+
+        if (results.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid username or password"
+            });
+        }
+
+        const user = results[0];
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid username or password"
+            });
+        }
+
+        const token = jwt.sign(
+            { id: user.id, username: user.username },
+            process.env.JWT_SECRET || "tots_motorshop_secret",
+            { expiresIn: "1d" }
+        );
+
+        return res.json({
+            success: true,
+            token: token,
+            user: {
+                id: user.id,
+                username: user.username,
+                fullname: user.fullname
+            }
+        });
+
+    } catch (error) {
+
+        console.error("LOGIN DB ERROR:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+
     }
 
-    const user = results[0];
-
-    // Kung plain text ang password
-    if (user.password !== password) {
-      return res.status(401).json({ success: false, message: 'Invalid username or password' });
-    }
-
-    // Success response
-    return res.json({
-      success: true,
-      token: 'sample-auth-token',
-      user: { id: user.id, username: user.username, role: user.role }
-    });
-  });
 });
-
 
 function runQuery(sql, params) {
 
