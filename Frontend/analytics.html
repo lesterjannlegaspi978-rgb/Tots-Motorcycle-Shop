@@ -793,9 +793,9 @@
     }
 
     const API_URL = "/analytics/overview";
-    
+
     async function fetchAnalytics() {
-        const url = new URL(API_URL);
+        const url = new URL(API_URL, window.location.origin);
         url.searchParams.set("period", "all");
 
         const response = await fetch(url);
