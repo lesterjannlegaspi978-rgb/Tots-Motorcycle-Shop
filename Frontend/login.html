@@ -31,7 +31,6 @@
 
         .login-box #loginBtn {
             display: block;
-
             width: 100%;
             box-sizing: border-box;
             margin: 6px 0 0 0;
@@ -63,7 +62,6 @@
             padding: 0;
             text-align: center;
         }
-
 
         .login-links .login-terms-checkbox {
             display: flex;
@@ -104,7 +102,7 @@
             transform: translateY(-50%);
             cursor: pointer;
             color: #6b7280;
-            display: none; 
+            display: none;
             font-size: 15px;
             transition: color 0.2s ease;
         }
@@ -112,7 +110,6 @@
         .toggle-password:hover {
             color: #2563eb;
         }
-
     </style>
 
 </head>
@@ -121,13 +118,11 @@
 
 <div class="login-container">
 
-
     <div class="login-box">
 
         <img src="logo.png" class="login-logo" alt="Tot's Motorshop Logo">
 
         <h2>Tot's Motorshop</h2>
-
 
         <p class="subtitle">Sales And Inventory Monitoring System</p>
 
@@ -146,8 +141,6 @@
 
             <a href="forgot-password.html" class="register-link">Forgot Password?</a>
 
-            <a href="register.html" class="register-link">Create Account</a>
-
             <button type="button" class="login-terms-link" onclick="openTerms()">
                 Terms and Conditions
             </button>
@@ -163,7 +156,6 @@
             </div>
 
         </div>
-
 
     </div>
 
@@ -185,7 +177,6 @@
             <h3>1. Purpose and Authorized Use</h3>
 
             <p>
-
                 Tot's Motorshop Sales and Inventory Monitoring System
                 is designed to support authorized motorshop management
                 activities, including inventory monitoring, sales recording,
@@ -195,7 +186,6 @@
             </p>
 
             <h3>2. User Account and Account Security</h3>
-
 
             <p>
                 Users are responsible for keeping their username, password,
@@ -219,7 +209,6 @@
 
             <p>
                 The system recognizes the principles of the
-
                 <strong>Data Privacy Act of 2012 (RA 10173)</strong>,
                 which protects personal information and provides requirements
                 for lawful and responsible processing of personal data.
@@ -229,7 +218,6 @@
                 4. Consumer Protection and Transaction Accuracy
                 — Republic Act No. 7394
             </h3>
-
 
             <p>
                 Product information, prices, quantities, and sales records
@@ -253,7 +241,6 @@
             <p>
                 Electronic records and information generated or maintained
                 by the system should be handled accurately and responsibly.
-
                 Users must not intentionally alter, misuse, or falsify
                 electronic business records.
             </p>
@@ -262,7 +249,6 @@
                 The system recognizes the
                 <strong>Electronic Commerce Act of 2000 (RA 8792)</strong>
                 as a relevant legal reference concerning electronic data
-
                 messages, electronic documents, and electronic transactions.
             </p>
 
@@ -287,7 +273,6 @@
             <h3>
                 7. Internet Transactions and Online Conduct
                 — Republic Act No. 11967
-
             </h3>
 
             <p>
@@ -295,7 +280,6 @@
                 transactions or electronic business interactions, users must
                 provide accurate information and conduct transactions
                 responsibly.
-
             </p>
 
             <p>
@@ -321,14 +305,12 @@
                 quantity, price, total amount, and transaction information.
                 Users are responsible for checking the accuracy of records
                 before and after completing a transaction.
-
             </p>
 
             <h3>10. System Availability and Limitations</h3>
 
             <p>
                 System availability may depend on the server, database,
-
                 network connection, hardware, software, and other technical
                 requirements. The system may experience temporary
                 interruptions caused by maintenance, technical problems,
@@ -355,13 +337,11 @@
                 onclick="agreeTerms()"
                 disabled
             >
-
                 ✓ Agree
             </button>
 
             <button
                 type="button"
-
                 class="terms-disagree"
                 onclick="disagreeTerms()"
             >
@@ -377,13 +357,13 @@
 </div>
 
 <script>
-    window.addEventListener('pageshow', function () {
+    window.addEventListener("pageshow", function () {
         if (localStorage.getItem("authToken")) {
             window.location.replace("dashboard.html");
         }
     });
 
-   const API_URL = "/auth/login";
+    const API_URL = "/auth/login";
     const TERMS_VERSION = "2026-09-19-v1";
 
     let termsRead = false;
@@ -393,310 +373,252 @@
         const agreeButton = document.getElementById("termsAgreeButton");
 
         termsRead = false;
-        // ...
 
-    if (checkbox) {
-        checkbox.checked = false;
-        checkbox.disabled = true;
-
-    }
-
-    if (agreeButton) {
-        agreeButton.disabled = true;
-    }
-
-    localStorage.removeItem("termsRead");
-    localStorage.removeItem("termsReadVersion");
-    localStorage.removeItem("termsAccepted");
-    localStorage.removeItem("termsVersion");
-
-    sessionStorage.removeItem("termsRead");
-    sessionStorage.removeItem("termsReadVersion");
-
-}
-
-function setLoginMessage(text) {
-
-    document.getElementById("loginMessage").textContent = text;
-
-}
-
-function clearLoginErrors() {
-
-    document.getElementById("username").classList.remove("input-error");
-    document.getElementById("password").classList.remove("input-error");
-
-    setLoginMessage("");
-
-}
-
-function setTermsMessage(text, color) {
-
-
-    const message = document.getElementById("termsMessage");
-
-    message.style.color = color;
-    message.innerText = text;
-
-}
-
-function closeTerms() {
-
-    document.getElementById("termsPopup").style.display = "none";
-
-    document.getElementById("termsMessage").innerText = "";
-
-}
-
-async function login() {
-
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
-    const termsCheckbox = document.getElementById("termsCheckbox");
-    const loginBtn = document.getElementById("loginBtn");
-
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
-
-    clearLoginErrors();
-
-    if (!username || !password) {
-
-        if (!username) usernameInput.classList.add("input-error");
-        if (!password) passwordInput.classList.add("input-error");
-
-
-        setLoginMessage("Please enter your username and password.");
-
-        return;
-
-    }
-
-    if (!termsRead || termsCheckbox.disabled || !termsCheckbox.checked) {
-
-        setLoginMessage("Please read and agree to the Terms and Conditions first.");
-
-        return;
-
-    }
-
-    loginBtn.disabled = true;
-
-    try {
-
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-
-            localStorage.setItem("authToken", data.token);
-            localStorage.setItem("termsAccepted", "true");
-            localStorage.setItem("termsVersion", TERMS_VERSION);
-
-
-          window.location.href = "dashboard.html";
-
-            return;
-
+        if (checkbox) {
+            checkbox.checked = false;
+            checkbox.disabled = true;
         }
 
-        usernameInput.classList.add("input-error");
-        passwordInput.classList.add("input-error");
+        if (agreeButton) {
+            agreeButton.disabled = true;
+        }
 
-        setLoginMessage(data.message || "Wrong username or password.");
+        localStorage.removeItem("termsRead");
+        localStorage.removeItem("termsReadVersion");
+        localStorage.removeItem("termsAccepted");
+        localStorage.removeItem("termsVersion");
 
-    } catch (error) {
-
-        console.error("Login Error:", error);
-
-        setLoginMessage("Cannot connect to the server. Please make sure your server is running.");
-
+        sessionStorage.removeItem("termsRead");
+        sessionStorage.removeItem("termsReadVersion");
     }
 
-    loginBtn.disabled = false;
+    function setLoginMessage(text) {
+        document.getElementById("loginMessage").textContent = text;
+    }
 
-}
+    function clearLoginErrors() {
+        document.getElementById("username").classList.remove("input-error");
+        document.getElementById("password").classList.remove("input-error");
 
-["username", "password"].forEach(id => {
+        setLoginMessage("");
+    }
 
-    const input = document.getElementById(id);
+    function setTermsMessage(text, color) {
+        const message = document.getElementById("termsMessage");
 
-    input.addEventListener("keydown", event => {
-        if (event.key === "Enter") login();
+        message.style.color = color;
+        message.innerText = text;
+    }
+
+    function closeTerms() {
+        document.getElementById("termsPopup").style.display = "none";
+        document.getElementById("termsMessage").innerText = "";
+    }
+
+    async function login() {
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const termsCheckbox = document.getElementById("termsCheckbox");
+        const loginBtn = document.getElementById("loginBtn");
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        clearLoginErrors();
+
+        if (!username || !password) {
+            if (!username) usernameInput.classList.add("input-error");
+            if (!password) passwordInput.classList.add("input-error");
+
+            setLoginMessage("Please enter your username and password.");
+
+            return;
+        }
+
+        if (!termsRead || termsCheckbox.disabled || !termsCheckbox.checked) {
+            setLoginMessage("Please read and agree to the Terms and Conditions first.");
+
+            return;
+        }
+
+        loginBtn.disabled = true;
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.setItem("authToken", data.token);
+                localStorage.setItem("termsAccepted", "true");
+                localStorage.setItem("termsVersion", TERMS_VERSION);
+
+                window.location.href = "dashboard.html";
+
+                return;
+            }
+
+            usernameInput.classList.add("input-error");
+            passwordInput.classList.add("input-error");
+
+            setLoginMessage(data.message || "Wrong username or password.");
+
+        } catch (error) {
+            console.error("Login Error:", error);
+
+            setLoginMessage("Cannot connect to the server. Please try again.");
+        }
+
+        loginBtn.disabled = false;
+    }
+
+    ["username", "password"].forEach(function (id) {
+        const input = document.getElementById(id);
+
+        input.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") login();
+        });
+
+        input.addEventListener("input", clearLoginErrors);
     });
 
+    function openTerms() {
+        const content = document.getElementById("termsContent");
+        const agreeButton = document.getElementById("termsAgreeButton");
 
-    input.addEventListener("input", clearLoginErrors);
+        document.getElementById("termsPopup").style.display = "flex";
 
-});
+        content.scrollTop = 0;
 
-function openTerms() {
+        setTermsMessage("", "");
 
-    const content = document.getElementById("termsContent");
-    const agreeButton = document.getElementById("termsAgreeButton");
+        if (!termsRead) {
+            agreeButton.disabled = true;
 
-    document.getElementById("termsPopup").style.display = "flex";
+            setTermsMessage(
+                "Please scroll to the bottom to read all Terms and Conditions.",
+                "#dc2626"
+            );
+        } else {
+            agreeButton.disabled = false;
 
-    content.scrollTop = 0;
+            setTermsMessage(
+                "You have already read the Terms and Conditions. You may click Agree.",
+                "#16a34a"
+            );
+        }
 
-    setTermsMessage("", "");
+        checkTermsRead(content);
+    }
 
-    if (!termsRead) {
+    function checkTermsRead(content) {
+        const reachedBottom =
+            content.scrollTop + content.clientHeight >=
+            content.scrollHeight - 10;
 
-        agreeButton.disabled = true;
+        if (reachedBottom) {
+            termsRead = true;
+
+            document.getElementById("termsAgreeButton").disabled = false;
+
+            setTermsMessage(
+                "You have reached the end of the Terms and Conditions. You may now click Agree.",
+                "#16a34a"
+            );
+        }
+    }
+
+    document.getElementById("termsContent").addEventListener("scroll", function () {
+        checkTermsRead(this);
+    });
+
+    function agreeTerms() {
+        const checkbox = document.getElementById("termsCheckbox");
+
+        if (!termsRead) {
+            setTermsMessage("Please read all Terms and Conditions first.", "#dc2626");
+
+            return;
+        }
+
+        checkbox.disabled = false;
+        checkbox.checked = false;
+
+        setLoginMessage("");
 
         setTermsMessage(
-            "Please scroll to the bottom to read all Terms and Conditions.",
+            "Thank you for reading. You may now check the agreement box.",
+            "#16a34a"
+        );
+
+        document.getElementById("termsAgreeButton").disabled = true;
+
+        setTimeout(closeTerms, 800);
+    }
+
+    function disagreeTerms() {
+        resetTermsState();
+
+        setTermsMessage(
+            "You must agree to the Terms and Conditions to continue.",
             "#dc2626"
         );
 
-    } else {
-
-        agreeButton.disabled = false;
-
-        setTermsMessage(
-            "You have already read the Terms and Conditions. You may click Agree.",
-            "#16a34a"
-        );
-
-
+        setTimeout(closeTerms, 1200);
     }
 
-    checkTermsRead(content);
-
-}
-
-function checkTermsRead(content) {
-
-    const reachedBottom =
-        content.scrollTop + content.clientHeight >=
-        content.scrollHeight - 10;
-
-    if (reachedBottom) {
-
-        termsRead = true;
-
-        document.getElementById("termsAgreeButton").disabled = false;
-
-        setTermsMessage(
-            "You have reached the end of the Terms and Conditions. You may now click Agree.",
-            "#16a34a"
-        );
-
-    }
-
-}
-
-document.getElementById("termsContent").addEventListener("scroll", function () {
-
-    checkTermsRead(this);
-
-
-});
-
-function agreeTerms() {
-
-    const checkbox = document.getElementById("termsCheckbox");
-
-    if (!termsRead) {
-
-        setTermsMessage("Please read all Terms and Conditions first.", "#dc2626");
-
-        return;
-
-    }
-
-    checkbox.disabled = false;
-    checkbox.checked = false;
-
-    setLoginMessage("");
-
-    setTermsMessage(
-        "Thank you for reading. You may now check the agreement box.",
-        "#16a34a"
-    );
-
-    document.getElementById("termsAgreeButton").disabled = true;
-
-    setTimeout(closeTerms, 800);
-
-}
-
-function disagreeTerms() {
-
+    document.getElementById("termsPopup").addEventListener("click", function (event) {
+        if (event.target === this) {
+            closeTerms();
+        }
+    });
 
     resetTermsState();
 
-    setTermsMessage(
-        "You must agree to the Terms and Conditions to continue.",
-        "#dc2626"
-    );
+    window.addEventListener("DOMContentLoaded", resetTermsState);
 
-    setTimeout(closeTerms, 1200);
+    window.addEventListener("load", function () {
+        resetTermsState();
 
-}
+        setTimeout(resetTermsState, 150);
+        setTimeout(resetTermsState, 500);
+    });
 
-document.getElementById("termsPopup").addEventListener("click", function (event) {
+    window.addEventListener("pageshow", function () {
+        resetTermsState();
 
-    if (event.target === this) {
-        closeTerms();
+        setTimeout(resetTermsState, 150);
+    });
+
+    function handlePasswordInput(input) {
+        const toggleIcon = document.getElementById("togglePasswordIcon");
+
+        if (input.value.trim().length > 0) {
+            toggleIcon.style.display = "block";
+        } else {
+            toggleIcon.style.display = "none";
+        }
     }
 
-});
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById("password");
+        const toggleIcon = document.getElementById("togglePasswordIcon");
 
-resetTermsState();
-
-window.addEventListener("DOMContentLoaded", resetTermsState);
-
-window.addEventListener("load", function () {
-
-    resetTermsState();
-
-    setTimeout(resetTermsState, 150);
-    setTimeout(resetTermsState, 500);
-
-});
-
-
-window.addEventListener("pageshow", function () {
-
-    resetTermsState();
-
-    setTimeout(resetTermsState, 150);
-
-});
-
-function handlePasswordInput(input) {
-    const toggleIcon = document.getElementById("togglePasswordIcon");
-    if (input.value.trim().length > 0) {
-        toggleIcon.style.display = "block";
-    } else {
-        toggleIcon.style.display = "none";
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
+        }
     }
-}
-
-function togglePasswordVisibility() {
-    const passwordInput = document.getElementById("password");
-    const toggleIcon = document.getElementById("togglePasswordIcon");
-
-    if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-        toggleIcon.classList.remove("fa-eye");
-        toggleIcon.classList.add("fa-eye-slash"); 
-    } else {
-        passwordInput.type = "password";
-        toggleIcon.classList.remove("fa-eye-slash");
-        toggleIcon.classList.add("fa-eye");
-    }
-}
-
 </script>
-
 
 </body>
 
