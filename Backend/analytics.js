@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 const db = require("./db");
@@ -325,11 +324,6 @@ router.get("/overview", async (req, res) => {
             0
         );
 
-        const normalCount = products.filter(
-            product => product.net_quantity > 0 &&
-                !fastProducts.some(fast => fast.id === product.id)
-        ).length;
-
         return res.json({
             success: true,
 
@@ -348,7 +342,6 @@ router.get("/overview", async (req, res) => {
                 fastCount: fastProducts.length,
                 slowCount: slowProducts.length,
                 noSalesCount: slowProducts.length,
-                normalCount,
                 lowStockCount: lowStockAll.length,
                 outOfStockCount,
                 restockCount: restockAll.length
@@ -400,6 +393,100 @@ router.get("/overview", async (req, res) => {
             message: "Failed to load analytics data."
         });
     }
+});
+
+async function askGemini(prompt) {
+    if (!process.env.GEMINI_API_KEY) return null;
+
+    const models = ["gemini-flash-lite-latest", "gemini-flash-latest"];
+
+    for (const model of models) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
+
+        try {
+            const response = await fetch(
+                "https://generativelanguage.googleapis.com/v1beta/models/" +
+                model + ":generateContent",
+                {
+                    method: "POST",
+                    signal: controller.signal,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-goog-api-key": process.env.GEMINI_API_KEY
+                    },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            maxOutputTokens: 400,
+                            temperature: 0.2
+                        }
+                    })
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (text && text.trim()) return text.trim();
+            }
+        } catch (error) {
+            console.log("Analytics AI error:", error.message);
+        } finally {
+            clearTimeout(timeout);
+        }
+    }
+
+    return null;
+}
+
+router.post("/insight", async (req, res) => {
+    const body = req.body || {};
+
+    const facts = {
+        days: numberOrZero(body.days),
+        net_sales: round(body.netSales, 2),
+        gross_sales: round(body.grossSales, 2),
+        refunds: round(body.refunds, 2),
+        transactions: numberOrZero(body.transactions),
+        fast_moving: numberOrZero(body.fastCount),
+        slow_moving: numberOrZero(body.slowCount),
+        low_stock: numberOrZero(body.lowStockCount),
+        out_of_stock: numberOrZero(body.outOfStockCount),
+        need_restock: numberOrZero(body.restockCount),
+        top_products: Array.isArray(body.topProducts)
+            ? body.topProducts.slice(0, 3).map(item => ({
+                name: String(item.name || "").slice(0, 60),
+                qty: numberOrZero(item.qty)
+            }))
+            : []
+    };
+
+    const topNames = facts.top_products.map(item => item.name).join(", ");
+
+    const fallback =
+        "Your net sales are ₱" +
+        facts.net_sales.toLocaleString("en-PH", { minimumFractionDigits: 2 }) +
+        " from " + facts.transactions + " transaction(s). " +
+        facts.need_restock + " product(s) need restocking and " +
+        facts.slow_moving + " product(s) are slow-moving" +
+        (topNames ? ". Your best sellers are " + topNames + "." : ".");
+
+    const prompt =
+        "You are advising the owner of a motorcycle parts shop. " +
+        "Write 2 short sentences in simple English that explain these sales " +
+        "and inventory results and suggest one practical action. " +
+        "Use 'you' and 'your'. Use ONLY the numbers given and do not invent numbers.\n\n" +
+        JSON.stringify(facts);
+
+    const text = await askGemini(prompt);
+
+    return res.json({
+        success: true,
+        aiUsed: Boolean(text),
+        insight: text || fallback
+    });
 });
 
 module.exports = router;
