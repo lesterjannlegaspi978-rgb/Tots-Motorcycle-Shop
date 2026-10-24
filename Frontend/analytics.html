@@ -95,6 +95,38 @@
             border: 1px solid #fecaca;
         }
 
+        .analytics-page .an-insight {
+            display: none;
+            margin-bottom: 18px;
+            padding: 16px 20px;
+            background: #ffffff;
+            border-left: 5px solid #6d28d9;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        .analytics-page .an-insight h3 {
+            margin: 0 0 6px;
+            color: #4c1d95;
+            font-size: 16px;
+        }
+
+        .analytics-page .an-insight p {
+            margin: 0;
+            color: #2f3e55;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .analytics-page .an-insight small {
+            display: block;
+            margin-top: 8px;
+            color: #7b8aa0;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
         .analytics-page .an-cards {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -451,7 +483,7 @@
         <li><a href="reports.html">Reports</a></li>
         <li><a href="analytics.html">Analytics</a></li>
         <li><a href="ai_recommendation.html">AI Recommendations</a></li>
-       <li><a href="#" onclick="logoutUser(); return false;">Logout</a></li>
+        <li><a href="#" onclick="logoutUser(); return false;">Logout</a></li>
     </ul>
 </div>
 
@@ -471,6 +503,12 @@
     </div>
 
     <div id="analyticsNotice" class="an-notice" role="status"></div>
+
+    <div class="an-insight" id="insightBox">
+        <h3>AI Insights</h3>
+        <p id="insightText"></p>
+        <small id="insightTag"></small>
+    </div>
 
     <div class="an-cards">
         <div class="an-card c-sales active"
@@ -1274,6 +1312,53 @@
         );
     }
 
+    async function loadInsight(data) {
+        const box = document.getElementById("insightBox");
+        const text = document.getElementById("insightText");
+        const tag = document.getElementById("insightTag");
+        const summary = data.summary || {};
+
+        box.style.display = "block";
+        text.textContent = "Analyzing your sales data...";
+        tag.textContent = "";
+
+        const payload = {
+            days: data.period?.days,
+            netSales: summary.netSales,
+            grossSales: summary.grossSales,
+            refunds: summary.totalRefunds,
+            transactions: summary.transactions,
+            fastCount: summary.fastCount,
+            slowCount: summary.slowCount,
+            lowStockCount: summary.lowStockCount,
+            outOfStockCount: summary.outOfStockCount,
+            restockCount: summary.restockCount,
+            topProducts: (data.fastMoving || []).slice(0, 3).map(item => ({
+                name: item.product_name,
+                qty: item.net_quantity
+            }))
+        };
+
+        try {
+            const response = await fetch("/analytics/insight", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (!result.success) throw new Error("Insight failed");
+
+            text.textContent = result.insight;
+            tag.textContent = result.aiUsed
+                ? "Written by AI"
+                : "Generated from recorded data";
+        } catch (error) {
+            text.textContent = "Insight is not available right now.";
+        }
+    }
+
     async function loadAnalytics() {
         hideNotice();
 
@@ -1294,15 +1379,17 @@
 
             if (!hasSales) {
                 showNotice(
-                    "No sales data available. Inventory analytics remain available.",
-                    "info"
+                    "No sales data available. Please record sales first.",
+                    "error"
                 );
+            } else {
+                loadInsight(data);
             }
         } catch (error) {
             console.error("Analytics Error:", error);
 
             showNotice(
-                "Unable to load analytics. Please make sure the backend server is running.",
+                "Unable to load analytics. Please try again.",
                 "error"
             );
 
