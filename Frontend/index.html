@@ -7,15 +7,17 @@
     <link rel="icon" href="logo.png">
     <style>
         :root {
-            --bg: #f4f7fc;
-            --surface: #ffffff;
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-soft: #e8f0ff;
-            --text: #0f172a;
-            --muted: #546178;
-            --border: #e2e8f4;
-            --shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+            --bg-top: #c3d2ea;
+            --bg-bottom: #92a9d1;
+            --card: rgba(255, 255, 255, 0.82);
+            --primary: #1d4ed8;
+            --primary-dark: #1e3a8a;
+            --primary-soft: #dbe6fb;
+            --navy: #1b2a4a;
+            --text: #0d1b3a;
+            --muted: #2f4165;
+            --border: rgba(255, 255, 255, 0.65);
+            --shadow: 0 14px 36px rgba(20, 40, 90, 0.22);
         }
 
         * {
@@ -30,13 +32,17 @@
 
         body {
             font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-            background:
-                radial-gradient(circle at 12% 8%, #dbe8ff 0, transparent 38%),
-                radial-gradient(circle at 92% 90%, #e3ecff 0, transparent 40%),
-                var(--bg);
+            background: linear-gradient(165deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            background-attachment: fixed;
             color: var(--text);
             min-height: 100vh;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
         }
 
         @keyframes rise {
@@ -59,7 +65,7 @@
             gap: 12px;
             font-size: 18px;
             font-weight: 800;
-            color: var(--text);
+            color: var(--navy);
         }
 
         .brand img {
@@ -67,15 +73,15 @@
             height: 44px;
             border-radius: 12px;
             object-fit: cover;
-            border: 1px solid var(--border);
+            border: 2px solid #fff;
+            box-shadow: 0 6px 16px rgba(20, 40, 90, 0.25);
         }
 
         .nav-btn {
             padding: 10px 24px;
             border-radius: 10px;
-            border: 1.5px solid var(--primary);
-            color: var(--primary);
-            background: transparent;
+            background: var(--navy);
+            color: #fff;
             text-decoration: none;
             font-size: 14px;
             font-weight: 700;
@@ -84,7 +90,6 @@
 
         .nav-btn:hover {
             background: var(--primary);
-            color: #fff;
         }
 
         .hero {
@@ -107,7 +112,7 @@
             gap: 8px;
             padding: 8px 16px;
             border-radius: 999px;
-            background: var(--primary-soft);
+            background: rgba(255, 255, 255, 0.7);
             color: var(--primary-dark);
             font-size: 12px;
             font-weight: 800;
@@ -129,7 +134,7 @@
             font-weight: 800;
             letter-spacing: -1.5px;
             margin-bottom: 22px;
-            color: var(--text);
+            color: var(--navy);
         }
 
         h1 span {
@@ -163,14 +168,14 @@
             text-decoration: none;
             font-size: 16px;
             font-weight: 700;
-            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 12px 28px rgba(29, 78, 216, 0.4);
             transition: 0.25s;
         }
 
         .login-btn:hover {
             background: var(--primary-dark);
             transform: translateY(-3px);
-            box-shadow: 0 16px 36px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 16px 36px rgba(30, 58, 138, 0.5);
         }
 
         .login-btn svg {
@@ -183,13 +188,14 @@
             align-items: center;
             gap: 8px;
             font-size: 13px;
+            font-weight: 600;
             color: var(--muted);
         }
 
         .note svg {
             width: 15px;
             height: 15px;
-            color: var(--primary);
+            color: var(--primary-dark);
         }
 
         .showcase {
@@ -199,9 +205,11 @@
         .panel {
             padding: 36px 30px;
             border-radius: 24px;
-            background: var(--surface);
+            background: var(--card);
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             text-align: center;
         }
 
@@ -211,12 +219,12 @@
             border-radius: 24px;
             object-fit: cover;
             margin-bottom: 20px;
-            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.3);
         }
 
         .panel h2 {
             font-size: 24px;
-            color: var(--text);
+            color: var(--navy);
             margin-bottom: 6px;
         }
 
@@ -235,7 +243,7 @@
             background: var(--primary-soft);
             color: var(--primary-dark);
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .location svg {
@@ -259,13 +267,13 @@
             font-weight: 800;
             letter-spacing: 2.4px;
             text-transform: uppercase;
-            color: var(--primary);
+            color: var(--primary-dark);
         }
 
         .section-head h3 {
             font-size: clamp(26px, 4vw, 36px);
             margin-top: 10px;
-            color: var(--text);
+            color: var(--navy);
             letter-spacing: -0.5px;
         }
 
@@ -278,16 +286,18 @@
         .card {
             padding: 28px;
             border-radius: 18px;
-            background: var(--surface);
+            background: var(--card);
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             transition: 0.3s;
         }
 
         .card:hover {
             transform: translateY(-6px);
-            border-color: var(--primary);
-            box-shadow: 0 18px 40px rgba(37, 99, 235, 0.16);
+            background: #fff;
+            box-shadow: 0 20px 44px rgba(20, 40, 90, 0.3);
         }
 
         .icon {
@@ -297,19 +307,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--primary-soft);
+            background: var(--primary);
             margin-bottom: 18px;
+            box-shadow: 0 8px 18px rgba(29, 78, 216, 0.35);
         }
 
         .icon svg {
             width: 25px;
             height: 25px;
-            color: var(--primary);
+            color: #fff;
         }
 
         .card h4 {
             font-size: 17px;
-            color: var(--text);
+            color: var(--navy);
             margin-bottom: 8px;
         }
 
@@ -321,11 +332,10 @@
 
         footer {
             text-align: center;
-            padding: 26px 20px 34px;
+            padding: 24px 20px 28px;
             font-size: 13px;
-            color: var(--muted);
-            background: var(--surface);
-            border-top: 1px solid var(--border);
+            color: #c9d6ee;
+            background: var(--navy);
         }
 
         @media (max-width: 960px) {
