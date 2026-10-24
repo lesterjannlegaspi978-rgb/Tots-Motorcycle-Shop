@@ -30,3 +30,8 @@
         });
     };
 })();
+
+window.logoutUser = function () {
+    localStorage.removeItem("authToken");
+    window.location.replace("login.html");
+};
