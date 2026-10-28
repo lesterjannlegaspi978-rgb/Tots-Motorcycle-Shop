@@ -1,5 +1,9 @@
 require("dotenv").config();
 
+if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is required");
+}
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -33,8 +37,7 @@ function verifyToken(req, res, next) {
 
 
     try {
-        req.user = jwt.verify(token, process.env.JWT_SECRET || "tots_motorshop_secret");
-        next();
+        req.user = jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
     }
