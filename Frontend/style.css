@@ -26,43 +26,17 @@ body::before {
     content: "";
 
     position: fixed;
-    inset: -25px;
-
-    background-image:
-        linear-gradient(
-            rgba(5, 15, 25, 0.45),
-            rgba(5, 15, 25, 0.45)
-        ),
-        url("images/tots-motorshop.jpg");
-
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-
-    filter: blur(10px);
-
-    transform: scale(1.05);
-
-    z-index: -2;
-
-    pointer-events: none;
-}
-
-body::after {
-    content: "";
-
-    position: fixed;
     inset: 0;
 
     background-image:
         linear-gradient(
-            rgba(5, 15, 25, 0.12),
-            rgba(5, 15, 25, 0.12)
+            rgba(10, 25, 65, 0.78),
+            rgba(10, 25, 65, 0.78)
         ),
         url("images/tots-motorshop.jpg");
 
-    background-size: contain;
-    background-position: center center;
+    background-size: cover;
+    background-position: center top;
     background-repeat: no-repeat;
 
     z-index: -1;
