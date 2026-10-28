@@ -30,8 +30,8 @@ body::before {
 
     background-image:
         linear-gradient(
-            rgba(10, 25, 65, 0.78),
-            rgba(10, 25, 65, 0.78)
+            rgba(12, 14, 20, 0.7),
+            rgba(12, 14, 20, 0.7)
         ),
         url("images/tots-motorshop.jpg");
 
