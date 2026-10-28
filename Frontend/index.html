@@ -9,14 +9,14 @@
         :root {
             --bg-top: #c3d2ea;
             --bg-bottom: #92a9d1;
-            --card: rgba(255, 255, 255, 0.82);
+            --card: rgba(255, 255, 255, 0.86);
             --primary: #1d4ed8;
             --primary-dark: #1e3a8a;
             --primary-soft: #dbe6fb;
             --navy: #1b2a4a;
             --text: #0d1b3a;
             --muted: #2f4165;
-            --border: rgba(255, 255, 255, 0.65);
+            --border: rgba(255, 255, 255, 0.7);
             --shadow: 0 14px 36px rgba(20, 40, 90, 0.22);
         }
 
@@ -43,6 +43,7 @@
 
         main {
             flex: 1;
+            width: 100%;
         }
 
         @keyframes rise {
@@ -51,9 +52,20 @@
         }
 
         nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            width: 100%;
+            background: rgba(195, 210, 234, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-inner {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px 28px;
+            padding: 14px 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -68,13 +80,27 @@
             color: var(--navy);
         }
 
-        .brand img {
+        .logo-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0b1220;
+            border: 2px solid #ffffff;
+            box-shadow: 0 6px 16px rgba(20, 40, 90, 0.3);
+            overflow: hidden;
+        }
+
+        .logo-badge img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand .logo-badge {
             width: 44px;
             height: 44px;
             border-radius: 12px;
-            object-fit: cover;
-            border: 2px solid #fff;
-            box-shadow: 0 6px 16px rgba(20, 40, 90, 0.25);
         }
 
         .nav-btn {
@@ -90,6 +116,12 @@
 
         .nav-btn:hover {
             background: var(--primary);
+        }
+
+        .nav-btn:focus-visible,
+        .login-btn:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: 3px;
         }
 
         .hero {
@@ -112,7 +144,7 @@
             gap: 8px;
             padding: 8px 16px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.75);
             color: var(--primary-dark);
             font-size: 12px;
             font-weight: 800;
@@ -208,18 +240,15 @@
             background: var(--card);
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             text-align: center;
         }
 
-        .panel img {
+        .panel .logo-badge {
             width: 130px;
             height: 130px;
-            border-radius: 24px;
-            object-fit: cover;
-            margin-bottom: 20px;
-            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.3);
+            margin: 0 auto 20px;
+            border-radius: 28px;
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.35);
         }
 
         .panel h2 {
@@ -251,15 +280,15 @@
             height: 15px;
         }
 
-        .features {
+        .section {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 50px 28px 90px;
+            padding: 50px 28px 10px;
         }
 
         .section-head {
             text-align: center;
-            margin-bottom: 42px;
+            margin-bottom: 38px;
         }
 
         .section-head small {
@@ -289,8 +318,6 @@
             background: var(--card);
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             transition: 0.3s;
         }
 
@@ -330,12 +357,94 @@
             color: var(--muted);
         }
 
+        .benefits {
+            padding-bottom: 20px;
+        }
+
+        .benefit {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 24px;
+            border-radius: 18px;
+            background: rgba(27, 42, 74, 0.92);
+            color: #e8eef9;
+            box-shadow: var(--shadow);
+        }
+
+        .benefit .num {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .benefit h4 {
+            font-size: 16px;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .benefit p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #c9d6ee;
+        }
+
+        .security {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 28px 70px;
+        }
+
+        .security-box {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 22px 26px;
+            border-radius: 18px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .security-box .icon {
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .security-box h4 {
+            font-size: 17px;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .security-box p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
         footer {
             text-align: center;
             padding: 24px 20px 28px;
             font-size: 13px;
             color: #c9d6ee;
             background: var(--navy);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
         }
 
         @media (max-width: 960px) {
@@ -350,8 +459,8 @@
         }
 
         @media (max-width: 600px) {
-            nav {
-                padding: 16px 20px;
+            .nav-inner {
+                padding: 12px 20px;
             }
 
             .brand span {
@@ -359,7 +468,8 @@
             }
 
             .hero,
-            .features {
+            .section,
+            .security {
                 padding-left: 20px;
                 padding-right: 20px;
             }
@@ -379,16 +489,23 @@
             .login-btn {
                 justify-content: center;
             }
+
+            .security-box {
+                flex-direction: column;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
     <nav>
-        <div class="brand">
-            <img src="logo.png" alt="Tot's Motorshop Logo">
-            <span>Tot's Motorshop</span>
+        <div class="nav-inner">
+            <div class="brand">
+                <div class="logo-badge"><img src="logo.png" alt="Tot's Motorshop Logo"></div>
+                <span>Tot's Motorshop</span>
+            </div>
+            <a href="login.html" class="nav-btn">Admin Login</a>
         </div>
-        <a href="login.html" class="nav-btn">Admin Login</a>
     </nav>
 
     <main>
@@ -415,7 +532,7 @@
 
             <div class="showcase">
                 <div class="panel">
-                    <img src="logo.png" alt="Tot's Motorshop Logo">
+                    <div class="logo-badge"><img src="logo.png" alt="Tot's Motorshop Logo"></div>
                     <h2>Tot's Motorcycle Shop</h2>
                     <p>Motorcycle parts, accessories, and oil</p>
                     <div class="location">
@@ -426,7 +543,7 @@
             </div>
         </section>
 
-        <section class="features" id="features">
+        <section class="section" id="features">
             <div class="section-head">
                 <small>System Modules</small>
                 <h3>Everything the shop needs in one place</h3>
@@ -479,6 +596,51 @@
                     </div>
                     <h4>AI Recommendations</h4>
                     <p>Get restocking and product movement suggestions based on your shop's data.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section benefits">
+            <div class="section-head">
+                <small>Why This System</small>
+                <h3>Built for Tot's Motorshop</h3>
+            </div>
+
+            <div class="grid">
+                <div class="benefit">
+                    <div class="num">1</div>
+                    <div>
+                        <h4>Accurate Inventory Records</h4>
+                        <p>Replaces handwritten notebooks and receipts with organized, up-to-date stock records.</p>
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <div class="num">2</div>
+                    <div>
+                        <h4>Automatic Stock Updates</h4>
+                        <p>Every sale, return, and stock-in updates the inventory, so counts stay correct.</p>
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <div class="num">3</div>
+                    <div>
+                        <h4>Data-Driven Decisions</h4>
+                        <p>Analytics and AI recommendations help decide what to restock and what to hold.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="security">
+            <div class="security-box">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 8.2-8 9-4.8-.8-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+                </div>
+                <div>
+                    <h4>Secure, Admin-Only Access</h4>
+                    <p>Only the authorized administrator can sign in. Passwords are securely hashed, and every page and data request requires a valid login.</p>
                 </div>
             </div>
         </section>
