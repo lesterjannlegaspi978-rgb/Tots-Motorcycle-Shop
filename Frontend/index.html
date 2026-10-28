@@ -84,23 +84,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #0b1220;
-            border: 2px solid #ffffff;
-            box-shadow: 0 6px 16px rgba(20, 40, 90, 0.3);
-            overflow: hidden;
+            background: transparent;
         }
 
         .logo-badge img {
             display: block;
-            width: 100%;
+            width: auto;
             height: 100%;
+            max-width: 100%;
             object-fit: contain;
+            filter: drop-shadow(0 6px 14px rgba(15, 23, 42, 0.35));
         }
 
-        .brand .logo-badge {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+       .brand .logo-badge {
+            height: 48px;
         }
 
         .nav-btn {
@@ -242,13 +239,10 @@
             box-shadow: var(--shadow);
             text-align: center;
         }
-
+        
         .panel .logo-badge {
-            width: 130px;
-            height: 130px;
+            height: 190px;
             margin: 0 auto 20px;
-            border-radius: 28px;
-            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.35);
         }
 
         .panel h2 {
