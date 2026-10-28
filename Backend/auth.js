@@ -53,7 +53,7 @@ router.post("/login", async (req, res) => {
 
         const token = jwt.sign(
             { id: user.id, username: user.username },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || "tots_motorshop_secret",
             { expiresIn: "1d" }
         );
 
