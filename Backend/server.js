@@ -1,9 +1,14 @@
 require("dotenv").config();
 
+if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET must be set before the server can start.");
+}
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const jwt = require("jsonwebtoken");
+const db = require("./db");
 
 const auth = require("./auth");
 const dashboard = require("./dashboard");
@@ -33,7 +38,7 @@ function verifyToken(req, res, next) {
 
 
     try {
-        req.user = jwt.verify(token, process.env.JWT_SECRET || "tots_motorshop_secret");
+        req.user = jwt.verify(token, process.env.JWT_SECRET);
         next();
     } catch (error) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
@@ -61,7 +66,13 @@ app.get("/", (req, res) => {
 
 const PORT = Number(process.env.PORT) || 5000;
 
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
-
+db.ready.then(() => {
+    app.listen(PORT, "0.0.0.0", () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}).catch(error => {
+    console.error("Server startup failed:", error);
+    db.end(() => {
+        process.exitCode = 1;
+    });
 });
