@@ -7,22 +7,13 @@
 
     <script src="auth-guard.js"></script>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Supplier Management - Tot's Motorshop</title>
 
-    <link
-        rel="icon"
-        href="logo.png"
-    >
+    <link rel="icon" href="logo.png">
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <link rel="stylesheet" href="style.css">
 
     <style>
 
@@ -30,14 +21,12 @@
             width: 100%;
         }
 
-
         .supplier-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-
 
         .supplier-header h1 {
             margin: 0;
@@ -51,13 +40,11 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
         }
 
-
         .supplier-form-box h2 {
             margin-top: 0;
             margin-bottom: 20px;
             color: #1f3c88;
         }
-
 
         .supplier-form-grid {
             display: grid;
@@ -65,24 +52,20 @@
             gap: 18px 22px;
         }
 
-
         .supplier-form-group {
             display: flex;
             flex-direction: column;
         }
 
-
         .supplier-form-group.full-width {
             grid-column: 1 / 3;
         }
-
 
         .supplier-form-group label {
             font-weight: 600;
             margin-bottom: 7px;
             color: #333;
         }
-
 
         .supplier-form-group input {
             width: 100%;
@@ -95,25 +78,19 @@
             transition: 0.2s;
         }
 
-
         .supplier-form-group input:focus {
             border-color: #2563eb;
-            box-shadow:
-                0 0 0 2px
-                rgba(37, 99, 235, 0.12);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
         }
-
 
         .supplier-form-group input:disabled {
             background: #f3f4f6;
             cursor: not-allowed;
         }
 
-
         .required {
             color: #dc2626;
         }
-
 
         .field-help {
             font-size: 11px;
@@ -130,14 +107,12 @@
             font-weight: 600;
         }
 
-
         .supplier-message.success {
             display: block;
             color: #166534;
             background: #dcfce7;
             border: 1px solid #86efac;
         }
-
 
         .supplier-message.error {
             display: block;
@@ -146,14 +121,12 @@
             border: 1px solid #fca5a5;
         }
 
-
         .supplier-button-row {
             margin-top: 20px;
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
-
 
         .add-supplier-btn,
         .clear-supplier-btn,
@@ -167,38 +140,31 @@
             transition: 0.2s;
         }
 
-
         .add-supplier-btn {
             background: #2563eb;
         }
 
-
         .add-supplier-btn:hover {
             background: #1d4ed8;
         }
-
 
         .add-supplier-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
 
-
         .clear-supplier-btn {
             background: #6b7280;
         }
-
 
         .clear-supplier-btn:hover {
             background: #4b5563;
         }
 
-
         .cancel-edit-btn {
             display: none;
             background: #dc2626;
         }
-
 
         .cancel-edit-btn:hover {
             background: #b91c1c;
@@ -216,27 +182,26 @@
             transition: 0.2s;
         }
 
-
         .edit-supplier-btn:hover {
             background: #1d4ed8;
         }
 
         .delete-supplier-btn {
-    border: none;
-    padding: 7px 14px;
-    border-radius: 6px;
-    background: #dc2626;
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-    margin-left: 6px;
-}
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            background: #dc2626;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-left: 6px;
+        }
 
-.delete-supplier-btn:hover {
-    background: #b91c1c;
-}
+        .delete-supplier-btn:hover {
+            background: #b91c1c;
+        }
 
         .supplier-table-box {
             background: rgba(255, 255, 255, 0.95);
@@ -245,7 +210,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
         }
 
-
         .supplier-table-header {
             display: flex;
             justify-content: space-between;
@@ -253,12 +217,10 @@
             margin-bottom: 15px;
         }
 
-
         .supplier-table-header h2 {
             margin: 0;
             color: #1f3c88;
         }
-
 
         .supplier-count {
             background: #eef4ff;
@@ -269,19 +231,16 @@
             font-weight: 600;
         }
 
-
         .supplier-table-wrapper {
             width: 100%;
             overflow-x: auto;
         }
 
-
         .supplier-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1000px;
+            min-width: 900px;
         }
-
 
         .supplier-table th {
             background: #1f3c88;
@@ -291,7 +250,6 @@
             font-size: 13px;
         }
 
-
         .supplier-table td {
             padding: 11px 12px;
             border-bottom: 1px solid #e5e7eb;
@@ -299,11 +257,9 @@
             color: #333;
         }
 
-
         .supplier-table tbody tr:hover {
             background: #f8fafc;
         }
-
 
         .supplier-code-badge {
             display: inline-block;
@@ -314,7 +270,6 @@
             font-weight: 600;
             font-size: 12px;
         }
-
 
         .no-suppliers {
             text-align: center;
@@ -336,11 +291,9 @@
                 grid-template-columns: 1fr;
             }
 
-
             .supplier-form-group.full-width {
                 grid-column: 1;
             }
-
 
             .supplier-header {
                 align-items: flex-start;
@@ -350,128 +303,127 @@
 
         }
 
-.delete-modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.60);
-    backdrop-filter: blur(3px);
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    z-index: 99999;
-}
+        .delete-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.60);
+            backdrop-filter: blur(3px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 99999;
+        }
 
-.delete-modal-overlay.show {
-    display: flex;
-}
+        .delete-modal-overlay.show {
+            display: flex;
+        }
 
-.delete-modal {
-    width: 100%;
-    max-width: 420px;
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 28px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-    animation: deleteModalAppear 0.2s ease-out;
-}
+        .delete-modal {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            animation: deleteModalAppear 0.2s ease-out;
+        }
 
-.delete-modal-icon {
-    width: 58px;
-    height: 58px;
-    margin: 0 auto 16px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fee2e2;
-    color: #dc2626;
-    font-size: 28px;
-    font-weight: bold;
-}
+        .delete-modal-icon {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fee2e2;
+            color: #dc2626;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-.delete-modal h2 {
-    margin: 0 0 10px;
-    color: #1f2937;
-    font-size: 21px;
-}
+        .delete-modal h2 {
+            margin: 0 0 10px;
+            color: #1f2937;
+            font-size: 21px;
+        }
 
-.delete-modal p {
-    margin: 0 0 24px;
-    color: #6b7280;
-    font-size: 14px;
-    line-height: 1.6;
-    overflow-wrap: anywhere;
-}
+        .delete-modal p {
+            margin: 0 0 24px;
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
 
-.delete-modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-}
+        .delete-modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
 
-.delete-modal-actions button {
-    flex: 1;
-    padding: 11px 16px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-}
+        .delete-modal-actions button {
+            flex: 1;
+            padding: 11px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
 
-.delete-modal-actions button:hover {
-    transform: translateY(-1px);
-}
+        .delete-modal-actions button:hover {
+            transform: translateY(-1px);
+        }
 
-.cancel-delete-btn {
-    background: #f3f4f6;
-    color: #374151;
-}
+        .cancel-delete-btn {
+            background: #f3f4f6;
+            color: #374151;
+        }
 
-.cancel-delete-btn:hover {
-    background: #e5e7eb;
-}
+        .cancel-delete-btn:hover {
+            background: #e5e7eb;
+        }
 
-.confirm-delete-btn {
-    background: #dc2626;
-    color: white;
-}
+        .confirm-delete-btn {
+            background: #dc2626;
+            color: white;
+        }
 
-.confirm-delete-btn:hover {
-    background: #b91c1c;
-}
+        .confirm-delete-btn:hover {
+            background: #b91c1c;
+        }
 
-.confirm-delete-btn:disabled,
-.cancel-delete-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
+        .confirm-delete-btn:disabled,
+        .cancel-delete-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-@keyframes deleteModalAppear {
-    from {
-        opacity: 0;
-        transform: translateY(8px) scale(0.98);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
+        @keyframes deleteModalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
 
-@media (max-width: 480px) {
-    .delete-modal {
-        padding: 22px;
-    }
+        @media (max-width: 480px) {
+            .delete-modal {
+                padding: 22px;
+            }
 
-    .delete-modal-actions {
-        flex-direction: column-reverse;
-    }
-}
-
+            .delete-modal-actions {
+                flex-direction: column-reverse;
+            }
+        }
 
     </style>
 
@@ -484,87 +436,57 @@
 
     <div class="sidebar-header">
 
-        <img
-            src="logo.png"
-            class="sidebar-logo"
-        >
+        <img src="logo.png" class="sidebar-logo">
 
         <h2>Tot's Motorshop</h2>
 
     </div>
 
-
     <ul>
 
         <li>
-            <a href="dashboard.html">
-                Dashboard
-            </a>
+            <a href="dashboard.html">Dashboard</a>
         </li>
 
-
         <li>
-            <a href="inventory.html">
-                Inventory
-            </a>
+            <a href="inventory.html">Inventory</a>
         </li>
 
-
-       <li>
-    <a href="supplier.html" class="active">
-        Suppliers
-    </a>
-</li>
-
-<li>
-    <a href="purchase-order.html">
-        Purchase Orders
-    </a>
-</li>
-
-
-<li>
-    <a href="stock_in.html">
-        Stock In
-    </a>
-</li>
-
-<li>
-    <a href="sales.html">
-        Sales
-    </a>
-</li>
-
- <li>
-
-    <a href="sales-return.html">Sales Return</a>
-
-</li>
-
-<li>
-    <a href="sales-refund.html">
-        Sales Refund
-    </a>
-</li>
-
-
         <li>
-            <a href="reports.html">
-                Reports
-            </a>
+            <a href="supplier.html" class="active">Suppliers</a>
         </li>
 
+        <li>
+            <a href="purchase-order.html">Purchase Orders</a>
+        </li>
 
         <li>
-            <a href="analytics.html">
-                Analytics
-            </a>
+            <a href="stock_in.html">Stock In</a>
+        </li>
+
+        <li>
+            <a href="sales.html">Sales</a>
+        </li>
+
+        <li>
+            <a href="sales-return.html">Sales Return</a>
+        </li>
+
+        <li>
+            <a href="sales-refund.html">Sales Refund</a>
+        </li>
+
+        <li>
+            <a href="reports.html">Reports</a>
+        </li>
+
+        <li>
+            <a href="analytics.html">Analytics</a>
         </li>
 
         <li>
             <a href="ai_recommendation.html">AI Recommendations</a>
         </li>
-
 
         <li>
             <a href="#" onclick="logoutUser(); return false;">Logout</a>
@@ -576,46 +498,31 @@
 
 <div class="content">
 
-
     <div class="supplier-page">
-
 
         <div class="supplier-header">
 
-            <h1>
-                Supplier Management
-            </h1>
+            <h1>Supplier Management</h1>
 
         </div>
 
         <div class="supplier-form-box">
 
+            <h2 id="formTitle">Add Supplier</h2>
 
-            <h2 id="formTitle">
-                Add Supplier
-            </h2>
-
-
-            <div
-                id="editModeTitle"
-                class="edit-mode-title"
-            >
+            <div id="editModeTitle" class="edit-mode-title">
                 Editing existing supplier
             </div>
 
-
             <form id="supplierForm">
-
 
                 <div class="supplier-form-grid">
 
                     <div class="supplier-form-group">
 
                         <label for="supplierCode">
-
                             Supplier Code
                             <span class="required">*</span>
-
                         </label>
 
                         <input
@@ -627,9 +534,7 @@
                         >
 
                         <span class="field-help">
-
                             Format: SUP followed by 3 digits.
-
                         </span>
 
                     </div>
@@ -637,10 +542,8 @@
                     <div class="supplier-form-group">
 
                         <label for="supplierName">
-
                             Supplier Name
                             <span class="required">*</span>
-
                         </label>
 
                         <input
@@ -655,30 +558,9 @@
 
                     <div class="supplier-form-group">
 
-                        <label for="contactPerson">
-
-                            Contact Person
-                            <span class="required">*</span>
-
-                        </label>
-
-                        <input
-                            type="text"
-                            id="contactPerson"
-                            placeholder="Enter contact person's name"
-                            maxlength="100"
-                            required
-                        >
-
-                    </div>
-
-                    <div class="supplier-form-group">
-
                         <label for="contactNumber">
-
                             Contact Number
                             <span class="required">*</span>
-
                         </label>
 
                         <input
@@ -691,10 +573,8 @@
                         >
 
                         <span class="field-help">
-
                             Philippine mobile number:
                             11 digits starting with 09.
-
                         </span>
 
                     </div>
@@ -702,10 +582,8 @@
                     <div class="supplier-form-group">
 
                         <label for="email">
-
                             Gmail Address
                             <span class="required">*</span>
-
                         </label>
 
                         <input
@@ -717,20 +595,16 @@
                         >
 
                         <span class="field-help">
-
                             Gmail address ending in @gmail.com.
-
                         </span>
 
                     </div>
 
-                    <div class="supplier-form-group">
+                    <div class="supplier-form-group full-width">
 
                         <label for="address">
-
                             Address
                             <span class="required">*</span>
-
                         </label>
 
                         <input
@@ -743,16 +617,11 @@
 
                     </div>
 
-
                 </div>
 
-                <div
-                    id="supplierMessage"
-                    class="supplier-message"
-                ></div>
+                <div id="supplierMessage" class="supplier-message"></div>
 
                 <div class="supplier-button-row">
-
 
                     <button
                         type="submit"
@@ -762,7 +631,6 @@
                         Add Supplier
                     </button>
 
-
                     <button
                         type="button"
                         class="clear-supplier-btn"
@@ -770,7 +638,6 @@
                     >
                         Clear
                     </button>
-
 
                     <button
                         type="button"
@@ -781,9 +648,7 @@
                         Cancel Edit
                     </button>
 
-
                 </div>
-
 
             </form>
 
@@ -791,23 +656,15 @@
 
         <div class="supplier-table-box">
 
-
             <div class="supplier-table-header">
 
-                <h2>
-                    Supplier List
-                </h2>
+                <h2>Supplier List</h2>
 
-
-                <span
-                    class="supplier-count"
-                    id="supplierCount"
-                >
+                <span class="supplier-count" id="supplierCount">
                     0 Suppliers
                 </span>
 
             </div>
-
 
             <div class="supplier-table-wrapper">
 
@@ -816,43 +673,16 @@
                     <thead>
 
                         <tr>
-
-                            <th>
-                                ID
-                            </th>
-
-                            <th>
-                                Supplier Code
-                            </th>
-
-                            <th>
-                                Supplier Name
-                            </th>
-
-                            <th>
-                                Contact Person
-                            </th>
-
-                            <th>
-                                Contact Number
-                            </th>
-
-                            <th>
-                                Gmail
-                            </th>
-
-                            <th>
-                                Address
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
-
+                            <th>ID</th>
+                            <th>Supplier Code</th>
+                            <th>Supplier Name</th>
+                            <th>Contact Number</th>
+                            <th>Gmail</th>
+                            <th>Address</th>
+                            <th>Action</th>
                         </tr>
 
                     </thead>
-
 
                     <tbody id="supplierTableBody">
 
@@ -862,12 +692,9 @@
 
             </div>
 
-
         </div>
 
-
     </div>
-
 
 </div>
 
@@ -910,9 +737,8 @@
 </div>
 
 <script>
-    
-const API_URL = "";
 
+const API_URL = "";
 
 let editingSupplierId = null;
 
@@ -968,170 +794,79 @@ function confirmSupplierDeletion(supplierName) {
     });
 }
 
-const sidebar =
-    document.querySelector(".sidebar");
-
-
-const content =
-    document.querySelector(".content");
-
+const sidebar = document.querySelector(".sidebar");
+const content = document.querySelector(".content");
 
 if (sidebar && content) {
 
     sidebar.classList.add("hide");
 
+    sidebar.addEventListener("mouseenter", () => {
+        sidebar.classList.remove("hide");
+        content.classList.add("expand");
+    });
 
-    sidebar.addEventListener(
-        "mouseenter",
-        () => {
-
-            sidebar.classList.remove("hide");
-
-            content.classList.add("expand");
-
-        }
-    );
-
-
-    sidebar.addEventListener(
-        "mouseleave",
-        () => {
-
-            sidebar.classList.add("hide");
-
-            content.classList.remove("expand");
-
-        }
-    );
+    sidebar.addEventListener("mouseleave", () => {
+        sidebar.classList.add("hide");
+        content.classList.remove("expand");
+    });
 
 }
 
-const supplierForm =
-    document.getElementById(
-        "supplierForm"
-    );
+const supplierForm = document.getElementById("supplierForm");
+const supplierMessage = document.getElementById("supplierMessage");
+const submitSupplierButton = document.getElementById("submitSupplierButton");
+const cancelEditButton = document.getElementById("cancelEditButton");
+const formTitle = document.getElementById("formTitle");
+const editModeTitle = document.getElementById("editModeTitle");
 
-
-const supplierMessage =
-    document.getElementById(
-        "supplierMessage"
-    );
-
-
-const submitSupplierButton =
-    document.getElementById(
-        "submitSupplierButton"
-    );
-
-
-const cancelEditButton =
-    document.getElementById(
-        "cancelEditButton"
-    );
-
-
-const formTitle =
-    document.getElementById(
-        "formTitle"
-    );
-
-
-const editModeTitle =
-    document.getElementById(
-        "editModeTitle"
-    );
 
 function isValidSupplierCode(value) {
-
     return /^SUP\d{3}$/.test(value);
-
 }
-
 
 function isValidSupplierName(value) {
-
     return /^[A-Za-z0-9&.,'()\- ]{2,150}$/.test(value);
-
 }
-
-
-function isValidContactPerson(value) {
-
-    return /^[A-Za-z][A-Za-z .'-]{1,99}$/.test(value);
-
-}
-
 
 function isValidPhilippineMobile(value) {
-
     return /^09\d{9}$/.test(value);
-
 }
-
 
 function isValidGmail(value) {
 
-    const gmailPattern =
-        /^[a-z0-9][a-z0-9._%+-]*@gmail\.com$/i;
-
+    const gmailPattern = /^[a-z0-9][a-z0-9._%+-]*@gmail\.com$/i;
 
     if (!gmailPattern.test(value)) {
         return false;
     }
 
+    const localPart = value.split("@")[0];
 
-    const localPart =
-        value.split("@")[0];
-
-
-    if (
-        localPart.startsWith(".") ||
-        localPart.endsWith(".")
-    ) {
+    if (localPart.startsWith(".") || localPart.endsWith(".")) {
         return false;
     }
-
 
     if (localPart.includes("..")) {
         return false;
     }
 
-
     return true;
 
 }
 
-
 function isValidAddress(value) {
-
-    return (
-        value.length >= 5 &&
-        value.length <= 255
-    );
-
+    return value.length >= 5 && value.length <= 255;
 }
 
-function showMessage(
-    message,
-    type
-) {
-
-    supplierMessage.textContent =
-        message;
-
-    supplierMessage.className =
-        "supplier-message " + type;
-
+function showMessage(message, type) {
+    supplierMessage.textContent = message;
+    supplierMessage.className = "supplier-message " + type;
 }
 
 function clearMessage() {
-
-    supplierMessage.textContent =
-        "";
-
-    supplierMessage.className =
-        "supplier-message";
-
+    supplierMessage.textContent = "";
+    supplierMessage.className = "supplier-message";
 }
 
 function getSupplierFormData() {
@@ -1139,42 +874,19 @@ function getSupplierFormData() {
     return {
 
         supplier_code:
-            document
-                .getElementById("supplierCode")
-                .value
-                .trim()
-                .toUpperCase(),
+            document.getElementById("supplierCode").value.trim().toUpperCase(),
 
         supplier_name:
-            document
-                .getElementById("supplierName")
-                .value
-                .trim(),
-
-        contact_person:
-            document
-                .getElementById("contactPerson")
-                .value
-                .trim(),
+            document.getElementById("supplierName").value.trim(),
 
         contact_number:
-            document
-                .getElementById("contactNumber")
-                .value
-                .trim(),
+            document.getElementById("contactNumber").value.trim(),
 
         email:
-            document
-                .getElementById("email")
-                .value
-                .trim()
-                .toLowerCase(),
+            document.getElementById("email").value.trim().toLowerCase(),
 
         address:
-            document
-                .getElementById("address")
-                .value
-                .trim()
+            document.getElementById("address").value.trim()
 
     };
 
@@ -1182,86 +894,35 @@ function getSupplierFormData() {
 
 function validateSupplierForm(data) {
 
-
     if (
         !data.supplier_code ||
         !data.supplier_name ||
-        !data.contact_person ||
         !data.contact_number ||
         !data.email ||
         !data.address
     ) {
-
         return "Please complete all required supplier fields.";
-
     }
 
-
-    if (
-        !isValidSupplierCode(
-            data.supplier_code
-        )
-    ) {
-
+    if (!isValidSupplierCode(data.supplier_code)) {
         return "Supplier Code must follow the format SUP001.";
-
     }
 
-
-    if (
-        !isValidSupplierName(
-            data.supplier_name
-        )
-    ) {
-
+    if (!isValidSupplierName(data.supplier_name)) {
         return "Supplier Name contains invalid characters.";
-
     }
 
-
-    if (
-        !isValidContactPerson(
-            data.contact_person
-        )
-    ) {
-
-        return "Contact Person must contain a valid name using letters, spaces, hyphens, or apostrophes.";
-
-    }
-
-
-    if (
-        !isValidPhilippineMobile(
-            data.contact_number
-        )
-    ) {
-
+    if (!isValidPhilippineMobile(data.contact_number)) {
         return "Contact Number must contain exactly 11 digits and start with 09.";
-
     }
 
-
-    if (
-        !isValidGmail(
-            data.email
-        )
-    ) {
-
+    if (!isValidGmail(data.email)) {
         return "Please enter a valid Gmail address ending in @gmail.com.";
-
     }
 
-
-    if (
-        !isValidAddress(
-            data.address
-        )
-    ) {
-
+    if (!isValidAddress(data.address)) {
         return "Please enter a valid supplier address.";
-
     }
-
 
     return null;
 
@@ -1273,17 +934,13 @@ function clearSupplierForm() {
 
     editingSupplierId = null;
 
-    formTitle.textContent =
-        "Add Supplier";
+    formTitle.textContent = "Add Supplier";
 
-    editModeTitle.style.display =
-        "none";
+    editModeTitle.style.display = "none";
 
-    submitSupplierButton.textContent =
-        "Add Supplier";
+    submitSupplierButton.textContent = "Add Supplier";
 
-    cancelEditButton.style.display =
-        "none";
+    cancelEditButton.style.display = "none";
 
     clearMessage();
 
@@ -1291,546 +948,301 @@ function clearSupplierForm() {
 
 function editSupplier(supplier) {
 
-    editingSupplierId =
-        supplier.id;
+    editingSupplierId = supplier.id;
 
-
-    document.getElementById(
-        "supplierCode"
-    ).value =
+    document.getElementById("supplierCode").value =
         supplier.supplier_code || "";
 
-
-    document.getElementById(
-        "supplierName"
-    ).value =
+    document.getElementById("supplierName").value =
         supplier.supplier_name || "";
 
-
-    document.getElementById(
-        "contactPerson"
-    ).value =
-        supplier.contact_person || "";
-
-
-    document.getElementById(
-        "contactNumber"
-    ).value =
+    document.getElementById("contactNumber").value =
         supplier.contact_number || "";
 
-
-    document.getElementById(
-        "email"
-    ).value =
+    document.getElementById("email").value =
         supplier.email || "";
 
-
-    document.getElementById(
-        "address"
-    ).value =
+    document.getElementById("address").value =
         supplier.address || "";
 
+    formTitle.textContent = "Update Supplier";
 
-    formTitle.textContent =
-        "Update Supplier";
+    editModeTitle.style.display = "block";
 
+    submitSupplierButton.textContent = "Save Changes";
 
-    editModeTitle.style.display =
-        "block";
-
-
-    submitSupplierButton.textContent =
-        "Save Changes";
-
-
-    cancelEditButton.style.display =
-        "inline-block";
-
+    cancelEditButton.style.display = "inline-block";
 
     clearMessage();
 
-
     window.scrollTo({
-
         top: 0,
-
         behavior: "smooth"
-
     });
 
 }
 
 function cancelEdit() {
-
     clearSupplierForm();
-
 }
 
-supplierForm.addEventListener(
-    "submit",
-    async function(event) {
+supplierForm.addEventListener("submit", async function(event) {
 
-        event.preventDefault();
+    event.preventDefault();
 
+    clearMessage();
 
-        clearMessage();
+    const data = getSupplierFormData();
 
+    const validationError = validateSupplierForm(data);
 
-        const data =
-            getSupplierFormData();
-
-
-        const validationError =
-            validateSupplierForm(
-                data
-            );
-
-
-        if (validationError) {
-
-            showMessage(
-                validationError,
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        submitSupplierButton.disabled =
-            true;
-
-
-        submitSupplierButton.textContent =
-            editingSupplierId
-                ? "Saving..."
-                : "Adding...";
-
-
-        try {
-
-            if (editingSupplierId) {
-
-                const response =
-                    await fetch(
-                        `${API_URL}/suppliers/update/${editingSupplierId}`,
-                        {
-
-                            method: "PUT",
-
-                            headers: {
-
-                                "Content-Type":
-                                    "application/json"
-
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    data
-                                )
-
-                        }
-                    );
-
-
-                const result =
-                    await response.json();
-
-
-                if (
-                    !response.ok ||
-                    !result.success
-                ) {
-
-                    showMessage(
-                        result.message ||
-                        "Unable to update supplier.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                showMessage(
-                    result.message ||
-                    "Supplier Updated Successfully!",
-                    "success"
-                );
-
-
-                await loadSuppliers();
-
-
-                setTimeout(() => {
-
-                    clearSupplierForm();
-
-                }, 800);
-
-
-                return;
-
-            }
-
-            const response =
-                await fetch(
-                    `${API_URL}/suppliers/add`,
-                    {
-
-                        method: "POST",
-
-                        headers: {
-
-                            "Content-Type":
-                                "application/json"
-
-                        },
-
-                        body:
-                            JSON.stringify(
-                                data
-                            )
-
-                    }
-                );
-
-
-            const result =
-                await response.json();
-
-
-            if (
-                !response.ok ||
-                !result.success
-            ) {
-
-                showMessage(
-                    result.message ||
-                    "Unable to add supplier.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            showMessage(
-                result.message ||
-                "Supplier Added Successfully!",
-                "success"
-            );
-
-
-            supplierForm.reset();
-
-
-            await loadSuppliers();
-
-
-        }
-        catch(error) {
-
-            console.error(
-                "SUPPLIER REQUEST ERROR:",
-                error
-            );
-
-
-            showMessage(
-                "Unable to connect to the server.",
-                "error"
-            );
-
-        }
-        finally {
-
-            submitSupplierButton.disabled =
-                false;
-
-
-            if (editingSupplierId) {
-
-                submitSupplierButton.textContent =
-                    "Save Changes";
-
-            }
-            else {
-
-                submitSupplierButton.textContent =
-                    "Add Supplier";
-
-            }
-
-        }
-
-    }
-);
-
-async function loadSuppliers() {
-
-    const tableBody =
-        document.getElementById(
-            "supplierTableBody"
-        );
-
-
-    const supplierCount =
-        document.getElementById(
-            "supplierCount"
-        );
-
-
-    try {
-
-        const response =
-            await fetch(
-                `${API_URL}/suppliers/all`
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Unable to load suppliers."
-            );
-
-        }
-
-
-        const suppliers =
-            await response.json();
-
-
-        tableBody.innerHTML =
-            "";
-
-
-        const count =
-            Array.isArray(suppliers)
-                ? suppliers.length
-                : 0;
-
-
-        supplierCount.textContent =
-            count +
-            (
-                count === 1
-                    ? " Supplier"
-                    : " Suppliers"
-            );
-
-
-        if (
-            !Array.isArray(suppliers) ||
-            suppliers.length === 0
-        ) {
-
-            tableBody.innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="8"
-                        class="no-suppliers"
-                    >
-
-                        No suppliers found.
-
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        suppliers.forEach(
-            supplier => {
-
-                const row =
-                    document.createElement(
-                        "tr"
-                    );
-
-
-                row.innerHTML = `
-
-                    <td>
-                        ${supplier.id ?? ""}
-                    </td>
-
-
-                    <td>
-
-                        <span
-                            class="supplier-code-badge"
-                        >
-
-                            ${supplier.supplier_code ?? ""}
-
-                        </span>
-
-                    </td>
-
-
-                    <td>
-                        ${supplier.supplier_name ?? ""}
-                    </td>
-
-
-                    <td>
-                        ${supplier.contact_person ?? ""}
-                    </td>
-
-
-                    <td>
-                        ${supplier.contact_number ?? ""}
-                    </td>
-
-
-                    <td>
-                        ${supplier.email ?? ""}
-                    </td>
-
-
-                    <td>
-                        ${supplier.address ?? ""}
-                    </td>
-
-
-                    <td>
-
-                        <button
-                            type="button"
-                            class="edit-supplier-btn"
-                        >
-                            Edit
-                        </button>
-
-                        <button
-                            type="button"
-                             class="delete-supplier-btn"
-                        >
-                          Delete
-                        </button>
-
-
-
-                    </td>
-
-                `;
-
-
-                const editButton =
-                    row.querySelector(
-                        ".edit-supplier-btn"
-                    );
-
-
-                editButton.addEventListener(
-                    "click",
-                    () => {
-
-                        editSupplier(
-                            supplier
-                        );
-
-                    }
-                );
-                    
-                const deleteButton = row.querySelector(
-    ".delete-supplier-btn"
-);
-
-deleteButton.addEventListener("click", async () => {
-    const supplierId = Number(supplier.id);
-
-    if (!Number.isInteger(supplierId) || supplierId <= 0) {
-        showMessage("Invalid supplier ID.", "error");
+    if (validationError) {
+        showMessage(validationError, "error");
         return;
     }
 
-    const confirmed = await confirmSupplierDeletion(
-    supplier.supplier_name
-);
+    submitSupplierButton.disabled = true;
 
-if (!confirmed) {
-    return;
-}
+    submitSupplierButton.textContent =
+        editingSupplierId ? "Saving..." : "Adding...";
 
     try {
+
+        if (editingSupplierId) {
+
+            const response = await fetch(
+                `${API_URL}/suppliers/update/${editingSupplierId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                showMessage(
+                    result.message || "Unable to update supplier.",
+                    "error"
+                );
+                return;
+            }
+
+            showMessage(
+                result.message || "Supplier Updated Successfully!",
+                "success"
+            );
+
+            await loadSuppliers();
+
+            setTimeout(() => {
+                clearSupplierForm();
+            }, 800);
+
+            return;
+
+        }
+
         const response = await fetch(
-            `${API_URL}/suppliers/delete/${supplierId}`,
-            { method: "DELETE" }
+            `${API_URL}/suppliers/add`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }
         );
 
         const result = await response.json();
 
         if (!response.ok || !result.success) {
             showMessage(
-                result.message || "Failed to delete supplier.",
+                result.message || "Unable to add supplier.",
                 "error"
             );
             return;
         }
 
         showMessage(
-            result.message || "Supplier deleted successfully!",
+            result.message || "Supplier Added Successfully!",
             "success"
         );
 
+        supplierForm.reset();
+
         await loadSuppliers();
 
-    } catch (error) {
-        console.error("DELETE SUPPLIER ERROR:", error);
-        showMessage("Unable to connect to the server.", "error");
     }
+    catch (error) {
+
+        console.error("SUPPLIER REQUEST ERROR:", error);
+
+        showMessage("Unable to connect to the server.", "error");
+
+    }
+    finally {
+
+        submitSupplierButton.disabled = false;
+
+        if (editingSupplierId) {
+            submitSupplierButton.textContent = "Save Changes";
+        }
+        else {
+            submitSupplierButton.textContent = "Add Supplier";
+        }
+
+    }
+
 });
 
-                tableBody.appendChild(
-                    row
-                );
+async function loadSuppliers() {
 
-            }
-        );
+    const tableBody = document.getElementById("supplierTableBody");
+    const supplierCount = document.getElementById("supplierCount");
 
+    try {
 
-    }
-    catch(error) {
+        const response = await fetch(`${API_URL}/suppliers/all`);
 
-        console.error(
-            "LOAD SUPPLIERS ERROR:",
-            error
-        );
+        if (!response.ok) {
+            throw new Error("Unable to load suppliers.");
+        }
 
+        const suppliers = await response.json();
+
+        tableBody.innerHTML = "";
+
+        const count = Array.isArray(suppliers) ? suppliers.length : 0;
 
         supplierCount.textContent =
-            "0 Suppliers";
+            count + (count === 1 ? " Supplier" : " Suppliers");
 
+        if (!Array.isArray(suppliers) || suppliers.length === 0) {
 
-        tableBody.innerHTML = `
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="no-suppliers">
+                        No suppliers found.
+                    </td>
+                </tr>
+            `;
 
-            <tr>
+            return;
 
-                <td
-                    colspan="8"
-                    class="no-suppliers"
-                >
+        }
 
-                    Unable to load suppliers.
+        suppliers.forEach(supplier => {
 
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${supplier.id ?? ""}</td>
+
+                <td>
+                    <span class="supplier-code-badge">
+                        ${supplier.supplier_code ?? ""}
+                    </span>
                 </td>
 
-            </tr>
+                <td>${supplier.supplier_name ?? ""}</td>
 
+                <td>${supplier.contact_number ?? ""}</td>
+
+                <td>${supplier.email ?? ""}</td>
+
+                <td>${supplier.address ?? ""}</td>
+
+                <td>
+                    <button type="button" class="edit-supplier-btn">
+                        Edit
+                    </button>
+
+                    <button type="button" class="delete-supplier-btn">
+                        Delete
+                    </button>
+                </td>
+            `;
+
+            const editButton = row.querySelector(".edit-supplier-btn");
+
+            editButton.addEventListener("click", () => {
+                editSupplier(supplier);
+            });
+
+            const deleteButton = row.querySelector(".delete-supplier-btn");
+
+            deleteButton.addEventListener("click", async () => {
+
+                const supplierId = Number(supplier.id);
+
+                if (!Number.isInteger(supplierId) || supplierId <= 0) {
+                    showMessage("Invalid supplier ID.", "error");
+                    return;
+                }
+
+                const confirmed = await confirmSupplierDeletion(
+                    supplier.supplier_name
+                );
+
+                if (!confirmed) {
+                    return;
+                }
+
+                try {
+
+                    const response = await fetch(
+                        `${API_URL}/suppliers/delete/${supplierId}`,
+                        { method: "DELETE" }
+                    );
+
+                    const result = await response.json();
+
+                    if (!response.ok || !result.success) {
+                        showMessage(
+                            result.message || "Failed to delete supplier.",
+                            "error"
+                        );
+                        return;
+                    }
+
+                    showMessage(
+                        result.message || "Supplier deleted successfully!",
+                        "success"
+                    );
+
+                    await loadSuppliers();
+
+                } catch (error) {
+
+                    console.error("DELETE SUPPLIER ERROR:", error);
+
+                    showMessage("Unable to connect to the server.", "error");
+
+                }
+
+            });
+
+            tableBody.appendChild(row);
+
+        });
+
+    }
+    catch (error) {
+
+        console.error("LOAD SUPPLIERS ERROR:", error);
+
+        supplierCount.textContent = "0 Suppliers";
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="no-suppliers">
+                    Unable to load suppliers.
+                </td>
+            </tr>
         `;
 
     }
@@ -1840,7 +1252,6 @@ if (!confirmed) {
 loadSuppliers();
 
 </script>
-
 
 </body>
 

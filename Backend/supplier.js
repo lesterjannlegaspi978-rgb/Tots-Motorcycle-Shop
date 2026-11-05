@@ -10,17 +10,12 @@ function isValidSupplierName(value) {
     return /^[A-Za-z0-9&.,'()\- ]{2,150}$/.test(value);
 }
 
-function isValidContactPerson(value) {
-    return /^[A-Za-z][A-Za-z .'-]{1,99}$/.test(value);
-}
-
 function isValidPhilippineMobile(value) {
     return /^09\d{9}$/.test(value);
 }
 
 function isValidGmail(value) {
-    const gmailPattern =
-        /^[a-z0-9][a-z0-9._%+-]*@gmail\.com$/i;
+    const gmailPattern = /^[a-z0-9][a-z0-9._%+-]*@gmail\.com$/i;
 
     if (!gmailPattern.test(value)) {
         return false;
@@ -28,10 +23,7 @@ function isValidGmail(value) {
 
     const localPart = value.split("@")[0];
 
-    if (
-        localPart.startsWith(".") ||
-        localPart.endsWith(".")
-    ) {
+    if (localPart.startsWith(".") || localPart.endsWith(".")) {
         return false;
     }
 
@@ -39,91 +31,77 @@ function isValidGmail(value) {
         return false;
     }
 
+
     return true;
 }
 
 function isValidAddress(value) {
-    return (
-        value.length >= 5 &&
-        value.length <= 255
-    );
+    return value.length >= 5 && value.length <= 255;
+}
+
+/* Shared cleaning + validation for add and update.
+   Returns { error } or { data } */
+function cleanAndValidate(body) {
+    const data = {
+        supplier_code: String(body.supplier_code || "").trim().toUpperCase(),
+        supplier_name: String(body.supplier_name || "").trim(),
+        contact_number: String(body.contact_number || "").trim(),
+        email: String(body.email || "").trim().toLowerCase(),
+        address: String(body.address || "").trim()
+    };
+
+    if (
+        !data.supplier_code ||
+        !data.supplier_name ||
+        !data.contact_number ||
+        !data.email ||
+        !data.address
+    ) {
+        return { error: "Please complete all required supplier fields." };
+    }
+
+    if (!isValidSupplierCode(data.supplier_code)) {
+        return { error: "Supplier Code must follow the format SUP001." };
+    }
+
+
+    if (!isValidSupplierName(data.supplier_name)) {
+        return { error: "Supplier Name contains invalid characters." };
+    }
+
+    if (!isValidPhilippineMobile(data.contact_number)) {
+        return { error: "Contact Number must contain exactly 11 digits and start with 09." };
+    }
+
+    if (!isValidGmail(data.email)) {
+        return { error: "Please enter a valid Gmail address ending in @gmail.com." };
+    }
+
+    if (!isValidAddress(data.address)) {
+        return { error: "Please enter a valid supplier address." };
+    }
+
+    return { data };
 }
 
 router.post("/add", (req, res) => {
-    let {
+    const checked = cleanAndValidate(req.body);
+
+    if (checked.error) {
+        return res.status(400).json({
+            success: false,
+            message: checked.error
+        });
+    }
+
+    const {
         supplier_code,
+
         supplier_name,
-        contact_person,
         contact_number,
         email,
         address
-    } = req.body;
-
-    supplier_code = String(supplier_code || "")
-        .trim()
-        .toUpperCase();
-
-    supplier_name = String(supplier_name || "").trim();
-    contact_person = String(contact_person || "").trim();
-    contact_number = String(contact_number || "").trim();
-    email = String(email || "").trim().toLowerCase();
-    address = String(address || "").trim();
-
-    if (
-        !supplier_code ||
-        !supplier_name ||
-        !contact_person ||
-        !contact_number ||
-        !email ||
-        !address
-    ) {
-        return res.status(400).json({
-            success: false,
-            message: "Please complete all required supplier fields."
-        });
-    }
-
-    if (!isValidSupplierCode(supplier_code)) {
-        return res.status(400).json({
-            success: false,
-            message: "Supplier Code must follow the format SUP001."
-        });
-    }
-
-    if (!isValidSupplierName(supplier_name)) {
-        return res.status(400).json({
-            success: false,
-            message: "Supplier Name contains invalid characters."
-        });
-    }
-
-    if (!isValidContactPerson(contact_person)) {
-        return res.status(400).json({
-            success: false,
-            message: "Contact Person must contain a valid name using letters, spaces, hyphens, or apostrophes."
-        });
-    }
-
-    if (!isValidPhilippineMobile(contact_number)) {
-        return res.status(400).json({
-            success: false,
-            message: "Contact Number must contain exactly 11 digits and start with 09."
-        });
-    }
-
-    if (!isValidGmail(email)) {
-        return res.status(400).json({
-            success: false,
-            message: "Please enter a valid Gmail address ending in @gmail.com."
-        });
-    }
-
-    if (!isValidAddress(address)) {
-        return res.status(400).json({
-            success: false,
-            message: "Please enter a valid supplier address."
-        });
-    }
+    } = checked.data;
 
     const checkCodeSql = `
         SELECT id
@@ -151,6 +129,7 @@ router.post("/add", (req, res) => {
 
         const checkNameSql = `
             SELECT id
+
             FROM suppliers
             WHERE LOWER(supplier_name) = LOWER(?)
             LIMIT 1
@@ -184,6 +163,7 @@ router.post("/add", (req, res) => {
                 if (err) {
                     console.log("CHECK SUPPLIER EMAIL ERROR:", err);
 
+
                     return res.status(500).json({
                         success: false,
                         message: "Database Error"
@@ -215,6 +195,7 @@ router.post("/add", (req, res) => {
                     }
 
                     if (result.length > 0) {
+
                         return res.status(409).json({
                             success: false,
                             message: "This contact number is already registered to a supplier."
@@ -225,12 +206,11 @@ router.post("/add", (req, res) => {
                         INSERT INTO suppliers (
                             supplier_code,
                             supplier_name,
-                            contact_person,
                             contact_number,
                             email,
                             address
                         )
-                        VALUES (?, ?, ?, ?, ?, ?)
+                        VALUES (?, ?, ?, ?, ?)
                     `;
 
                     db.query(
@@ -238,7 +218,6 @@ router.post("/add", (req, res) => {
                         [
                             supplier_code,
                             supplier_name,
-                            contact_person,
                             contact_number,
                             email,
                             address
@@ -249,6 +228,7 @@ router.post("/add", (req, res) => {
 
                                 return res.status(500).json({
                                     success: false,
+
                                     message: "Failed to add supplier."
                                 });
                             }
@@ -276,12 +256,12 @@ router.get("/all", (req, res) => {
             id,
             supplier_code,
             supplier_name,
-            contact_person,
             contact_number,
             email,
             address,
             created_at
         FROM suppliers
+
         ORDER BY id ASC
     `;
 
@@ -302,80 +282,23 @@ router.get("/all", (req, res) => {
 router.put("/update/:id", (req, res) => {
     const id = req.params.id;
 
-    let {
+    const checked = cleanAndValidate(req.body);
+
+    if (checked.error) {
+        return res.status(400).json({
+            success: false,
+            message: checked.error
+        });
+    }
+
+    const {
         supplier_code,
         supplier_name,
-        contact_person,
+
         contact_number,
         email,
         address
-    } = req.body;
-
-    supplier_code = String(supplier_code || "")
-        .trim()
-        .toUpperCase();
-
-    supplier_name = String(supplier_name || "").trim();
-    contact_person = String(contact_person || "").trim();
-    contact_number = String(contact_number || "").trim();
-    email = String(email || "").trim().toLowerCase();
-    address = String(address || "").trim();
-
-    if (
-        !supplier_code ||
-        !supplier_name ||
-        !contact_person ||
-        !contact_number ||
-        !email ||
-        !address
-    ) {
-        return res.status(400).json({
-            success: false,
-            message: "Please complete all required supplier fields."
-        });
-    }
-
-    if (!isValidSupplierCode(supplier_code)) {
-        return res.status(400).json({
-            success: false,
-            message: "Supplier Code must follow the format SUP001."
-        });
-    }
-
-    if (!isValidSupplierName(supplier_name)) {
-        return res.status(400).json({
-            success: false,
-            message: "Supplier Name contains invalid characters."
-        });
-    }
-
-    if (!isValidContactPerson(contact_person)) {
-        return res.status(400).json({
-            success: false,
-            message: "Contact Person must contain a valid name."
-        });
-    }
-
-    if (!isValidPhilippineMobile(contact_number)) {
-        return res.status(400).json({
-            success: false,
-            message: "Contact Number must contain exactly 11 digits and start with 09."
-        });
-    }
-
-    if (!isValidGmail(email)) {
-        return res.status(400).json({
-            success: false,
-            message: "Please enter a valid Gmail address ending in @gmail.com."
-        });
-    }
-
-    if (!isValidAddress(address)) {
-        return res.status(400).json({
-            success: false,
-            message: "Please enter a valid supplier address."
-        });
-    }
+    } = checked.data;
 
     const duplicateSql = `
         SELECT
@@ -404,6 +327,7 @@ router.put("/update/:id", (req, res) => {
             email,
             contact_number
         ],
+
         (err, result) => {
             if (err) {
                 console.log("UPDATE SUPPLIER CHECK ERROR:", err);
@@ -436,6 +360,7 @@ router.put("/update/:id", (req, res) => {
 
                 if (
                     existing.email.toLowerCase() ===
+
                     email.toLowerCase()
                 ) {
                     return res.status(409).json({
@@ -457,7 +382,6 @@ router.put("/update/:id", (req, res) => {
                 SET
                     supplier_code = ?,
                     supplier_name = ?,
-                    contact_person = ?,
                     contact_number = ?,
                     email = ?,
                     address = ?
@@ -469,7 +393,7 @@ router.put("/update/:id", (req, res) => {
                 [
                     supplier_code,
                     supplier_name,
-                    contact_person,
+
                     contact_number,
                     email,
                     address,
@@ -502,6 +426,7 @@ router.put("/update/:id", (req, res) => {
                         message: "Supplier Updated Successfully!"
                     });
                 }
+
             );
         }
     );
@@ -534,6 +459,7 @@ router.delete("/delete/:id", (req, res) => {
             }
 
             return res.status(500).json({
+
                 success: false,
                 message: "Failed to delete supplier."
             });
