@@ -39,6 +39,11 @@ function isValidAddress(value) {
     return value.length >= 5 && value.length <= 255;
 }
 
+const ALLOWED_SUPPLIER = {
+    supplier_code: "SUP001",
+    supplier_name: "JLS Logistic Service"
+};
+
 /* Shared cleaning + validation for add and update.
    Returns { error } or { data } */
 function cleanAndValidate(body) {
@@ -80,6 +85,17 @@ function cleanAndValidate(body) {
     if (!isValidAddress(data.address)) {
         return { error: "Please enter a valid supplier address." };
     }
+
+    if (
+    data.supplier_code !== ALLOWED_SUPPLIER.supplier_code ||
+    data.supplier_name.toLowerCase() !== ALLOWED_SUPPLIER.supplier_name.toLowerCase()
+) {
+    return {
+        error: "Only JLS Logistic Service (SUP001) is registered as the supplier of Tot's Motorshop."
+    };
+}
+
+data.supplier_name = ALLOWED_SUPPLIER.supplier_name;
 
     return { data };
 }

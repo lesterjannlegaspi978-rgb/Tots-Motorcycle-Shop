@@ -742,6 +742,25 @@ const API_URL = "";
 
 let editingSupplierId = null;
 
+const JLS = {
+    supplier_code: "SUP001",
+    supplier_name: "JLS Logistic Service",
+    contact_number: "09390015110",
+    email: "rrslubricant02@gmail.com",
+    address: "Metrocor B. Westside, Talon 5 Las Pinas City, Metro Manila"
+};
+
+function fillJLSDefaults() {
+    document.getElementById("supplierCode").value = JLS.supplier_code;
+    document.getElementById("supplierName").value = JLS.supplier_name;
+    document.getElementById("contactNumber").value = JLS.contact_number;
+    document.getElementById("email").value = JLS.email;
+    document.getElementById("address").value = JLS.address;
+
+    document.getElementById("supplierCode").readOnly = true;
+    document.getElementById("supplierName").readOnly = true;
+}
+
 
 function confirmSupplierDeletion(supplierName) {
     return new Promise((resolve) => {
@@ -931,6 +950,7 @@ function validateSupplierForm(data) {
 function clearSupplierForm() {
 
     supplierForm.reset();
+    fillJLSDefaults();
 
     editingSupplierId = null;
 
@@ -1072,7 +1092,7 @@ supplierForm.addEventListener("submit", async function(event) {
             "success"
         );
 
-        supplierForm.reset();
+        fillJLSDefaults();
 
         await loadSuppliers();
 
@@ -1249,6 +1269,7 @@ async function loadSuppliers() {
 
 }
 
+fillJLSDefaults();
 loadSuppliers();
 
 </script>
