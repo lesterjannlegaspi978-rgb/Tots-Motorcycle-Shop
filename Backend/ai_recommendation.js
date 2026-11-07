@@ -617,6 +617,7 @@ router.post("/recommendations", async (req, res) => {
                     item.supplier + " before ordering again."
                 );
             });
+
         items
             .filter(item =>
                 fastIds.has(item.id) && !used.has(item.id)
@@ -817,7 +818,7 @@ router.post("/recommendations", async (req, res) => {
                     stock_value: row._facts.stock_value,
                     total_net_qty_sold: row._facts.net_qty_sold,
                     total_qty_sold: row._facts.sold_qty,
-                    total_qty_returned: row._facts.returned_qty,
+                     total_qty_returned_after_sale: row._facts.returned_qty,
                     avg_sold_per_day: row._facts.avg_per_day,
                     days_of_stock_left: row._facts.days_left,
                     suggested_order_qty: row._facts.suggested_order
@@ -830,6 +831,9 @@ Rules:
 - Do not start the sentence with "With", "Showing", or "Based on".
 - Use ONLY the numbers given. Do not invent numbers.
 - Mention the supplier name only for Restock and Review items.
+- total_qty_returned_after_sale means sold items that were brought back to the shop through sales returns. Never say these returns came from the supplier or were sent to the supplier. Do not use the word "customer".
+- For Review items, explain that many of the items sold were returned, so the owner should check the product quality or ask the supplier about it.
+- Stock is what is still in the shop. Do not mix it up with returns.
 - If sold_last_days is 0 and sold_before_that is more than 0, say that sales stopped recently.
 - Do not change the recommended action.
 - Also write a summary of 1 to 2 sentences about the overall sales trend, the products to restock, and the slow-moving products.
