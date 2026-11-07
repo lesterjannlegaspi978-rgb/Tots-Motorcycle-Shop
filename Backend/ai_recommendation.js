@@ -599,7 +599,7 @@ router.post("/recommendations", async (req, res) => {
 
         reviewAll.forEach(item => used.add(item.id));
 
-        reviewAll
+                reviewAll
             .slice(0, MAX_REVIEW_ROWS)
             .forEach(item => {
                 const rate = Math.round(
@@ -611,13 +611,12 @@ router.post("/recommendations", async (req, res) => {
                     "Review",
                     rate >= 50 ? "High" : "Medium",
                     "Review Quality / Supplier",
-                    item.returnedQty + " of " +
-                    item.soldQty + " pcs sold were returned (" +
-                    rate + "%). Check the product quality or talk to " +
+                    item.returnedQty + " of " + item.soldQty +
+                    " pcs sold were returned after the sale (" + rate +
+                    "%). Check the product quality or talk to " +
                     item.supplier + " before ordering again."
                 );
             });
-
         items
             .filter(item =>
                 fastIds.has(item.id) && !used.has(item.id)
