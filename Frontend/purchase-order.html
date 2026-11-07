@@ -126,71 +126,71 @@
         }
 
 
-        .product-selection-box h3 {
-            margin-top: 0;
-            color: #1f3c88;
-            font-size: 16px;
-        }
+       .product-selection-box h3 {
+    margin: 0 0 14px 0;
+    color: #1f3c88;
+    font-size: 16px;
+}
 
+.product-selection-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+}
 
-        .product-selection-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr auto;
-            gap: 12px;
-            align-items: end;
-        }
+.product-selection-group {
+    display: flex;
+    flex-direction: column;
+}
 
+.product-selection-group label {
+    font-weight: 600;
+    margin: 0 0 7px 0;
+    color: #333;
+    font-size: 13px;
+    line-height: 1.2;
+}
 
-        .product-selection-group {
-            display: flex;
-            flex-direction: column;
-        }
+.product-selection-group select,
+.product-selection-group input {
+    width: 100%;
+    height: 44px;
+    margin: 0 !important;
+    padding: 0 13px;
+    border: 1px solid #cfd6e4;
+    border-radius: 7px;
+    font-size: 14px;
+    background: white;
+    outline: none;
+    box-sizing: border-box;
+}
 
+.product-selection-group select:focus,
+.product-selection-group input:focus {
+    border-color: #2563eb;
+}
 
-        .product-selection-group label {
-            font-weight: 600;
+.add-item-btn {
+    height: 44px;
+    margin: 0 !important;
+    padding: 0 22px;
+    border: none;
+    border-radius: 7px;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
 
-            margin-bottom: 7px;
-            color: #333;
-            font-size: 13px;
-        }
+.add-item-btn:hover {
+    background: #1d4ed8;
+}
 
-
-        .product-selection-group select,
-        .product-selection-group input {
-            width: 100%;
-            padding: 11px 13px;
-            border: 1px solid #cfd6e4;
-            border-radius: 7px;
-            font-size: 14px;
-            background: white;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-
-        .product-selection-group select:focus,
-        .product-selection-group input:focus {
-            border-color: #2563eb;
-        }
-
-
-        .add-item-btn {
-            border: none;
-            padding: 11px 20px;
-            border-radius: 7px;
-            background: #2563eb;
-            color: white;
-            font-weight: 600;
-
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-
-        .add-item-btn:hover {
-            background: #1d4ed8;
-        }
+        
 
         .purchase-message {
             display: none;
@@ -510,7 +510,6 @@
     text-align: center;
     vertical-align: middle;
 }
-
 
         .purchase-list-table tbody tr:hover {
             background: #f8fafc;
