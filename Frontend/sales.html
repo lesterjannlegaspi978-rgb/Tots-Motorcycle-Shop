@@ -158,6 +158,133 @@
     text-align: center !important;
     vertical-align: middle !important;
 }
+.receipt-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 99999;
+}
+
+.receipt-overlay.show {
+    display: flex;
+}
+
+.receipt-box {
+    width: 100%;
+    max-width: 360px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-sizing: border-box;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    color: #111827;
+}
+
+.receipt-shop {
+    text-align: center;
+    border-bottom: 1px dashed #9ca3af;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.receipt-shop h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    color: #1f3c88;
+}
+
+.receipt-shop p {
+    margin: 2px 0;
+    font-size: 11px;
+    color: #4b5563;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 6px 0;
+    font-size: 13px;
+}
+
+.receipt-row span:last-child {
+    text-align: right;
+    font-weight: 600;
+}
+
+.receipt-total {
+    border-top: 1px dashed #9ca3af;
+    margin-top: 12px;
+    padding-top: 12px;
+    font-size: 15px;
+}
+
+.receipt-thanks {
+    text-align: center;
+    margin: 14px 0 0;
+    font-size: 12px;
+    color: #4b5563;
+}
+
+.receipt-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.receipt-actions button {
+    flex: 1;
+    height: 38px;
+    border: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.receipt-print-btn {
+    background: #244294;
+    color: #ffffff;
+}
+
+.receipt-close-btn {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #receiptOverlay,
+    #receiptOverlay * {
+        visibility: visible;
+    }
+
+    #receiptOverlay {
+        position: absolute;
+        inset: 0;
+        background: #ffffff;
+        align-items: flex-start;
+    }
+
+    .receipt-box {
+        box-shadow: none;
+        max-height: none;
+    }
+
+    .receipt-actions {
+        display: none;
+    }
+}
+
     </style>
 </head>
 
@@ -309,6 +436,53 @@
     </div>
 </div>
 
+<div id="receiptOverlay" class="receipt-overlay">
+    <div class="receipt-box">
+        <div class="receipt-shop">
+            <h2>Tot's Motorshop</h2>
+            <p>L16 B21 Marcos Alvarez, Talon V, Las Piñas City</p>
+            <p>Official Sales Receipt</p>
+        </div>
+
+        <div class="receipt-row">
+            <span>Receipt No.</span>
+            <span id="receiptNo"></span>
+        </div>
+
+        <div class="receipt-row">
+            <span>Date</span>
+            <span id="receiptDate"></span>
+        </div>
+
+        <div class="receipt-row">
+            <span>Product</span>
+            <span id="receiptProduct"></span>
+        </div>
+
+        <div class="receipt-row">
+            <span>Quantity</span>
+            <span id="receiptQuantity"></span>
+        </div>
+
+        <div class="receipt-row">
+            <span>Unit Price</span>
+            <span id="receiptUnitPrice"></span>
+        </div>
+
+        <div class="receipt-row receipt-total">
+            <span>Total</span>
+            <span id="receiptTotal"></span>
+        </div>
+
+        <p class="receipt-thanks">Thank you for your purchase!</p>
+
+        <div class="receipt-actions">
+            <button type="button" class="receipt-print-btn" onclick="printReceipt()">Print</button>
+            <button type="button" class="receipt-close-btn" onclick="closeReceipt()">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
 
 const sidebar = document.querySelector(".sidebar");
@@ -365,6 +539,31 @@ function clearFieldError(field) {
         field.addEventListener("input", () => clearFieldError(field));
     }
 });
+
+function showReceipt(receipt) {
+    const quantity = Number(receipt.quantity) || 0;
+    const total = Number(receipt.total) || 0;
+    const unitPrice = quantity > 0 ? total / quantity : 0;
+
+    document.getElementById("receiptNo").textContent =
+        "RCPT-" + String(receipt.id).padStart(4, "0");
+
+    document.getElementById("receiptDate").textContent = receipt.date;
+    document.getElementById("receiptProduct").textContent = receipt.product_name;
+    document.getElementById("receiptQuantity").textContent = quantity + " pcs";
+    document.getElementById("receiptUnitPrice").textContent = "₱" + formatMoney(unitPrice);
+    document.getElementById("receiptTotal").textContent = "₱" + formatMoney(total);
+
+    document.getElementById("receiptOverlay").classList.add("show");
+}
+
+function closeReceipt() {
+    document.getElementById("receiptOverlay").classList.remove("show");
+}
+
+function printReceipt() {
+    window.print();
+}
 
 async function processSale() {
     const product_id = document.getElementById("product_id").value;
@@ -441,6 +640,22 @@ async function processSale() {
             await loadSales();
 
             showProductInfo();
+
+                        showReceipt({
+                id: data.sale_id,
+                product_name: data.product_name,
+                quantity: data.quantity,
+                total: data.total,
+                date: new Date().toLocaleString("en-PH", {
+                    year: "numeric",
+                    month: "short",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true
+                })
+            });
+            
         } else {
             markFieldError(productField);
             markFieldError(quantityField);
