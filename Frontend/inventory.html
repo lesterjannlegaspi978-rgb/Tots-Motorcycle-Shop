@@ -30,6 +30,7 @@
             height: 96px;
             object-fit: contain;
 
+
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             background: #fff;
@@ -61,6 +62,7 @@
 
         <h2>Tot's Motorshop</h2>
     </div>
+
 
     <ul>
         <li><a href="dashboard.html">Dashboard</a></li>
@@ -94,6 +96,7 @@
         <input
             type="text"
             id="searchProduct"
+
             placeholder="🔍 Search product, category, or supplier..."
             onkeyup="searchProduct()"
         >
@@ -126,6 +129,7 @@
             value="JLS Logistic Service"
         >
 
+
         <input type="number" id="quantity" placeholder="Stock" min="0">
 
         <input
@@ -157,6 +161,7 @@
         <button id="updateBtn" onclick="updateProduct()" style="display:none;">
             Update Product
         </button>
+
 
         <button id="cancelBtn" onclick="cancelForm()">Cancel</button>
 
@@ -191,6 +196,7 @@
 <script>
 
 
+
 const API_URL = "/products";
 
 
@@ -222,6 +228,7 @@ const PRODUCT_IMAGES = [
             "Yamalube 1L",
             "Motul Scooter 800ml",
             "ZIC Classic 1L",
+
             "ZIC Semi-Synthetic 1L",
             "ZIC Fully Synthetic 1L"
         ]
@@ -255,6 +262,7 @@ const PRODUCT_IMAGES = [
         ]
     },
 
+
     {
         group: "Maximus Tires",
         items: [
@@ -286,6 +294,7 @@ const PRODUCT_IMAGES = [
             "MBI Sprocket Set – Yamaha Sniper 150",
             "MBI Sprocket Set – Suzuki Raider 150"
         ]
+
     },
 
     {
@@ -318,6 +327,7 @@ const PRODUCT_IMAGES = [
             "TTGR Brake Pad – Honda PCX 160",
             "TTGR Brake Pad – Yamaha Mio Sporty",
             "TTGR Brake Pad – Yamaha Mio i125",
+
             "TTGR Brake Pad – Yamaha Mio Gear",
             "TTGR Brake Pad – Yamaha Mio Soul i125",
             "TTGR Brake Pad – Yamaha Aerox 155",
@@ -350,6 +360,7 @@ const PRODUCT_IMAGES = [
     {
         group: "Roller Weights",
         items: [
+
             "Roller Weight 8g", "Roller Weight 9g", "Roller Weight 10g", "Roller Weight 11g",
             "Roller Weight 12g", "Roller Weight 13g", "Roller Weight 14g", "Roller Weight 15g"
         ]
@@ -382,6 +393,7 @@ const PRODUCT_IMAGES = [
         group: "Center Springs",
         items: [
             "Center Spring 1000 RPM",
+
             "Center Spring 1500 RPM",
             "Center Spring 2000 RPM"
         ]
@@ -413,6 +425,7 @@ const PRODUCT_IMAGES = [
 
 const sidebar = document.querySelector(".sidebar");
 const content = document.querySelector(".content");
+
 
 sidebar.classList.add("hide");
 
@@ -446,6 +459,7 @@ function makeImageBase(name) {
         .replace(/ – /g, " ")
         .replace(/ - /g, " ")
         .replace(/ /g, "-")
+
         .replace(/\//g, "-")
         .toLowerCase();
 
@@ -477,6 +491,7 @@ function nextImage(img) {
         img.src = FALLBACK_IMAGE;
 
         return;
+
 
 
     }
@@ -511,6 +526,7 @@ function clearFieldErrors() {
         document.getElementById(id).classList.remove("input-error");
     });
 
+
 }
 
 function isProductValid(p) {
@@ -542,6 +558,7 @@ function isProductValid(p) {
 
 
 }
+
 
 FORM_FIELDS.forEach(id => {
 
@@ -575,6 +592,7 @@ function buildImageDropdown() {
 
         select.appendChild(optgroup);
 
+
     });
 
 }
@@ -606,6 +624,7 @@ function nextPreview() {
     const step = Number(preview.dataset.step || 0) + 1;
 
     if (base === "" || step >= total) {
+
 
         preview.onerror = null;
         preview.dataset.missing = "1";
@@ -639,6 +658,7 @@ function showImagePreview(base) {
     preview.dataset.step = 0;
     preview.dataset.missing = "0";
 
+
     preview.style.display = "block";
 
     status.textContent = "Checking picture...";
@@ -669,6 +689,7 @@ function showImagePreview(base) {
     preview.src = IMAGE_FOLDERS[0] + encodeURIComponent(base) + IMAGE_EXTENSIONS[0];
 
 }
+
 
 document.getElementById("image").addEventListener("change", function () {
 
@@ -702,6 +723,7 @@ function showForm() {
 
 async function saveProduct() {
 
+
     const product = getFormData();
 
     if (!isProductValid(product)) {
@@ -733,6 +755,7 @@ async function saveProduct() {
 }
 
 async function loadProducts() {
+
 
     try {
 
@@ -767,6 +790,7 @@ function getStatusHTML(stock) {
     }
 
 
+
     if (stock <= 5) {
         return `<span class="stock-status low-stock">🔴 Low Stock</span>`;
     }
@@ -799,6 +823,7 @@ function renderProducts(products) {
                 ? product.supplier_code
                 : "SUP001";
 
+
         const stock = Number(product.quantity) || 0;
 
         rows += `
@@ -830,17 +855,14 @@ function renderProducts(products) {
 
                 <td>${stock}</td>
 
+
                 <td>₱${Number(product.price || 0).toFixed(2)}</td>
 
                 <td>${getStatusHTML(stock)}</td>
 
-                <td id="actions-${product.id}">
+                <td>
                     <button class="editBtn" onclick="editProduct(${product.id})">
                         Edit
-                    </button>
-
-                    <button class="deleteBtn" onclick="askDelete(${product.id})">
-                        🗑 Delete
                     </button>
                 </td>
 
@@ -851,13 +873,22 @@ function renderProducts(products) {
 
     if (rows === "") {
 
+        const keyword =
+            document.getElementById("searchProduct").value.trim();
+
+        const emptyMessage =
+            keyword !== ""
+                ? "Product not found."
+                : "No products found.";
+
         rows = `
             <tr>
                 <td colspan="9"
                     style="padding:20px;text-align:center;color:#6b7280;font-weight:bold;">
-                    No products found.
+                    ${emptyMessage}
 
                 </td>
+
             </tr>
         `;
 
@@ -891,6 +922,7 @@ function editProduct(id) {
     document.getElementById("quantity").value = product.quantity;
     document.getElementById("price").value = product.price;
 
+
     const imageSelect = document.getElementById("image");
     const currentImage = product.image || "";
 
@@ -923,6 +955,7 @@ async function updateProduct() {
         return;
     }
 
+
     try {
 
         const response = await fetch(API_URL + "/update/" + id, {
@@ -947,51 +980,6 @@ async function updateProduct() {
 
 }
 
-function askDelete(id) {
-
-    const cell = document.getElementById("actions-" + id);
-
-    if (!cell) {
-        return;
-    }
-
-    cell.innerHTML = `
-        <span style="font-size:13px;margin-right:6px;">Sure?</span>
-
-        <button class="deleteBtn" onclick="deleteProduct(${id})">
-            Yes
-        </button>
-
-        <button class="editBtn" onclick="searchProduct()">
-            No
-        </button>
-    `;
-
-}
-
-
-async function deleteProduct(id) {
-
-    try {
-
-        const response = await fetch(API_URL + "/delete/" + id, {
-            method: "DELETE"
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            loadProducts();
-        }
-
-    } catch (err) {
-
-        console.error("Delete Product Error:", err);
-
-    }
-
-}
-
 function searchProduct() {
 
     const keyword =
@@ -999,6 +987,7 @@ function searchProduct() {
 
 
     const filteredProducts = allProducts.filter(product => {
+
 
         const productName  = String(product.product_name  || "").toLowerCase();
         const category     = String(product.category      || "").toLowerCase();
@@ -1031,6 +1020,7 @@ function clearForm() {
     document.getElementById("supplier_name").value = "JLS Logistic Service";
     document.getElementById("quantity").value = "";
     document.getElementById("price").value = "";
+
     document.getElementById("image").value = "";
 
     document.getElementById("productForm").style.display = "none";

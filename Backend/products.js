@@ -1,9 +1,7 @@
-
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
-// ADD PRODUCT
 router.post('/add', (req, res) => {
     const {
         product_name,
@@ -102,7 +100,6 @@ router.post('/add', (req, res) => {
     });
 });
 
-// GET ALL PRODUCTS WITH SHARED DISPLAY NUMBER
 router.get('/all', (req, res) => {
     const sql = `
         SELECT
@@ -133,45 +130,6 @@ router.get('/all', (req, res) => {
     });
 });
 
-// DELETE PRODUCT
-router.delete('/delete/:id', (req, res) => {
-    const id = Number(req.params.id);
-
-    if (!Number.isInteger(id) || id <= 0) {
-        return res.status(400).json({
-            success: false,
-            message: "Invalid product ID."
-        });
-    }
-
-    const sql = "DELETE FROM products WHERE id = ?";
-
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            console.error("DELETE PRODUCT ERROR:", err);
-
-            return res.status(500).json({
-                success: false,
-                message:
-                    "Delete failed. Check whether this product is referenced by existing records."
-            });
-        }
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Product not found."
-            });
-        }
-
-        return res.json({
-            success: true,
-            message: "Product Deleted Successfully"
-        });
-    });
-});
-
-// UPDATE PRODUCT
 router.put('/update/:id', (req, res) => {
     const id = Number(req.params.id);
 
