@@ -7,6 +7,7 @@
     <title>Analytics - Tot's Motorshop</title>
     <link rel="icon" href="logo.png">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         .analytics-page::before {
@@ -304,6 +305,18 @@
             color: #1e3765;
         }
 
+        .analytics-page .an-chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #ffffff;
+            border: 1px solid #dfe7f1;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
         .analytics-page .an-stats {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -459,6 +472,7 @@
             .analytics-page .an-header,
             .analytics-page .an-panel { padding: 16px; }
             .analytics-page .an-table { min-width: 650px; }
+            .analytics-page .an-chart-wrapper { height: 260px; padding: 8px; }
         }
     </style>
 </head>
@@ -648,6 +662,10 @@
             <span class="an-pill" id="pillFast"></span>
         </div>
 
+        <div class="an-chart-wrapper">
+            <canvas id="fastChart"></canvas>
+        </div>
+
         <div class="an-table-wrapper">
             <table class="an-table">
                 <thead>
@@ -789,6 +807,10 @@
             </div>
         </div>
 
+        <div class="an-chart-wrapper">
+            <canvas id="inventoryChart"></canvas>
+        </div>
+
         <div class="an-table-wrapper">
             <table class="an-table">
                 <thead>
@@ -832,6 +854,10 @@
     }
 
     const API_URL = "/analytics/overview";
+
+    let analyticsData = null;
+    let currentPanel = "sales";
+    const charts = {};
 
     async function fetchAnalytics() {
         const url = new URL(API_URL, window.location.origin);
@@ -903,10 +929,86 @@
         notice.className = "an-notice";
     }
 
+    function drawChart(key, canvasId, config) {
+        const canvas = document.getElementById(canvasId);
+
+        if (!canvas || typeof Chart === "undefined") return;
+
+        if (charts[key]) charts[key].destroy();
+
+        charts[key] = new Chart(canvas, config);
+    }
+
+    function chartOptions(showLegend) {
+        return {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: showLegend } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
+        };
+    }
+
+    function renderCharts(name) {
+        if (!analyticsData) return;
+
+        const data = analyticsData;
+
+        if (name === "fast") {
+            const products = (data.fastMoving || []).slice(0, 10);
+
+            drawChart("fast", "fastChart", {
+                type: "bar",
+                data: {
+                    labels: products.map(item => item.product_name),
+                    datasets: [{
+                        label: "Net Quantity Sold",
+                        data: products.map(item => Number(item.net_quantity) || 0),
+                        backgroundColor: "#16803d",
+                        borderRadius: 6
+                    }]
+                },
+                options: chartOptions(false)
+            });
+        }
+
+        if (name === "inventory") {
+            const categories = data.categories || [];
+
+            drawChart("inventory", "inventoryChart", {
+                type: "bar",
+                data: {
+                    labels: categories.map(item => item.category),
+                    datasets: [
+                        {
+                            label: "Stock",
+                            data: categories.map(item => Number(item.total_stock) || 0),
+                            backgroundColor: "#0e7490",
+                            borderRadius: 6
+                        },
+                        {
+                            label: "Net Sold",
+                            data: categories.map(item => Number(item.net_sold) || 0),
+                            backgroundColor: "#16803d",
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: chartOptions(true)
+            });
+        }
+    }
+
     function selectPanel(name, shouldScroll = true) {
         const selectedPanel = document.getElementById("panel-" + name);
 
         if (!selectedPanel) return;
+
+        currentPanel = name;
 
         document.querySelectorAll(".an-card").forEach(card => {
             const isActive = card.dataset.panel === name;
@@ -921,6 +1023,8 @@
         document.querySelectorAll(".an-panel").forEach(panel => {
             panel.classList.toggle("active", panel.id === "panel-" + name);
         });
+
+        renderCharts(name);
 
         if (shouldScroll) {
             selectedPanel.scrollIntoView({
@@ -1376,6 +1480,9 @@
             renderLow(data);
             renderRestock(data, hasSales);
             renderInventory(data);
+
+            analyticsData = data;
+            renderCharts(currentPanel);
 
             if (!hasSales) {
                 showNotice(
