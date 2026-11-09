@@ -600,10 +600,31 @@ function validateSupplierForm(data) {
 
 }
 
-
 function enterViewMode() {
 
-    enterAddMode();
+    if (supplierList.length === 0) {
+        enterAddMode();
+        return;
+    }
+
+
+    mode = "view";
+    editingSupplierId = null;
+
+    fillForm(supplierList[0]);
+
+    setLocks(true, true);
+
+    formTitle.textContent = "Registered Supplier";
+
+    editModeTitle.textContent =
+        "Showing the registered supplier. Click Clear to add a new supplier.";
+    editModeTitle.style.display = "block";
+
+    submitSupplierButton.textContent = "Add Supplier";
+    submitSupplierButton.disabled = true;
+
+    cancelEditButton.style.display = "none";
 
 }
 
