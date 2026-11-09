@@ -389,7 +389,7 @@
             <h2 id="formTitle">Add Supplier</h2>
 
             <div id="editModeTitle" class="edit-mode-title">
-                Editing existing supplier
+                Editing existing supplier. Supplier Code and Name cannot be changed.
             </div>
 
             <form id="supplierForm">
@@ -406,7 +406,7 @@
                         <input
                             type="text"
                             id="supplierCode"
-                            placeholder="Example: SUP001"
+                            placeholder="Example: SUP002"
                             maxlength="6"
                             required
                         >
@@ -581,15 +581,7 @@
 const API_URL = "";
 
 let editingSupplierId = null;
-let supplierExists = false;
-
-const JLS = {
-    supplier_code: "SUP001",
-    supplier_name: "JLS Logistic Service",
-    contact_number: "09390015110",
-    email: "rrslubricant02@gmail.com",
-    address: "Metrocor B. Westside, Talon 5 Las Pinas City, Metro Manila"
-};
+let supplierList = [];
 
 const sidebar = document.querySelector(".sidebar");
 const content = document.querySelector(".content");
@@ -617,22 +609,29 @@ const cancelEditButton = document.getElementById("cancelEditButton");
 const formTitle = document.getElementById("formTitle");
 const editModeTitle = document.getElementById("editModeTitle");
 
-function lockFields(lockEditableFields) {
-    document.getElementById("supplierCode").readOnly = true;
-    document.getElementById("supplierName").readOnly = true;
-    document.getElementById("contactNumber").readOnly = lockEditableFields;
-    document.getElementById("email").readOnly = lockEditableFields;
-    document.getElementById("address").readOnly = lockEditableFields;
+function lockFields(isEditing) {
+    document.getElementById("supplierCode").readOnly = isEditing;
+    document.getElementById("supplierName").readOnly = isEditing;
 }
 
-function fillJLSDefaults() {
-    document.getElementById("supplierCode").value = JLS.supplier_code;
-    document.getElementById("supplierName").value = JLS.supplier_name;
-    document.getElementById("contactNumber").value = JLS.contact_number;
-    document.getElementById("email").value = JLS.email;
-    document.getElementById("address").value = JLS.address;
+function getNextSupplierCode() {
 
-    lockFields(true);
+    let highest = 0;
+
+    supplierList.forEach(supplier => {
+
+        const match = /^SUP(\d{3})$/.exec(
+            String(supplier.supplier_code || "").toUpperCase()
+        );
+
+        if (match) {
+            highest = Math.max(highest, Number(match[1]));
+        }
+
+    });
+
+    return "SUP" + String(highest + 1).padStart(3, "0");
+
 }
 
 function isValidSupplierCode(value) {
@@ -745,16 +744,19 @@ function validateSupplierForm(data) {
 function clearSupplierForm() {
 
     supplierForm.reset();
-    fillJLSDefaults();
 
     editingSupplierId = null;
+
+    lockFields(false);
+
+    document.getElementById("supplierCode").value = getNextSupplierCode();
 
     formTitle.textContent = "Add Supplier";
 
     editModeTitle.style.display = "none";
 
     submitSupplierButton.textContent = "Add Supplier";
-    submitSupplierButton.disabled = supplierExists;
+    submitSupplierButton.disabled = false;
 
     cancelEditButton.style.display = "none";
 
@@ -781,7 +783,7 @@ function editSupplier(supplier) {
     document.getElementById("address").value =
         supplier.address || "";
 
-    lockFields(false);
+    lockFields(true);
 
     formTitle.textContent = "Update Supplier";
 
@@ -820,80 +822,51 @@ supplierForm.addEventListener("submit", async function(event) {
         return;
     }
 
+    const isEditing = editingSupplierId !== null;
+
     submitSupplierButton.disabled = true;
 
     submitSupplierButton.textContent =
-        editingSupplierId ? "Saving..." : "Adding...";
+        isEditing ? "Saving..." : "Adding...";
 
     try {
 
-        if (editingSupplierId) {
+        const url = isEditing
+            ? `${API_URL}/suppliers/update/${editingSupplierId}`
+            : `${API_URL}/suppliers/add`;
 
-            const response = await fetch(
-                `${API_URL}/suppliers/update/${editingSupplierId}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || !result.success) {
-                showMessage(
-                    result.message || "Unable to update supplier.",
-                    "error"
-                );
-                return;
-            }
-
-            showMessage(
-                result.message || "Supplier Updated Successfully!",
-                "success"
-            );
-
-            await loadSuppliers();
-
-            setTimeout(() => {
-                clearSupplierForm();
-            }, 800);
-
-            return;
-
-        }
-
-        const response = await fetch(
-            `${API_URL}/suppliers/add`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            }
-        );
+        const response = await fetch(url, {
+            method: isEditing ? "PUT" : "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
 
         const result = await response.json();
 
         if (!response.ok || !result.success) {
             showMessage(
-                result.message || "Unable to add supplier.",
+                result.message ||
+                (isEditing
+                    ? "Unable to update supplier."
+                    : "Unable to add supplier."),
                 "error"
             );
             return;
         }
 
-        showMessage(
-            result.message || "Supplier Added Successfully!",
-            "success"
-        );
-
-        fillJLSDefaults();
+        const successMessage =
+            result.message ||
+            (isEditing
+                ? "Supplier Updated Successfully!"
+                : "Supplier Added Successfully!");
 
         await loadSuppliers();
+
+        clearSupplierForm();
+
+        showMessage(successMessage, "success");
 
     }
     catch (error) {
@@ -905,14 +878,10 @@ supplierForm.addEventListener("submit", async function(event) {
     }
     finally {
 
-        if (editingSupplierId) {
-            submitSupplierButton.disabled = false;
-            submitSupplierButton.textContent = "Save Changes";
-        }
-        else {
-            submitSupplierButton.disabled = supplierExists;
-            submitSupplierButton.textContent = "Add Supplier";
-        }
+        submitSupplierButton.disabled = false;
+
+        submitSupplierButton.textContent =
+            editingSupplierId !== null ? "Save Changes" : "Add Supplier";
 
     }
 
@@ -933,20 +902,16 @@ async function loadSuppliers() {
 
         const suppliers = await response.json();
 
+        supplierList = Array.isArray(suppliers) ? suppliers : [];
+
         tableBody.innerHTML = "";
 
-        const count = Array.isArray(suppliers) ? suppliers.length : 0;
-
-        supplierExists = count > 0;
-
-        if (!editingSupplierId) {
-            submitSupplierButton.disabled = supplierExists;
-        }
+        const count = supplierList.length;
 
         supplierCount.textContent =
             count + (count === 1 ? " Supplier" : " Suppliers");
 
-        if (!Array.isArray(suppliers) || suppliers.length === 0) {
+        if (count === 0) {
 
             tableBody.innerHTML = `
                 <tr>
@@ -960,7 +925,7 @@ async function loadSuppliers() {
 
         }
 
-        suppliers.forEach(supplier => {
+        supplierList.forEach(supplier => {
 
             const row = document.createElement("tr");
 
@@ -1017,8 +982,15 @@ async function loadSuppliers() {
 
 }
 
-fillJLSDefaults();
-loadSuppliers();
+async function initializeSupplierPage() {
+
+    await loadSuppliers();
+
+    clearSupplierForm();
+
+}
+
+initializeSupplierPage();
 
 </script>
 
