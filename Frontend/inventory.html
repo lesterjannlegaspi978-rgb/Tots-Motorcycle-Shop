@@ -114,20 +114,14 @@
 
         <input type="text" id="category" placeholder="Category">
 
-        <input
-            type="text"
-            id="supplier_code"
-            placeholder="Supplier Code"
-            value="SUP001"
-        >
+       <select id="supplier_select" required>
+          <option value="">Loading suppliers...</option>
+       </select> 
 
 
-        <input
-            type="text"
-            id="supplier_name"
-            placeholder="Supplier Name"
-            value="JLS Logistic Service"
-        >
+       <select id="supplier_select" required>
+            <option value="">Loading suppliers...</option>
+        </select>
 
 
         <input type="number" id="quantity" placeholder="Stock" min="0">
@@ -210,10 +204,8 @@ let allProducts = [];
 const FORM_FIELDS = [
     "product_name",
     "category",
-    "supplier_code",
-    "supplier_name",
+    "supplier_select",
     "quantity",
-
     "price",
     "image"
 ];
@@ -507,16 +499,19 @@ function nextImage(img) {
 
 function getFormData() {
 
-    return {
-        product_name:  document.getElementById("product_name").value.trim(),
-        category:      document.getElementById("category").value.trim(),
-        supplier_code: document.getElementById("supplier_code").value.trim(),
-        supplier_name: document.getElementById("supplier_name").value.trim(),
-        quantity:      document.getElementById("quantity").value,
-        price:         document.getElementById("price").value,
-        image:         document.getElementById("image").value
-    };
+    const supplierSelect = document.getElementById("supplier_select");
+    const selectedOption = supplierSelect.options[supplierSelect.selectedIndex];
 
+    return {
+        product_name: document.getElementById("product_name").value.trim(),
+        category: document.getElementById("category").value.trim(),
+        supplier_code: supplierSelect.value,
+        supplier_name: selectedOption ? selectedOption.dataset.name || "" : "",
+        supplier_select: supplierSelect.value,
+        quantity: document.getElementById("quantity").value,
+        price: document.getElementById("price").value,
+        image: document.getElementById("image").value
+    };
 }
 
 function clearFieldErrors() {
@@ -598,6 +593,45 @@ function buildImageDropdown() {
 }
 
 buildImageDropdown();
+
+async function loadSupplierOptions() {
+    const select = document.getElementById("supplier_select");
+
+    try {
+        const response = await fetch("/suppliers/all");
+
+        if (!response.ok) {
+            throw new Error("Failed to load suppliers.");
+        }
+
+        const suppliers = await response.json();
+
+        select.innerHTML = '<option value="">Select Supplier</option>';
+
+        suppliers.forEach(supplier => {
+            const option = document.createElement("option");
+
+            option.value = supplier.supplier_code;
+            option.textContent =
+                `${supplier.supplier_code} - ${supplier.supplier_name}`;
+
+            option.dataset.name = supplier.supplier_name;
+
+            select.appendChild(option);
+        });
+
+        if (suppliers.length === 0) {
+            select.innerHTML =
+                '<option value="">No registered suppliers found</option>';
+        }
+
+    } catch (error) {
+        console.error("LOAD SUPPLIERS ERROR:", error);
+
+        select.innerHTML =
+            '<option value="">Unable to load suppliers</option>';
+    }
+}
 
 function resetImagePreview() {
 
@@ -706,19 +740,24 @@ document.getElementById("image").addEventListener("change", function () {
 
 });
 
-function showForm() {
-
+async function showForm() {
     clearFieldErrors();
     resetImagePreview();
+
+    await loadSupplierOptions();
 
     document.getElementById("productForm").style.display = "block";
     document.getElementById("formTitle").textContent = "Add New Product";
     document.getElementById("saveBtn").style.display = "inline-block";
     document.getElementById("updateBtn").style.display = "none";
-    document.getElementById("supplier_code").value = "SUP001";
-    document.getElementById("supplier_name").value = "JLS Logistic Service";
-    document.getElementById("image").value = "";
 
+    document.getElementById("product_id").value = "";
+    document.getElementById("product_name").value = "";
+    document.getElementById("category").value = "";
+    document.getElementById("supplier_select").value = "SUP001";
+    document.getElementById("quantity").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("image").value = "";
 }
 
 async function saveProduct() {
@@ -898,15 +937,19 @@ function renderProducts(products) {
 
 }
 
-function editProduct(id) {
-
-    const product = allProducts.find(p => Number(p.id) === Number(id));
+async function editProduct(id) {
+    const product = allProducts.find(
+        p => Number(p.id) === Number(id)
+    );
 
     if (!product) {
         return;
     }
 
     clearFieldErrors();
+    resetImagePreview();
+
+    await loadSupplierOptions();
 
     document.getElementById("productForm").style.display = "block";
     document.getElementById("formTitle").textContent = "Edit Product";
@@ -915,34 +958,34 @@ function editProduct(id) {
 
     document.getElementById("product_id").value = product.id;
     document.getElementById("product_name").value = product.product_name || "";
-
     document.getElementById("category").value = product.category || "";
-    document.getElementById("supplier_code").value = product.supplier_code || "SUP001";
-    document.getElementById("supplier_name").value = product.supplier_name || "JLS Logistic Service";
+
+    document.getElementById("supplier_select").value =
+        product.supplier_code || "SUP001";
+
     document.getElementById("quantity").value = product.quantity;
     document.getElementById("price").value = product.price;
-
 
     const imageSelect = document.getElementById("image");
     const currentImage = product.image || "";
 
-    if (currentImage !== "" &&
-        ![...imageSelect.options].some(o => o.value === currentImage)) {
-
+    if (
+        currentImage !== "" &&
+        ![...imageSelect.options].some(o => o.value === currentImage)
+    ) {
         const option = document.createElement("option");
         option.value = currentImage;
         option.textContent = currentImage;
-
         imageSelect.appendChild(option);
-
     }
 
     imageSelect.value = currentImage;
 
     showImagePreview(getImageBase(product));
 
-    document.getElementById("productForm").scrollIntoView({ behavior: "smooth" });
-
+    document.getElementById("productForm").scrollIntoView({
+        behavior: "smooth"
+    });
 }
 
 async function updateProduct() {
@@ -1016,10 +1059,9 @@ function clearForm() {
 
     document.getElementById("product_name").value = "";
     document.getElementById("category").value = "";
-    document.getElementById("supplier_code").value = "SUP001";
-    document.getElementById("supplier_name").value = "JLS Logistic Service";
     document.getElementById("quantity").value = "";
     document.getElementById("price").value = "";
+    document.getElementById("supplier_select").value = "SUP001";
 
     document.getElementById("image").value = "";
 
@@ -1036,7 +1078,12 @@ function cancelForm() {
 
 }
 
-loadProducts();
+async function initializeInventory() {
+    await loadSupplierOptions();
+    await loadProducts();
+}
+
+initializeInventory();
 
 </script>
 
