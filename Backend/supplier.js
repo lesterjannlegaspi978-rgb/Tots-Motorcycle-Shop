@@ -188,7 +188,7 @@ router.post("/add", (req, res) => {
                     if (err.code === "ER_DUP_ENTRY") {
                         return res.status(409).json({
                             success: false,
-                            message: "Supplier Code or supplier information already exists."
+                            message: "Supplier information already exists."
                         });
                     }
 
