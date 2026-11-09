@@ -1,3 +1,4 @@
+
 const express = require("express");
 const router = express.Router();
 const db = require("./db");
@@ -23,11 +24,11 @@ function isValidGmail(value) {
 
     const localPart = value.split("@")[0];
 
-    if (localPart.startsWith(".") || localPart.endsWith(".")) {
-        return false;
-    }
-
-    if (localPart.includes("..")) {
+    if (
+        localPart.startsWith(".") ||
+        localPart.endsWith(".") ||
+        localPart.includes("..")
+    ) {
         return false;
     }
 
@@ -37,11 +38,6 @@ function isValidGmail(value) {
 function isValidAddress(value) {
     return value.length >= 5 && value.length <= 255;
 }
-
-const ALLOWED_SUPPLIER = {
-    supplier_code: "SUP001",
-    supplier_name: "JLS Logistic Service"
-};
 
 function cleanAndValidate(body) {
     const data = {
@@ -71,29 +67,77 @@ function cleanAndValidate(body) {
     }
 
     if (!isValidPhilippineMobile(data.contact_number)) {
-        return { error: "Contact Number must contain exactly 11 digits and start with 09." };
+        return {
+            error: "Contact Number must contain exactly 11 digits and start with 09."
+        };
     }
 
     if (!isValidGmail(data.email)) {
-        return { error: "Please enter a valid Gmail address ending in @gmail.com." };
+        return {
+            error: "Please enter a valid Gmail address ending in @gmail.com."
+        };
     }
 
     if (!isValidAddress(data.address)) {
         return { error: "Please enter a valid supplier address." };
     }
 
-    if (
-        data.supplier_code !== ALLOWED_SUPPLIER.supplier_code ||
-        data.supplier_name.toLowerCase() !== ALLOWED_SUPPLIER.supplier_name.toLowerCase()
-    ) {
-        return {
-            error: "Only JLS Logistic Service (SUP001) is registered as the supplier of Tot's Motorshop."
-        };
+    return { data };
+}
+
+function checkDuplicateSupplier(data, excludeId, callback) {
+    let sql = `
+        SELECT id, supplier_code, contact_number, email
+        FROM suppliers
+        WHERE (
+            supplier_code = ?
+            OR LOWER(email) = LOWER(?)
+            OR contact_number = ?
+        )
+    `;
+
+    const params = [
+        data.supplier_code,
+        data.email,
+        data.contact_number
+    ];
+
+    if (excludeId !== null) {
+        sql += " AND id <> ?";
+        params.push(excludeId);
     }
 
-    data.supplier_name = ALLOWED_SUPPLIER.supplier_name;
+    sql += " LIMIT 1";
 
-    return { data };
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            return callback(err);
+        }
+
+        if (result.length > 0) {
+            const existing = result[0];
+
+            if (existing.supplier_code === data.supplier_code) {
+                return callback(null, {
+                    error: "This Supplier Code is already registered."
+                });
+            }
+
+            if (String(existing.email).toLowerCase() === data.email) {
+                return callback(null, {
+                    error: "This Gmail address is already registered to another supplier."
+                });
+            }
+
+            if (existing.contact_number === data.contact_number) {
+                return callback(null, {
+                    error: "This contact number is already registered to another supplier."
+                });
+            }
+        }
+
+        return callback(null, null);
+    });
 }
 
 router.post("/add", (req, res) => {
@@ -106,17 +150,11 @@ router.post("/add", (req, res) => {
         });
     }
 
-    const {
-        supplier_code,
-        supplier_name,
-        contact_number,
-        email,
-        address
-    } = checked.data;
+    const data = checked.data;
 
-    db.query("SELECT id FROM suppliers LIMIT 1", (err, existing) => {
+    checkDuplicateSupplier(data, null, (err, duplicate) => {
         if (err) {
-            console.log("CHECK EXISTING SUPPLIER ERROR:", err);
+            console.log("CHECK DUPLICATE SUPPLIER ERROR:", err);
 
             return res.status(500).json({
                 success: false,
@@ -124,10 +162,10 @@ router.post("/add", (req, res) => {
             });
         }
 
-        if (existing.length > 0) {
+        if (duplicate) {
             return res.status(409).json({
                 success: false,
-                message: "The supplier is already registered. Use Edit to update the supplier details."
+                message: duplicate.error
             });
         }
 
@@ -144,10 +182,23 @@ router.post("/add", (req, res) => {
 
         db.query(
             sql,
-            [supplier_code, supplier_name, contact_number, email, address],
+            [
+                data.supplier_code,
+                data.supplier_name,
+                data.contact_number,
+                data.email,
+                data.address
+            ],
             (err, result) => {
                 if (err) {
                     console.log("ADD SUPPLIER ERROR:", err);
+
+                    if (err.code === "ER_DUP_ENTRY") {
+                        return res.status(409).json({
+                            success: false,
+                            message: "Supplier Code or supplier information already exists."
+                        });
+                    }
 
                     return res.status(500).json({
                         success: false,
@@ -159,7 +210,8 @@ router.post("/add", (req, res) => {
 
                 return res.status(201).json({
                     success: true,
-                    message: "Supplier Added Successfully!"
+                    message: "Supplier Added Successfully!",
+                    supplierId: result.insertId
                 });
             }
         );
@@ -213,29 +265,9 @@ router.put("/update/:id", (req, res) => {
         });
     }
 
-    const {
-        supplier_code,
-        supplier_name,
-        contact_number,
-        email,
-        address
-    } = checked.data;
+    const data = checked.data;
 
-    const duplicateSql = `
-        SELECT
-            id,
-            email,
-            contact_number
-        FROM suppliers
-        WHERE id <> ?
-        AND (
-            LOWER(email) = LOWER(?)
-            OR contact_number = ?
-        )
-        LIMIT 1
-    `;
-
-    db.query(duplicateSql, [id, email, contact_number], (err, result) => {
+    checkDuplicateSupplier(data, id, (err, duplicate) => {
         if (err) {
             console.log("UPDATE SUPPLIER CHECK ERROR:", err);
 
@@ -245,19 +277,10 @@ router.put("/update/:id", (req, res) => {
             });
         }
 
-        if (result.length > 0) {
-            const existing = result[0];
-
-            if (existing.email.toLowerCase() === email.toLowerCase()) {
-                return res.status(409).json({
-                    success: false,
-                    message: "This Gmail address is already registered to another supplier."
-                });
-            }
-
+        if (duplicate) {
             return res.status(409).json({
                 success: false,
-                message: "This contact number is already registered to another supplier."
+                message: duplicate.error
             });
         }
 
@@ -274,10 +297,24 @@ router.put("/update/:id", (req, res) => {
 
         db.query(
             sql,
-            [supplier_code, supplier_name, contact_number, email, address, id],
+            [
+                data.supplier_code,
+                data.supplier_name,
+                data.contact_number,
+                data.email,
+                data.address,
+                id
+            ],
             (err, result) => {
                 if (err) {
                     console.log("UPDATE SUPPLIER ERROR:", err);
+
+                    if (err.code === "ER_DUP_ENTRY") {
+                        return res.status(409).json({
+                            success: false,
+                            message: "Supplier Code or supplier information already exists."
+                        });
+                    }
 
                     return res.status(500).json({
                         success: false,
@@ -286,10 +323,30 @@ router.put("/update/:id", (req, res) => {
                 }
 
                 if (result.affectedRows === 0) {
-                    return res.status(404).json({
-                        success: false,
-                        message: "Supplier not found."
-                    });
+                    return db.query(
+                        "SELECT id FROM suppliers WHERE id = ?",
+                        [id],
+                        (checkErr, existing) => {
+                            if (checkErr) {
+                                return res.status(500).json({
+                                    success: false,
+                                    message: "Database Error"
+                                });
+                            }
+
+                            if (existing.length === 0) {
+                                return res.status(404).json({
+                                    success: false,
+                                    message: "Supplier not found."
+                                });
+                            }
+
+                            return res.json({
+                                success: true,
+                                message: "Supplier details are already up to date."
+                            });
+                        }
+                    );
                 }
 
                 console.log("Supplier updated successfully. ID:", id);
