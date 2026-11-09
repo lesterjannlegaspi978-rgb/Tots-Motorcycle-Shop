@@ -490,6 +490,7 @@ router.post("/create", async (req, res) => {
 
             const updateProductSql = `
                 UPDATE products
+                
                 SET
                     quantity = quantity + ?,
                     supplier_code = ?,
