@@ -410,6 +410,7 @@
 </div>
 
 <script>
+
 const API_URL = "";
 
 let editingSupplierId = null;
@@ -420,6 +421,7 @@ const sidebar = document.querySelector(".sidebar");
 const content = document.querySelector(".content");
 
 if (sidebar && content) {
+
     sidebar.classList.add("hide");
 
     sidebar.addEventListener("mouseenter", () => {
@@ -431,6 +433,7 @@ if (sidebar && content) {
         sidebar.classList.add("hide");
         content.classList.remove("expand");
     });
+
 }
 
 const supplierForm = document.getElementById("supplierForm");
@@ -438,8 +441,8 @@ const supplierMessage = document.getElementById("supplierMessage");
 const submitSupplierButton = document.getElementById("submitSupplierButton");
 const cancelEditButton = document.getElementById("cancelEditButton");
 const formTitle = document.getElementById("formTitle");
+
 const editModeTitle = document.getElementById("editModeTitle");
-const newSupplierButton = document.getElementById("newSupplierButton");
 
 function setLocks(codeAndNameLocked, othersLocked) {
     document.getElementById("supplierCode").readOnly = codeAndNameLocked;
@@ -450,17 +453,29 @@ function setLocks(codeAndNameLocked, othersLocked) {
 }
 
 function fillForm(supplier) {
-    document.getElementById("supplierCode").value = supplier.supplier_code || "";
-    document.getElementById("supplierName").value = supplier.supplier_name || "";
-    document.getElementById("contactNumber").value = supplier.contact_number || "";
-    document.getElementById("email").value = supplier.email || "";
-    document.getElementById("address").value = supplier.address || "";
+    document.getElementById("supplierCode").value =
+        supplier.supplier_code || "";
+
+    document.getElementById("supplierName").value =
+        supplier.supplier_name || "";
+
+    document.getElementById("contactNumber").value =
+        supplier.contact_number || "";
+
+    document.getElementById("email").value =
+        supplier.email || "";
+
+    document.getElementById("address").value =
+        supplier.address || "";
 }
 
 function getNextSupplierCode() {
+
     let highest = 0;
 
     supplierList.forEach(supplier => {
+
+
         const match = /^SUP(\d{3})$/.exec(
             String(supplier.supplier_code || "").toUpperCase()
         );
@@ -468,9 +483,11 @@ function getNextSupplierCode() {
         if (match) {
             highest = Math.max(highest, Number(match[1]));
         }
+
     });
 
     return "SUP" + String(highest + 1).padStart(3, "0");
+
 }
 
 function isValidSupplierCode(value) {
@@ -486,17 +503,26 @@ function isValidPhilippineMobile(value) {
 }
 
 function isValidGmail(value) {
+
     const gmailPattern = /^[a-z0-9][a-z0-9._%+-]*@gmail\.com$/i;
 
-    if (!gmailPattern.test(value)) return false;
+    if (!gmailPattern.test(value)) {
+
+        return false;
+    }
 
     const localPart = value.split("@")[0];
 
-    return !(
-        localPart.startsWith(".") ||
-        localPart.endsWith(".") ||
-        localPart.includes("..")
-    );
+    if (localPart.startsWith(".") || localPart.endsWith(".")) {
+        return false;
+    }
+
+    if (localPart.includes("..")) {
+        return false;
+    }
+
+    return true;
+
 }
 
 function isValidAddress(value) {
@@ -514,16 +540,31 @@ function clearMessage() {
 }
 
 function getSupplierFormData() {
+
+
     return {
-        supplier_code: document.getElementById("supplierCode").value.trim().toUpperCase(),
-        supplier_name: document.getElementById("supplierName").value.trim(),
-        contact_number: document.getElementById("contactNumber").value.trim(),
-        email: document.getElementById("email").value.trim().toLowerCase(),
-        address: document.getElementById("address").value.trim()
+
+        supplier_code:
+            document.getElementById("supplierCode").value.trim().toUpperCase(),
+
+        supplier_name:
+            document.getElementById("supplierName").value.trim(),
+
+        contact_number:
+            document.getElementById("contactNumber").value.trim(),
+
+        email:
+            document.getElementById("email").value.trim().toLowerCase(),
+
+        address:
+            document.getElementById("address").value.trim()
+
     };
+
 }
 
 function validateSupplierForm(data) {
+
     if (
         !data.supplier_code ||
         !data.supplier_name ||
@@ -532,6 +573,7 @@ function validateSupplierForm(data) {
         !data.address
     ) {
         return "Please complete all required supplier fields.";
+
     }
 
     if (!isValidSupplierCode(data.supplier_code)) {
@@ -555,124 +597,119 @@ function validateSupplierForm(data) {
     }
 
     return null;
+
 }
 
 function enterViewMode() {
-    const mainSupplier = supplierList.find(
-        supplier => String(supplier.supplier_code).toUpperCase() === "SUP001"
-    );
 
-    if (!mainSupplier) {
+    if (supplierList.length === 0) {
         enterAddMode();
         return;
     }
 
+
     mode = "view";
     editingSupplierId = null;
 
-    supplierForm.reset();
-    fillForm(mainSupplier);
+    fillForm(supplierList[0]);
+
     setLocks(true, true);
 
     formTitle.textContent = "Registered Supplier";
 
     editModeTitle.textContent =
-        "JLS Logistic Service (SUP001) is the registered supplier. Its information is protected.";
-
+        "Showing the registered supplier. Click Clear to add a new supplier.";
     editModeTitle.style.display = "block";
 
-    submitSupplierButton.textContent = "Supplier Locked";
+    submitSupplierButton.textContent = "Add Supplier";
     submitSupplierButton.disabled = true;
 
-    newSupplierButton.textContent = "Add New Supplier";
     cancelEditButton.style.display = "none";
+
 }
 
 function enterAddMode() {
+
     mode = "add";
     editingSupplierId = null;
 
     supplierForm.reset();
+
     setLocks(false, false);
 
     document.getElementById("supplierCode").value = getNextSupplierCode();
 
+
     formTitle.textContent = "Add Supplier";
-    editModeTitle.textContent = "Register a new supplier.";
-    editModeTitle.style.display = "block";
+
+    editModeTitle.style.display = "none";
 
     submitSupplierButton.textContent = "Add Supplier";
     submitSupplierButton.disabled = false;
 
-    newSupplierButton.textContent = "Clear";
     cancelEditButton.style.display = "none";
+
 }
 
 function editSupplier(supplier) {
-    if (String(supplier.supplier_code).toUpperCase() === "SUP001") {
-        showMessage(
-            "SUP001 is protected. Its registered supplier information cannot be changed.",
-            "error"
-        );
-        return;
-    }
 
     mode = "edit";
     editingSupplierId = supplier.id;
 
     fillForm(supplier);
+
     setLocks(true, false);
 
     formTitle.textContent = "Update Supplier";
 
     editModeTitle.textContent =
         "Editing existing supplier. Supplier Code and Name cannot be changed.";
-
     editModeTitle.style.display = "block";
 
     submitSupplierButton.textContent = "Save Changes";
     submitSupplierButton.disabled = false;
 
-    newSupplierButton.textContent = "Add New Supplier";
     cancelEditButton.style.display = "inline-block";
 
     clearMessage();
 
+
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
+
 }
 
 function clearSupplierForm() {
+
     clearMessage();
+
     enterAddMode();
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
 }
 
 function cancelEdit() {
+
     clearMessage();
+
     enterViewMode();
+
 }
 
 supplierForm.addEventListener("submit", async function(event) {
+
     event.preventDefault();
 
     if (mode === "view") {
         return;
     }
 
-    if (mode !== "add" && mode !== "edit") {
-        return;
-    }
 
     clearMessage();
 
     const data = getSupplierFormData();
+
     const validationError = validateSupplierForm(data);
 
     if (validationError) {
@@ -682,22 +719,13 @@ supplierForm.addEventListener("submit", async function(event) {
 
     const isEditing = mode === "edit";
 
-    if (isEditing) {
-        const selectedSupplier = supplierList.find(
-            supplier => Number(supplier.id) === Number(editingSupplierId)
-        );
-
-        if (!selectedSupplier ||
-            selectedSupplier.supplier_code === "SUP001") {
-            showMessage("SUP001 is protected and cannot be modified.", "error");
-            return;
-        }
-    }
-
     submitSupplierButton.disabled = true;
-    submitSupplierButton.textContent = isEditing ? "Saving..." : "Adding...";
+
+    submitSupplierButton.textContent =
+        isEditing ? "Saving..." : "Adding...";
 
     try {
+
         const url = isEditing
             ? `${API_URL}/suppliers/update/${editingSupplierId}`
             : `${API_URL}/suppliers/add`;
@@ -710,54 +738,76 @@ supplierForm.addEventListener("submit", async function(event) {
             body: JSON.stringify(data)
         });
 
+
         const result = await response.json();
 
         if (!response.ok || !result.success) {
             showMessage(
                 result.message ||
-                (isEditing ? "Unable to update supplier." : "Unable to add supplier."),
+                (isEditing
+                    ? "Unable to update supplier."
+                    : "Unable to add supplier."),
                 "error"
             );
             return;
         }
 
-        const successMessage = result.message ||
+        const successMessage =
+            result.message ||
             (isEditing
                 ? "Supplier Updated Successfully!"
                 : "Supplier Added Successfully!");
 
         await loadSuppliers();
+
         enterViewMode();
+
         showMessage(successMessage, "success");
 
-    } catch (error) {
+    }
+    catch (error) {
+
         console.error("SUPPLIER REQUEST ERROR:", error);
+
         showMessage("Unable to connect to the server.", "error");
 
-    } finally {
-        if (mode === "view") {
-            submitSupplierButton.disabled = true;
-            submitSupplierButton.textContent = "Supplier Locked";
-        } else {
-            submitSupplierButton.disabled = false;
-            submitSupplierButton.textContent =
-                mode === "edit" ? "Save Changes" : "Add Supplier";
-        }
+
     }
+    finally {
+
+        if (mode === "edit") {
+            submitSupplierButton.disabled = false;
+            submitSupplierButton.textContent = "Save Changes";
+        }
+        else if (mode === "add") {
+            submitSupplierButton.disabled = false;
+            submitSupplierButton.textContent = "Add Supplier";
+        }
+        else {
+            submitSupplierButton.disabled = true;
+            submitSupplierButton.textContent = "Add Supplier";
+        }
+
+    }
+
 });
 
 async function loadSuppliers() {
+
     const tableBody = document.getElementById("supplierTableBody");
     const supplierCount = document.getElementById("supplierCount");
 
     try {
+
         const response = await fetch(`${API_URL}/suppliers/all`);
 
         if (!response.ok) {
             throw new Error("Unable to load suppliers.");
         }
 
+
         const suppliers = await response.json();
+
         supplierList = Array.isArray(suppliers) ? suppliers : [];
 
         tableBody.innerHTML = "";
@@ -768,6 +818,7 @@ async function loadSuppliers() {
             count + (count === 1 ? " Supplier" : " Suppliers");
 
         if (count === 0) {
+
             tableBody.innerHTML = `
                 <tr>
                     <td colspan="7" class="no-suppliers">
@@ -775,71 +826,57 @@ async function loadSuppliers() {
                     </td>
                 </tr>
             `;
+
             return;
+
         }
 
         supplierList.forEach(supplier => {
+
             const row = document.createElement("tr");
 
-            const values = [
-                supplier.id ?? "",
-                supplier.supplier_code ?? "",
-                supplier.supplier_name ?? "",
-                supplier.contact_number ?? "",
-                supplier.email ?? "",
-                supplier.address ?? ""
-            ];
+            row.innerHTML = `
+                <td>${supplier.id ?? ""}</td>
 
-            values.forEach((value, index) => {
-                const cell = document.createElement("td");
 
-                if (index === 1) {
-                    const badge = document.createElement("span");
-                    badge.className = "supplier-code-badge";
-                    badge.textContent = value;
-                    cell.appendChild(badge);
-                } else {
-                    cell.textContent = value;
-                }
+                <td>
+                    <span class="supplier-code-badge">
+                        ${supplier.supplier_code ?? ""}
+                    </span>
+                </td>
 
-                row.appendChild(cell);
+                <td>${supplier.supplier_name ?? ""}</td>
+
+                <td>${supplier.contact_number ?? ""}</td>
+
+                <td>${supplier.email ?? ""}</td>
+
+                <td>${supplier.address ?? ""}</td>
+
+                <td>
+                    <button type="button" class="edit-supplier-btn">
+                        Edit
+                    </button>
+                </td>
+            `;
+
+            const editButton = row.querySelector(".edit-supplier-btn");
+
+            editButton.addEventListener("click", () => {
+                editSupplier(supplier);
             });
 
-            const actionCell = document.createElement("td");
-
-            if (String(supplier.supplier_code).toUpperCase() === "SUP001") {
-                const lockedButton = document.createElement("button");
-
-                lockedButton.type = "button";
-                lockedButton.className = "locked-supplier-btn";
-                lockedButton.textContent = "Locked";
-                lockedButton.disabled = true;
-                lockedButton.title = "This supplier is protected.";
-
-                actionCell.appendChild(lockedButton);
-
-            } else {
-                const editButton = document.createElement("button");
-
-                editButton.type = "button";
-                editButton.className = "edit-supplier-btn";
-                editButton.textContent = "Edit";
-
-                editButton.addEventListener("click", () => {
-                    editSupplier(supplier);
-                });
-
-                actionCell.appendChild(editButton);
-            }
-
-            row.appendChild(actionCell);
             tableBody.appendChild(row);
+
         });
 
-    } catch (error) {
+
+    }
+    catch (error) {
+
         console.error("LOAD SUPPLIERS ERROR:", error);
 
-        supplierCount.textContent = "Unable to load";
+        supplierCount.textContent = "0 Suppliers";
 
         tableBody.innerHTML = `
             <tr>
@@ -849,21 +886,20 @@ async function loadSuppliers() {
             </tr>
         `;
 
-        throw error;
     }
+
 }
 
 async function initializeSupplierPage() {
-    try {
-        await loadSuppliers();
-        enterViewMode();
-    } catch (error) {
-        formTitle.textContent = "Supplier Management";
-        showMessage("Unable to load registered supplier information.", "error");
-    }
+
+    await loadSuppliers();
+
+    enterViewMode();
+
 }
 
 initializeSupplierPage();
+
 </script>
 
 </body>
