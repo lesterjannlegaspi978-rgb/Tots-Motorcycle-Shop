@@ -582,6 +582,7 @@ const API_URL = "";
 
 let editingSupplierId = null;
 let supplierList = [];
+let mode = "view";
 
 const sidebar = document.querySelector(".sidebar");
 const content = document.querySelector(".content");
@@ -607,11 +608,32 @@ const supplierMessage = document.getElementById("supplierMessage");
 const submitSupplierButton = document.getElementById("submitSupplierButton");
 const cancelEditButton = document.getElementById("cancelEditButton");
 const formTitle = document.getElementById("formTitle");
+
 const editModeTitle = document.getElementById("editModeTitle");
 
-function lockFields(isEditing) {
-    document.getElementById("supplierCode").readOnly = isEditing;
-    document.getElementById("supplierName").readOnly = isEditing;
+function setLocks(codeAndNameLocked, othersLocked) {
+    document.getElementById("supplierCode").readOnly = codeAndNameLocked;
+    document.getElementById("supplierName").readOnly = codeAndNameLocked;
+    document.getElementById("contactNumber").readOnly = othersLocked;
+    document.getElementById("email").readOnly = othersLocked;
+    document.getElementById("address").readOnly = othersLocked;
+}
+
+function fillForm(supplier) {
+    document.getElementById("supplierCode").value =
+        supplier.supplier_code || "";
+
+    document.getElementById("supplierName").value =
+        supplier.supplier_name || "";
+
+    document.getElementById("contactNumber").value =
+        supplier.contact_number || "";
+
+    document.getElementById("email").value =
+        supplier.email || "";
+
+    document.getElementById("address").value =
+        supplier.address || "";
 }
 
 function getNextSupplierCode() {
@@ -619,6 +641,7 @@ function getNextSupplierCode() {
     let highest = 0;
 
     supplierList.forEach(supplier => {
+
 
         const match = /^SUP(\d{3})$/.exec(
             String(supplier.supplier_code || "").toUpperCase()
@@ -651,6 +674,7 @@ function isValidGmail(value) {
     const gmailPattern = /^[a-z0-9][a-z0-9._%+-]*@gmail\.com$/i;
 
     if (!gmailPattern.test(value)) {
+
         return false;
     }
 
@@ -684,6 +708,7 @@ function clearMessage() {
 
 function getSupplierFormData() {
 
+
     return {
 
         supplier_code:
@@ -715,6 +740,7 @@ function validateSupplierForm(data) {
         !data.address
     ) {
         return "Please complete all required supplier fields.";
+
     }
 
     if (!isValidSupplierCode(data.supplier_code)) {
@@ -741,15 +767,45 @@ function validateSupplierForm(data) {
 
 }
 
-function clearSupplierForm() {
+function enterViewMode() {
+
+    if (supplierList.length === 0) {
+        enterAddMode();
+        return;
+    }
+
+
+    mode = "view";
+    editingSupplierId = null;
+
+    fillForm(supplierList[0]);
+
+    setLocks(true, true);
+
+    formTitle.textContent = "Registered Supplier";
+
+    editModeTitle.textContent =
+        "Showing the registered supplier. Click Clear to add a new supplier.";
+    editModeTitle.style.display = "block";
+
+    submitSupplierButton.textContent = "Add Supplier";
+    submitSupplierButton.disabled = true;
+
+    cancelEditButton.style.display = "none";
+
+}
+
+function enterAddMode() {
+
+    mode = "add";
+    editingSupplierId = null;
 
     supplierForm.reset();
 
-    editingSupplierId = null;
-
-    lockFields(false);
+    setLocks(false, false);
 
     document.getElementById("supplierCode").value = getNextSupplierCode();
+
 
     formTitle.textContent = "Add Supplier";
 
@@ -760,33 +816,21 @@ function clearSupplierForm() {
 
     cancelEditButton.style.display = "none";
 
-    clearMessage();
-
 }
 
 function editSupplier(supplier) {
 
+    mode = "edit";
     editingSupplierId = supplier.id;
 
-    document.getElementById("supplierCode").value =
-        supplier.supplier_code || "";
+    fillForm(supplier);
 
-    document.getElementById("supplierName").value =
-        supplier.supplier_name || "";
-
-    document.getElementById("contactNumber").value =
-        supplier.contact_number || "";
-
-    document.getElementById("email").value =
-        supplier.email || "";
-
-    document.getElementById("address").value =
-        supplier.address || "";
-
-    lockFields(true);
+    setLocks(true, false);
 
     formTitle.textContent = "Update Supplier";
 
+    editModeTitle.textContent =
+        "Editing existing supplier. Supplier Code and Name cannot be changed.";
     editModeTitle.style.display = "block";
 
     submitSupplierButton.textContent = "Save Changes";
@@ -796,6 +840,7 @@ function editSupplier(supplier) {
 
     clearMessage();
 
+
     window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -803,13 +848,30 @@ function editSupplier(supplier) {
 
 }
 
+function clearSupplierForm() {
+
+    clearMessage();
+
+    enterAddMode();
+
+}
+
 function cancelEdit() {
-    clearSupplierForm();
+
+    clearMessage();
+
+    enterViewMode();
+
 }
 
 supplierForm.addEventListener("submit", async function(event) {
 
     event.preventDefault();
+
+    if (mode === "view") {
+        return;
+    }
+
 
     clearMessage();
 
@@ -822,7 +884,7 @@ supplierForm.addEventListener("submit", async function(event) {
         return;
     }
 
-    const isEditing = editingSupplierId !== null;
+    const isEditing = mode === "edit";
 
     submitSupplierButton.disabled = true;
 
@@ -842,6 +904,7 @@ supplierForm.addEventListener("submit", async function(event) {
             },
             body: JSON.stringify(data)
         });
+
 
         const result = await response.json();
 
@@ -864,7 +927,7 @@ supplierForm.addEventListener("submit", async function(event) {
 
         await loadSuppliers();
 
-        clearSupplierForm();
+        enterViewMode();
 
         showMessage(successMessage, "success");
 
@@ -875,13 +938,22 @@ supplierForm.addEventListener("submit", async function(event) {
 
         showMessage("Unable to connect to the server.", "error");
 
+
     }
     finally {
 
-        submitSupplierButton.disabled = false;
-
-        submitSupplierButton.textContent =
-            editingSupplierId !== null ? "Save Changes" : "Add Supplier";
+        if (mode === "edit") {
+            submitSupplierButton.disabled = false;
+            submitSupplierButton.textContent = "Save Changes";
+        }
+        else if (mode === "add") {
+            submitSupplierButton.disabled = false;
+            submitSupplierButton.textContent = "Add Supplier";
+        }
+        else {
+            submitSupplierButton.disabled = true;
+            submitSupplierButton.textContent = "Add Supplier";
+        }
 
     }
 
@@ -899,6 +971,7 @@ async function loadSuppliers() {
         if (!response.ok) {
             throw new Error("Unable to load suppliers.");
         }
+
 
         const suppliers = await response.json();
 
@@ -932,6 +1005,7 @@ async function loadSuppliers() {
             row.innerHTML = `
                 <td>${supplier.id ?? ""}</td>
 
+
                 <td>
                     <span class="supplier-code-badge">
                         ${supplier.supplier_code ?? ""}
@@ -963,6 +1037,7 @@ async function loadSuppliers() {
 
         });
 
+
     }
     catch (error) {
 
@@ -986,7 +1061,7 @@ async function initializeSupplierPage() {
 
     await loadSuppliers();
 
-    clearSupplierForm();
+    enterViewMode();
 
 }
 
