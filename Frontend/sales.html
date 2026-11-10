@@ -647,6 +647,7 @@ async function processSale() {
                 quantity: data.quantity,
                 total: data.total,
                 date: new Date().toLocaleString("en-PH", {
+                    timeZone: "Asia/Manila",
                     year: "numeric",
                     month: "short",
                     day: "2-digit",

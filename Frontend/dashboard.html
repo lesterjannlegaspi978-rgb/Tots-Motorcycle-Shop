@@ -693,19 +693,7 @@
             return "";
         }
 
-        const date = new Date(dateValue);
-
-        if (isNaN(date.getTime())) {
-            return dateValue;
-        }
-
-        return date.toLocaleString("en-PH", {
-            year: "numeric",
-            month: "short",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit"
-        });
+        return dateValue;
     }
 
     loadDashboard();
