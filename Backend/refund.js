@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("./db");
+const { publishUpdate } = require("./realtime");
 
 
 const ALLOWED_METHODS = [
@@ -309,6 +310,8 @@ router.post("/process", (req, res) => {
 
                                 );
                             }
+
+                            publishUpdate(["refunds", "returns"]);
 
                             res.send({
                                 success: true,

@@ -2,6 +2,7 @@
 <html>
 <head>
     <script src="auth-guard.js"></script>
+    <script src="realtime.js"></script>
     <title>Dashboard</title>
     <link rel="icon" href="logo.png">
     <link rel="stylesheet" href="style.css">
@@ -622,7 +623,7 @@
                     <td>${sale.product_name ?? ""}</td>
                     <td>${sale.quantity ?? 0}</td>
                     <td>${formatPeso(sale.total)}</td>
-                    <td>${formatDashboardDate(sale.sale_date)}</td>
+                    <td>${sale.sale_date ?? ""}</td>
                 </tr>
             `;
         });
@@ -688,23 +689,20 @@
         });
     }
 
-    function formatDashboardDate(dateValue) {
-        if (!dateValue) {
-            return "";
-        }
-
-        return dateValue;
-    }
-
     loadDashboard();
     loadRecentSales();
     loadAlerts();
 
-    setInterval(() => {
-        loadDashboard();
-        loadRecentSales();
-        loadAlerts();
-    }, 3000);
+    subscribeRealtimeUpdates(update => {
+        if (
+            ["sales", "inventory", "returns", "refunds", "stock-in", "purchase-orders"]
+                .some(type => hasRealtimeUpdate(update, type))
+        ) {
+            loadDashboard();
+            loadRecentSales();
+            loadAlerts();
+        }
+    });
 </script>
 
 </body>

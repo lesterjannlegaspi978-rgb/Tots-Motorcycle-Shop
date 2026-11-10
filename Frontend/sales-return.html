@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
 
     <script src="auth-guard.js"></script>
+    <script src="realtime.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -844,6 +845,7 @@ async function loadSales() {
 
     try {
 
+        const selectedSaleId = document.getElementById("sale_id").value;
         const response = await fetch(API_URL + "/sales");
 
         const result = await response.json();
@@ -879,6 +881,10 @@ async function loadSales() {
             select.appendChild(option);
 
         });
+
+        if (salesData.some(sale => String(sale.sale_id) === selectedSaleId)) {
+            select.value = selectedSaleId;
+        }
 
     } catch (error) {
 
@@ -1187,6 +1193,16 @@ function toggleHistory() {
     loadReturnRecords();
 
 }
+
+subscribeRealtimeUpdates(update => {
+    if (hasRealtimeUpdate(update, "sales")) {
+        loadSales();
+    }
+
+    if (hasRealtimeUpdate(update, "returns")) {
+        loadReturnRecords();
+    }
+});
 
 async function loadReturnRecords() {
 

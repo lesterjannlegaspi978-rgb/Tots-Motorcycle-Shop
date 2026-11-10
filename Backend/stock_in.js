@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("./db");
+const { publishUpdate } = require("./realtime");
 
 function query(sql, params = []) {
     return new Promise((resolve, reject) => {
@@ -568,6 +569,8 @@ router.post("/create", async (req, res) => {
 
         await commitTransaction();
         transactionStarted = false;
+
+        publishUpdate(["stock-in", "purchase-orders", "inventory"]);
 
         res.status(201).json({
             success: true,

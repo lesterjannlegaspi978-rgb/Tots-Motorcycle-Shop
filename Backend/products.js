@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
+const { publishUpdate } = require("./realtime");
 
 function validateProduct(body) {
     const {
@@ -158,6 +159,8 @@ router.post('/add', (req, res) => {
                         "Product added. Database ID:",
                         result.insertId
                     );
+
+                    publishUpdate("inventory");
 
                     return res.status(201).json({
                         success: true,
@@ -328,6 +331,8 @@ router.put('/update/:id', (req, res) => {
                                     });
                                 }
 
+                                publishUpdate("inventory");
+
                                 return res.json({
                                     success: true,
                                     message: "Product Updated Successfully!"
@@ -335,6 +340,8 @@ router.put('/update/:id', (req, res) => {
                             }
                         );
                     }
+
+                    publishUpdate("inventory");
 
                     return res.json({
                         success: true,

@@ -9,6 +9,7 @@ const cors = require("cors");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const db = require("./db");
+const realtime = require("./realtime");
 
 const auth = require("./auth");
 const dashboard = require("./dashboard");
@@ -44,6 +45,24 @@ function verifyToken(req, res, next) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 }
+
+app.get("/realtime/events", verifyToken, (req, res) => {
+    res.status(200).set({
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+        "X-Accel-Buffering": "no"
+    });
+    res.flushHeaders();
+    res.write(": connected\n\n");
+    realtime.addClient(res);
+
+    const heartbeat = setInterval(() => {
+        res.write(": keep-alive\n\n");
+    }, 25000);
+
+    req.on("close", () => clearInterval(heartbeat));
+});
 
 app.use("/auth", auth);
 app.use("/dashboard", verifyToken, dashboard);

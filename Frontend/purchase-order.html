@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
 
     <script src="auth-guard.js"></script>
+    <script src="realtime.js"></script>
 
     <meta
         name="viewport"
@@ -2119,8 +2120,6 @@ async function loadPurchaseOrders() {
                         ).toLocaleString(
                             "en-PH",
                             {
-                                timeZone:
-                                    "Asia/Manila",
                                 dateStyle:
                                     "medium",
                                 timeStyle:
@@ -2320,6 +2319,11 @@ async function initializePurchaseOrderPage() {
 
 initializePurchaseOrderPage();
 
+subscribeRealtimeUpdates(update => {
+    if (hasRealtimeUpdate(update, "purchase-orders")) {
+        loadPurchaseOrders();
+    }
+});
 
 </script>
 

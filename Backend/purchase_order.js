@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("./db");
+const { publishUpdate } = require("./realtime");
 
 router.get("/suppliers", (req, res) => {
 
@@ -477,6 +478,8 @@ router.post("/create", (req, res) => {
 
                                                                     }
 
+
+                                                                    publishUpdate("purchase-orders");
 
                                                                     res.status(
                                                                         201

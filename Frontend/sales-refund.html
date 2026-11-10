@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
 
     <script src="auth-guard.js"></script>
+    <script src="realtime.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -834,6 +835,7 @@ async function loadReturns() {
         returnsData = result.data || [];
 
         const select = document.getElementById("return_id");
+        const selectedReturnId = select.value;
 
         select.innerHTML = `
             <option value="">Select a sales return</option>
@@ -851,6 +853,10 @@ async function loadReturns() {
             select.appendChild(option);
 
         });
+
+        if (returnsData.some(item => String(item.return_id) === selectedReturnId)) {
+            select.value = selectedReturnId;
+        }
 
     } catch (error) {
 
@@ -1184,6 +1190,20 @@ refundSidebar.addEventListener("mouseleave", () => {
 loadReturns();
 
 loadRefundRecords();
+
+subscribeRealtimeUpdates(update => {
+    const returnsChanged =
+        hasRealtimeUpdate(update, "returns") ||
+        hasRealtimeUpdate(update, "refunds");
+
+    if (returnsChanged) {
+        loadReturns();
+    }
+
+    if (hasRealtimeUpdate(update, "refunds")) {
+        loadRefundRecords();
+    }
+});
 
 </script>
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("./db");
+const { publishUpdate } = require("./realtime");
 
 router.post("/add", (req, res) => {
     const productId = Number(req.body.product_id);
@@ -93,6 +94,8 @@ router.post("/add", (req, res) => {
                                     }
                                 );
                             }
+
+                            publishUpdate(["sales", "inventory"]);
 
                             return res.json({
                                 success: true,

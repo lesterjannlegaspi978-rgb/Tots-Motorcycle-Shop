@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("./db");
+const { publishUpdate } = require("./realtime");
 
 const RETURNED_JOIN = `
     LEFT JOIN (
@@ -293,12 +294,16 @@ router.post("/create", (req, res) => {
                                     err4
                                 );
 
+                                publishUpdate("returns");
+
                                 return res.send({
                                     success: false,
                                     message:
                                         "Return was recorded, but inventory update failed. Please check the inventory."
                                 });
                             }
+
+                            publishUpdate(["returns", "inventory"]);
 
                             res.send({
                                 success: true,

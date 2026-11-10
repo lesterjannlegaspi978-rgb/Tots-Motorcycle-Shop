@@ -2,6 +2,7 @@
 <html>
 <head>
     <script src="auth-guard.js"></script>
+    <script src="realtime.js"></script>
     <title>Sales Records</title>
     <link rel="icon" href="logo.png">
     <link rel="stylesheet" href="style.css">
@@ -647,7 +648,6 @@ async function processSale() {
                 quantity: data.quantity,
                 total: data.total,
                 date: new Date().toLocaleString("en-PH", {
-                    timeZone: "Asia/Manila",
                     year: "numeric",
                     month: "short",
                     day: "2-digit",
@@ -823,6 +823,8 @@ function formatDateForFilter(date) {
 
 async function loadProducts() {
     try {
+        const productSelect = document.getElementById("product_id");
+        const selectedProductId = productSelect.value;
         const response = await fetch(
             "/products/all"
         );
@@ -851,7 +853,6 @@ async function loadProducts() {
             }
         });
 
-        const productSelect = document.getElementById("product_id");
         const saleButton = document.getElementById("recordSaleBtn");
 
         const availableProducts = products.filter(
@@ -874,7 +875,11 @@ async function loadProducts() {
             productSelect.innerHTML = options;
             saleButton.disabled = false;
 
-            productSelect.value = availableProducts[0].id;
+            productSelect.value = availableProducts.some(
+                product => String(product.id) === selectedProductId
+            )
+                ? selectedProductId
+                : availableProducts[0].id;
             showProductInfo();
         }
 
@@ -943,6 +948,21 @@ function computeTotal() {
 
 loadProducts();
 loadSales();
+
+subscribeRealtimeUpdates(update => {
+    const saleButton = document.getElementById("recordSaleBtn");
+
+    if (hasRealtimeUpdate(update, "sales")) {
+        loadSales();
+    }
+
+    if (
+        hasRealtimeUpdate(update, "inventory") &&
+        !(saleButton.disabled && saleButton.innerText === "Recording Sale...")
+    ) {
+        loadProducts();
+    }
+});
 
 </script>
 </body>

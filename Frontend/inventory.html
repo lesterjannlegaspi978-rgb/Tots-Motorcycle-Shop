@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <script src="auth-guard.js"></script>
+    <script src="realtime.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory</title>
     <link rel="icon" href="logo.png">
@@ -1118,6 +1119,12 @@ async function initializeInventory() {
 }
 
 initializeInventory();
+
+subscribeRealtimeUpdates(update => {
+    if (hasRealtimeUpdate(update, "inventory")) {
+        loadProducts();
+    }
+});
 
 </script>
 

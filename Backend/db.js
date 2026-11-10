@@ -6,6 +6,7 @@ const db = mysql.createConnection({
     password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || "",
     database: process.env.DB_NAME || process.env.MYSQLDATABASE || "tots_motorshop",
     port: Number(process.env.DB_PORT || process.env.MYSQLPORT || 3306),
+    timezone: "+08:00",
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -152,8 +153,15 @@ db.ready = new Promise((resolve, reject) => {
             return;
         }
 
-        console.log("MySQL Connected");
-        resolve();
+        db.query("SET SESSION time_zone = '+08:00'", timezoneError => {
+            if (timezoneError) {
+                reject(new Error(`Failed to set database timezone: ${timezoneError.message}`));
+                return;
+            }
+
+            console.log("MySQL Connected (Asia/Manila timezone)");
+            resolve();
+        });
     });
 }).then(async () => {
     for (const [name, sql] of tableStatements) {
