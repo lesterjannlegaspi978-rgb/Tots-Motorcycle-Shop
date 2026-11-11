@@ -286,6 +286,22 @@
     }
 }
 
+.sale-message {
+    display: none;
+    margin: 10px 0 0;
+    padding: 10px 13px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sale-message.error {
+    display: block;
+    color: #991b1b;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+}
+
     </style>
 </head>
 
@@ -362,6 +378,8 @@
         </p>
 
         <br>
+
+        <div id="saleMessage" class="sale-message"></div>
 
         <button id="recordSaleBtn" onclick="processSale()">
             Record Sale
@@ -566,6 +584,43 @@ function printReceipt() {
     window.print();
 }
 
+function showSaleMessage(message) {
+    const box = document.getElementById("saleMessage");
+
+    box.textContent = message;
+    box.className = "sale-message error";
+}
+
+function clearSaleMessage() {
+    const box = document.getElementById("saleMessage");
+
+    box.textContent = "";
+    box.className = "sale-message";
+}
+
+function checkStockWarning() {
+    const id = document.getElementById("product_id").value;
+    const qty = Number(document.getElementById("quantity").value);
+    const product = allProducts.find(p => p.id == id);
+
+    if (product && qty > Number(product.quantity)) {
+        showSaleMessage(
+            "Insufficient stock. Only " + Number(product.quantity) +
+            " pc(s) available."
+        );
+
+        markFieldError(document.getElementById("quantity"));
+
+        return;
+    }
+
+    clearSaleMessage();
+}
+
+
+document.getElementById("quantity").addEventListener("input", checkStockWarning);
+document.getElementById("product_id").addEventListener("change", checkStockWarning);
+
 async function processSale() {
     const product_id = document.getElementById("product_id").value;
     const quantity = document.getElementById("quantity").value;
@@ -575,21 +630,26 @@ async function processSale() {
 
     clearFieldError(productField);
     clearFieldError(quantityField);
+    clearSaleMessage();
 
     if (product_id === "") {
         markFieldError(productField);
+        showSaleMessage("Please select a product.");
         return;
     }
 
     if (quantity === "") {
         markFieldError(quantityField);
+        showSaleMessage("Please enter the quantity sold.");
         return;
     }
 
     const saleQuantity = Number(quantity);
 
-    if (saleQuantity <= 0) {
+    if (!Number.isInteger(saleQuantity) || saleQuantity <= 0) {
         markFieldError(quantityField);
+        showSaleMessage("Quantity must be a whole number greater than 0.");
+
         return;
     }
 
@@ -597,6 +657,7 @@ async function processSale() {
 
     if (!product) {
         markFieldError(productField);
+        showSaleMessage("Selected product could not be found.");
         return;
     }
 
@@ -604,6 +665,10 @@ async function processSale() {
 
     if (saleQuantity > availableStock) {
         markFieldError(quantityField);
+        showSaleMessage(
+            "Insufficient stock. Only " + availableStock +
+            " pc(s) available."
+        );
         return;
     }
 
@@ -617,6 +682,7 @@ async function processSale() {
         const response = await fetch(
             "/sales/add",
             {
+
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -642,13 +708,14 @@ async function processSale() {
 
             showProductInfo();
 
-                        showReceipt({
+            showReceipt({
                 id: data.sale_id,
                 product_name: data.product_name,
                 quantity: data.quantity,
                 total: data.total,
                 date: new Date().toLocaleString("en-PH", {
                     year: "numeric",
+
                     month: "short",
                     day: "2-digit",
                     hour: "2-digit",
@@ -656,10 +723,9 @@ async function processSale() {
                     hour12: true
                 })
             });
-
         } else {
-            markFieldError(productField);
             markFieldError(quantityField);
+            showSaleMessage(data.message || "Unable to record the sale.");
         }
 
     } catch (error) {
@@ -667,6 +733,7 @@ async function processSale() {
 
         markFieldError(productField);
         markFieldError(quantityField);
+        showSaleMessage("Unable to connect to the server.");
 
     } finally {
         saleButton.disabled = false;
