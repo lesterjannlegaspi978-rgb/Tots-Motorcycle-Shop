@@ -572,6 +572,90 @@
 
         }
 
+        .ss-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.ss-wrapper .ss-input {
+    width: 100%;
+    height: 44px;
+    margin: 0 !important;
+    padding: 0 36px 0 13px;
+    border: 1px solid #cfd6e4;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    cursor: pointer;
+}
+
+.ss-wrapper .ss-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.ss-wrapper .ss-input.input-error {
+    border: 1px solid #dc2626 !important;
+}
+
+.ss-wrapper .ss-input:disabled {
+    background: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.ss-arrow {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.ss-list {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: 260px;
+    overflow-y: auto;
+    background: #ffffff;
+    border: 1px solid #cfd6e4;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+    z-index: 1000;
+}
+
+.ss-wrapper.open .ss-list {
+    display: block;
+}
+
+.ss-item {
+    padding: 10px 13px;
+    color: #111827;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: left;
+    cursor: pointer;
+}
+
+.ss-item:hover,
+.ss-item.active {
+    background: #eef4ff;
+}
+
+.ss-empty {
+    padding: 12px 13px;
+    color: #6b7280;
+    font-size: 13px;
+    text-align: left;
+}
+
     </style>
 
 </head>
@@ -2314,6 +2398,227 @@ async function initializePurchaseOrderPage() {
 
     renderPurchaseItems();
 
+}
+
+function makeSearchableSelect(selectId, placeholderText) {
+
+    const select = document.getElementById(selectId);
+
+    if (!select || select.dataset.searchable === "1") return;
+
+    select.dataset.searchable = "1";
+    select.style.display = "none";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "ss-wrapper";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "ss-input";
+    input.placeholder = placeholderText || "Search or select";
+    input.autocomplete = "off";
+
+    const arrow = document.createElement("span");
+    arrow.className = "ss-arrow";
+    arrow.textContent = "▾";
+
+    const list = document.createElement("div");
+    list.className = "ss-list";
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(arrow);
+    wrapper.appendChild(list);
+
+    select.parentNode.insertBefore(wrapper, select);
+
+    const valueDescriptor = Object.getOwnPropertyDescriptor(
+
+        HTMLSelectElement.prototype,
+        "value"
+    );
+
+    let items = [];
+    let activeIndex = -1;
+
+    function selectedText() {
+        const option = select.options[select.selectedIndex];
+
+        return option && select.value !== "" ? option.text.trim() : "";
+    }
+
+    function syncInput() {
+        input.disabled = select.disabled;
+
+        input.classList.toggle(
+            "input-error",
+            select.classList.contains("input-error")
+        );
+
+        if (document.activeElement !== input) {
+            input.value = selectedText();
+        }
+    }
+
+    Object.defineProperty(select, "value", {
+        configurable: true,
+        get() {
+            return valueDescriptor.get.call(this);
+        },
+        set(newValue) {
+
+            valueDescriptor.set.call(this, newValue);
+            syncInput();
+        }
+    });
+
+    function setActive(index) {
+        items.forEach((item, i) => {
+            item.classList.toggle("active", i === index);
+        });
+
+        activeIndex = index;
+
+        if (index < 0 || !items[index]) return;
+
+        const item = items[index];
+
+        if (item.offsetTop < list.scrollTop) {
+            list.scrollTop = item.offsetTop;
+        } else if (
+            item.offsetTop + item.offsetHeight >
+            list.scrollTop + list.clientHeight
+        ) {
+            list.scrollTop =
+                item.offsetTop + item.offsetHeight - list.clientHeight;
+        }
+    }
+
+    function render(text) {
+        const query = String(text || "").trim().toLowerCase();
+
+        list.innerHTML = "";
+        items = [];
+
+
+        Array.from(select.options).forEach(option => {
+            if (option.value === "") return;
+
+            const label = option.text.trim();
+
+            if (query && !label.toLowerCase().includes(query)) return;
+
+            const item = document.createElement("div");
+
+            item.className = "ss-item";
+            item.textContent = label;
+
+            item.addEventListener("mousedown", event => {
+                event.preventDefault();
+                choose(option.value);
+            });
+
+            list.appendChild(item);
+            items.push(item);
+        });
+
+        if (items.length === 0) {
+            const empty = document.createElement("div");
+
+            empty.className = "ss-empty";
+            empty.textContent = "Product not found.";
+
+            list.appendChild(empty);
+        }
+
+        setActive(items.length > 0 ? 0 : -1);
+
+    }
+
+    function openList(text) {
+        wrapper.classList.add("open");
+        render(text);
+    }
+
+    function closeList() {
+        wrapper.classList.remove("open");
+    }
+
+    function choose(value) {
+        select.value = value;
+
+        input.value = selectedText();
+
+        closeList();
+
+        input.blur();
+
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
+    input.addEventListener("focus", () => {
+        if (input.disabled) return;
+
+        input.select();
+        openList("");
+    });
+
+    input.addEventListener("click", () => {
+        if (!wrapper.classList.contains("open") && !input.disabled) {
+
+            openList("");
+        }
+    });
+
+    input.addEventListener("input", () => {
+        openList(input.value);
+    });
+
+    input.addEventListener("blur", () => {
+        closeList();
+        input.value = selectedText();
+    });
+
+    input.addEventListener("keydown", event => {
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+
+            if (!wrapper.classList.contains("open")) {
+                openList("");
+            } else if (items.length > 0) {
+                setActive(Math.min(activeIndex + 1, items.length - 1));
+            }
+        } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+
+            if (items.length > 0) {
+                setActive(Math.max(activeIndex - 1, 0));
+            }
+        } else if (event.key === "Enter") {
+            event.preventDefault();
+
+            if (wrapper.classList.contains("open") && items[activeIndex]) {
+
+                const label = items[activeIndex].textContent;
+
+                const option = Array.from(select.options).find(
+                    item => item.value !== "" && item.text.trim() === label
+                );
+
+                if (option) choose(option.value);
+            }
+        } else if (event.key === "Escape") {
+            closeList();
+            input.blur();
+        }
+    });
+
+    new MutationObserver(syncInput).observe(select, {
+        childList: true,
+        attributes: true,
+        attributeFilter: ["class", "disabled"]
+    });
+
+    syncInput();
 }
 
 
