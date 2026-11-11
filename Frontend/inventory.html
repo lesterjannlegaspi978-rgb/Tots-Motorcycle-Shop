@@ -783,6 +783,25 @@ async function showForm() {
     document.getElementById("image").value = "";
 }
 
+function scrollToProduct(id) {
+    setTimeout(() => {
+        const row =
+            document.querySelector(`#productTable tr[data-id="${id}"]`) ||
+            document.querySelector("#productTable tr:last-child");
+
+        if (!row) return;
+
+        row.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        row.style.transition = "background-color 0.6s";
+        row.style.backgroundColor = "#bbf7d0";
+
+        setTimeout(() => {
+            row.style.backgroundColor = "";
+        }, 2500);
+    }, 150);
+}
+
 async function saveProduct() {
     clearInventoryError();
 
@@ -792,7 +811,7 @@ async function saveProduct() {
         return;
     }
 
-    try {
+       try {
         const data = await apiRequest(API_URL + "/add", {
             method: "POST",
             headers: {
@@ -803,7 +822,9 @@ async function saveProduct() {
 
         if (data.success) {
             clearForm();
+            document.getElementById("searchProduct").value = "";
             await loadProducts();
+            scrollToProduct(data.id);
         } else {
             showInventoryError(data.message || "Unable to save product.");
         }
@@ -886,9 +907,9 @@ function renderProducts(products) {
 
         const stock = Number(product.quantity) || 0;
 
-        rows += `
-            <tr>
-                <td class="product-image-cell">
+                  rows += `
+                    <tr data-id="${Number(product.id)}">
+                    <td class="product-image-cell">
                     <img
                         src="${escapeHTML(imagePath)}"
                         data-base="${escapeHTML(imageBase)}"
