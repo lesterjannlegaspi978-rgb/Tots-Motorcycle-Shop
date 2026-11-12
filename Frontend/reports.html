@@ -817,6 +817,24 @@
     margin-top: 14px !important;
 }
 
+.reports-page .inv-scroll {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.reports-page .inv-scroll thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+@media print {
+    .reports-page .inv-scroll {
+        max-height: none !important;
+        overflow: visible !important;
+    }
+}
+
 </style>
 </head>
 
@@ -945,7 +963,7 @@
                 </div>
             </div>
 
-            <div class="table-wrapper">
+            <div class="table-wrapper inv-scroll">
                 <table class="report-table inventory-table">
                     <thead>
                         <tr>
