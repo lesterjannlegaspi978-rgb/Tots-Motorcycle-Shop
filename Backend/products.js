@@ -29,7 +29,7 @@ function validateProduct(body) {
         return "Stock must be a valid whole number greater than or equal to zero.";
     }
 
-    if (!Number.isFinite(Number(price)) || Number(price <= 0)) {
+    if (!Number.isFinite(Number(price)) || Number(price) <= 0) {
         return "Please enter a valid product price.";
     }
 

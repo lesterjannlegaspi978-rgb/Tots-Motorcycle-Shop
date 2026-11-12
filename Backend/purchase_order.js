@@ -53,7 +53,7 @@ router.get("/products", (req, res) => {
             supplier_code,
             supplier_name
         FROM products
-        ORDER BY product_name ASC
+        ORDER BY id ASC
     `;
 
     db.query(sql, (err, results) => {
