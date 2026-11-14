@@ -30,7 +30,6 @@
     }
 
     .reports-page .report-summary {
-
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 20px;
@@ -63,7 +62,6 @@
     }
 
     .reports-page #totalSales {
-
         color: #d97706;
     }
 
@@ -96,7 +94,6 @@
     }
 
     .reports-page .filter-container {
-
         display: grid;
         grid-template-columns: 1fr 1fr auto auto;
         gap: 14px;
@@ -129,7 +126,6 @@
         cursor: pointer;
     }
 
-
     .reports-page .filter-group input:focus,
     .reports-page .filter-group select:focus {
         outline: none;
@@ -142,19 +138,19 @@
         box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
     }
 
-   .reports-page .report-button {
-    border: none;
-    border-radius: 7px;
-    padding: 0 20px !important;
-    height: 44px;
-    min-height: 44px;
-    margin: 0 !important;
-    box-sizing: border-box;
-    font-size: 14px !important;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
+    .reports-page .report-button {
+        border: none;
+        border-radius: 7px;
+        padding: 0 20px !important;
+        height: 44px;
+        min-height: 44px;
+        margin: 0 !important;
+        box-sizing: border-box;
+        font-size: 14px !important;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
 
     .reports-page .report-button:disabled {
         background: #9ca3af;
@@ -165,7 +161,6 @@
         background: #24479b;
         color: #ffffff;
     }
-
 
     .reports-page .filter-button:hover {
         background: #1b367a;
@@ -199,7 +194,6 @@
         background: #000000;
     }
 
-
     .reports-page .filter-status {
         display: none;
         margin-top: 15px;
@@ -209,6 +203,12 @@
         color: #1e40af;
         font-size: 14px !important;
         font-weight: 600;
+    }
+
+    .reports-page .filter-status.error {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
     }
 
     .reports-page .inv-controls {
@@ -231,7 +231,6 @@
     .reports-page .inv-notice.error {
         display: block;
         color: #b91c1c;
-
         background: #fef2f2;
         border: 1px solid #fecaca;
     }
@@ -265,7 +264,6 @@
         line-height: 1.6;
     }
 
-
     .reports-page .inv-insight small {
         display: block;
         margin-top: 8px;
@@ -297,7 +295,6 @@
     }
 
     .reports-page .status-badge.in {
-
         background: #dcfce7;
         color: #166534;
     }
@@ -330,7 +327,6 @@
         font-size: 14px !important;
         font-weight: 700;
         color: #374151;
-
     }
 
     .reports-page .sales-flow-controls select,
@@ -363,7 +359,6 @@
         background: #ffffff;
         padding: 15px;
         box-sizing: border-box;
-
     }
 
     .reports-page #salesFlowChart {
@@ -396,7 +391,6 @@
         padding: 18px 20px;
         min-height: 90px;
         box-sizing: border-box;
-
     }
 
     .reports-page .trend-card-title {
@@ -429,7 +423,6 @@
         border-radius: 8px;
     }
 
-
     .reports-page .report-table {
         width: 100%;
         border-collapse: collapse;
@@ -437,26 +430,26 @@
         background: #ffffff;
     }
 
-   .reports-page .report-table thead th {
-    background: #24479b;
-    color: #ffffff;
-    padding: 13px 14px !important;
-    text-align: center !important;
-    vertical-align: middle;
-    font-size: 14px !important;
-    font-weight: 700;
-    white-space: nowrap;
-}
+    .reports-page .report-table thead th {
+        background: #24479b;
+        color: #ffffff;
+        padding: 13px 14px !important;
+        text-align: center !important;
+        vertical-align: middle;
+        font-size: 14px !important;
+        font-weight: 700;
+        white-space: nowrap;
+    }
 
-.reports-page .report-table tbody td {
-    padding: 12px 14px !important;
-    border-bottom: 1px solid #e5e7eb;
-    color: #374151;
-    font-size: 14px !important;
-    line-height: 1.35;
-    text-align: center !important;
-    vertical-align: middle;
-}
+    .reports-page .report-table tbody td {
+        padding: 12px 14px !important;
+        border-bottom: 1px solid #e5e7eb;
+        color: #374151;
+        font-size: 14px !important;
+        line-height: 1.35;
+        text-align: center !important;
+        vertical-align: middle;
+    }
 
     .reports-page .report-table tbody tr:nth-child(even) {
         background: #f8fafc;
@@ -465,7 +458,6 @@
     .reports-page .report-table tbody tr:hover {
         background: #eef4ff;
     }
-
 
     .reports-page .empty-row {
         text-align: center !important;
@@ -498,7 +490,6 @@
     }
 
     .reports-page .trend-bar {
-
         height: 100%;
         background: #2563eb;
         border-radius: 20px;
@@ -532,7 +523,6 @@
             padding: 22px 15px 40px !important;
         }
 
-
         .reports-page .reports-title {
             font-size: 27px !important;
         }
@@ -565,7 +555,6 @@
             padding: 0 !important;
         }
 
-
         .reports-page .sidebar,
         .reports-page #summarySection {
             display: none !important;
@@ -596,7 +585,6 @@
             padding: 0 !important;
             box-sizing: border-box !important;
         }
-
 
         .reports-page .reports-title {
             display: block !important;
@@ -630,7 +618,6 @@
             max-width: 100% !important;
             table-layout: fixed !important;
             border-collapse: collapse !important;
-
             font-size: 9px !important;
         }
 
@@ -664,7 +651,6 @@
             width: 20% !important;
         }
 
-
         .reports-page .report-table th:nth-child(5),
         .reports-page .report-table td:nth-child(5) {
             width: 30% !important;
@@ -696,7 +682,6 @@
         body.reports-page.print-inventory .inv-controls,
         body.reports-page.print-inventory .inv-notice,
         body.reports-page.print-inventory .inv-insight {
-
             display: none !important;
         }
 
@@ -730,7 +715,6 @@
         }
     }
 
-
     .flatpickr-calendar {
         border-radius: 12px !important;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25) !important;
@@ -762,7 +746,6 @@
 
     .flatpickr-prev-month svg,
     .flatpickr-next-month svg {
-
         fill: #ffffff !important;
     }
 
@@ -792,54 +775,52 @@
     }
 
     .reports-page .filter-group input,
-.reports-page .filter-group select,
-.reports-page .sales-flow-controls input,
-.reports-page .sales-flow-controls select {
-    margin: 0 !important;
-    height: 44px;
-}
-
-.reports-page .filter-container,
-.reports-page .inv-controls,
-.reports-page .sales-flow-controls {
-    align-items: end;
-}
-
-.reports-page .filter-container .report-button,
-.reports-page .inv-controls .report-button,
-.reports-page .sales-flow-controls .report-button {
-    align-self: end;
-    margin: 0 !important;
-}
-
-/* Print button spacing */
-.reports-page .report-button.print-button {
-    margin-top: 14px !important;
-}
-
-.reports-page .inv-scroll {
-    max-height: 420px;
-    overflow-y: auto;
-}
-
-.reports-page .inv-scroll thead th {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
-
-@media print {
-    .reports-page .inv-scroll {
-        max-height: none !important;
-        overflow: visible !important;
+    .reports-page .filter-group select,
+    .reports-page .sales-flow-controls input,
+    .reports-page .sales-flow-controls select {
+        margin: 0 !important;
+        height: 44px;
     }
-}
 
+    .reports-page .filter-container,
+    .reports-page .inv-controls,
+    .reports-page .sales-flow-controls {
+        align-items: end;
+    }
+
+    .reports-page .filter-container .report-button,
+    .reports-page .inv-controls .report-button,
+    .reports-page .sales-flow-controls .report-button {
+        align-self: end;
+        margin: 0 !important;
+    }
+
+    /* Print button spacing */
+    .reports-page .report-button.print-button {
+        margin-top: 14px !important;
+    }
+
+    .reports-page .inv-scroll {
+        max-height: 420px;
+        overflow-y: auto;
+    }
+
+    .reports-page .inv-scroll thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    @media print {
+        .reports-page .inv-scroll {
+            max-height: none !important;
+            overflow: visible !important;
+        }
+    }
 </style>
 </head>
 
 <body class="reports-page">
-
 
 <div class="sidebar">
     <div class="sidebar-header">
@@ -873,7 +854,6 @@
             <p id="totalProducts">Loading...</p>
         </div>
 
-
         <div class="report-card">
             <h3>Total Sales</h3>
             <p id="totalSales">Loading...</p>
@@ -906,7 +886,6 @@
 
             <button type="button" id="invGenerateBtn" class="report-button filter-button" onclick="generateInventoryReport()">
                 Generate Report
-
             </button>
 
             <button type="button" class="report-button inv-print-button" onclick="printInventoryReport()">
@@ -939,7 +918,6 @@
 
                 <div class="trend-card">
                     <span class="trend-card-title">Stock Value</span>
-
                     <span class="trend-card-value" id="invStockValue">₱0.00</span>
                     <span class="trend-card-subtitle">Quantity × price</span>
                 </div>
@@ -972,7 +950,6 @@
                             <th>Category</th>
                             <th>Stock</th>
                             <th>Price</th>
-
                             <th>Sold (Period)</th>
                             <th>Status</th>
                         </tr>
@@ -1005,7 +982,6 @@
 
             <div class="filter-group">
                 <label for="toDate">To Date</label>
-
                 <input type="text" id="toDate" placeholder="Select date" readonly>
             </div>
 
@@ -1038,7 +1014,6 @@
 
                 <tbody id="salesReportTable">
                     <tr>
-
                         <td colspan="5" class="empty-row">Loading sales records...</td>
                     </tr>
                 </tbody>
@@ -1071,7 +1046,6 @@
             </div>
 
             <button class="report-button filter-button" onclick="loadSalesFlow()">Show Graph</button>
-
         </div>
 
         <div class="sales-flow-chart-wrapper">
@@ -1104,7 +1078,6 @@
             <div class="trend-card">
                 <span class="trend-card-title">Total Quantity Sold</span>
                 <span id="totalQuantitySold" class="trend-card-value">0 pcs</span>
-
                 <span class="trend-card-subtitle">Across all recorded sales</span>
             </div>
         </div>
@@ -1170,7 +1143,6 @@
     function markFieldError(field) {
         if (!field) return;
         field.classList.add("input-error");
-
         field.setAttribute("aria-invalid", "true");
     }
 
@@ -1180,12 +1152,50 @@
         field.removeAttribute("aria-invalid");
     }
 
+    function showFilterError(message) {
+        const status = document.getElementById("filterStatus");
+
+        status.className = "filter-status error";
+        status.style.display = "block";
+        status.textContent = message;
+    }
+
+    function showFilterInfo(message) {
+        const status = document.getElementById("filterStatus");
+
+        status.className = "filter-status";
+        status.style.display = "block";
+        status.textContent = message;
+    }
+
+    function hideFilterStatus() {
+        const status = document.getElementById("filterStatus");
+
+        status.className = "filter-status";
+        status.style.display = "none";
+        status.textContent = "";
+    }
+
     ["fromDate", "toDate", "flowDate", "invPeriod"].forEach(id => {
         const field = document.getElementById(id);
 
         if (field) {
             field.addEventListener("change", () => clearFieldError(field));
             field.addEventListener("input", () => clearFieldError(field));
+        }
+    });
+
+    ["fromDate", "toDate"].forEach(id => {
+        const field = document.getElementById(id);
+
+        if (field) {
+            field.addEventListener("change", () => {
+                const status = document.getElementById("filterStatus");
+
+                if (status.classList.contains("error")) {
+                    hideFilterStatus();
+                }
+            });
         }
     });
 
@@ -1203,7 +1213,6 @@
     }
 
     function escapeHtml(value) {
-
         return String(value ?? "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -1236,7 +1245,6 @@
 
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, "0");
-
         const day = String(date.getDate()).padStart(2, "0");
 
         return `${year}-${month}-${day}`;
@@ -1269,7 +1277,6 @@
             day: "2-digit",
             hour: "2-digit",
             minute: "2-digit"
-
         });
     }
 
@@ -1303,7 +1310,6 @@
         }
     }
 
-
     async function getSales() {
         const response = await fetch("/sales/all");
 
@@ -1334,7 +1340,6 @@
             setText("totalSales", "Error");
         }
     }
-
 
     function showInvNotice(message, type) {
         const notice = document.getElementById("invNotice");
@@ -1369,7 +1374,6 @@
         setText("invNetSold", formatNumber(summary.netSold) + " pcs");
         setText("invPeriodLabel", data.period ? data.period.label : "");
 
-
         const rows = items.map(item => {
             const stock = Number(item.stock) || 0;
             const stockClass = stock <= 10 ? "low-stock" : "normal-stock";
@@ -1401,7 +1405,6 @@
         );
 
         document.getElementById("invResult").style.display = "block";
-
     }
 
     async function loadInventoryInsight(data) {
@@ -1434,7 +1437,6 @@
 
         try {
             const response = await fetch("/reports/insight", {
-
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
@@ -1466,7 +1468,6 @@
             showInvNotice("Please select a report period.", "error");
             return;
         }
-
 
         button.disabled = true;
         button.textContent = "Generating...";
@@ -1501,7 +1502,6 @@
         }
     }
 
-
     function printInventoryReport() {
         const result = document.getElementById("invResult");
 
@@ -1533,7 +1533,6 @@
                 <td>${escapeHtml(sale.product_name)}</td>
                 <td>${escapeHtml(sale.quantity)}</td>
                 <td>₱${formatMoney(sale.total)}</td>
-
                 <td>${escapeHtml(formatDate(sale.sale_date))}</td>
             </tr>
         `).join("");
@@ -1565,7 +1564,6 @@
             const ranking = Object.entries(productSales)
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 10);
-
 
             const topProduct = ranking.length > 0 ? ranking[0][0] : "No sales yet";
             const highestQuantity = ranking.length > 0 ? ranking[0][1] : 0;
@@ -1599,7 +1597,6 @@
         } catch (error) {
             console.error("Sales Trend Error:", error);
 
-
             setText("topSellingProduct", "Error");
             setText("highestQuantitySold", "Error");
             setText("totalQuantitySold", "Error");
@@ -1627,12 +1624,12 @@
         if (fromDate > toDate) {
             markFieldError(fromDateInput);
             markFieldError(toDateInput);
+            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
             return;
         }
 
         try {
             const sales = await getSales();
-
 
             const filteredSales = sales.filter(sale => {
                 const saleOnly = localDateKey(sale.sale_date);
@@ -1644,11 +1641,9 @@
 
             displaySales(filteredSales);
 
-            const status = document.getElementById("filterStatus");
-
-            status.style.display = "block";
-            status.textContent =
-                `Showing ${filteredSales.length} sales record(s) from ${fromDate} to ${toDate}.`;
+            showFilterInfo(
+                `Showing ${filteredSales.length} sales record(s) from ${fromDate} to ${toDate}.`
+            );
         } catch (error) {
             console.error("Filter Error:", error);
 
@@ -1660,11 +1655,14 @@
     function clearFilter() {
         document.getElementById("fromDate")._flatpickr.clear();
         document.getElementById("toDate")._flatpickr.clear();
-        document.getElementById("filterStatus").style.display = "none";
+
+        clearFieldError(document.getElementById("fromDate"));
+        clearFieldError(document.getElementById("toDate"));
+
+        hideFilterStatus();
 
         loadSalesReport();
     }
-
 
     function printSalesReport() {
         const fromDateInput = document.getElementById("fromDate");
@@ -1676,6 +1674,13 @@
         if (fromDateInput.value === "" || toDateInput.value === "") {
             if (fromDateInput.value === "") markFieldError(fromDateInput);
             if (toDateInput.value === "") markFieldError(toDateInput);
+            return;
+        }
+
+        if (fromDateInput.value > toDateInput.value) {
+            markFieldError(fromDateInput);
+            markFieldError(toDateInput);
+            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
             return;
         }
 
@@ -1698,7 +1703,6 @@
             label.textContent = "Select Month";
         } else if (period === "yearly") {
             input.type = "number";
-
             input.min = "2000";
             input.max = "2100";
             input.placeholder = "YYYY";
@@ -1731,7 +1735,6 @@
     }
 
     function getWeekEnd(date) {
-
         const result = getWeekStart(date);
 
         result.setDate(result.getDate() + 6);
@@ -1763,7 +1766,6 @@
         const selectedValue = flowDateInput.value;
 
         clearFieldError(flowDateInput);
-
 
         if (!selectedValue) {
             markFieldError(flowDateInput);
@@ -1798,7 +1800,6 @@
                 });
             }
 
-
             function addTransaction(label, sale, saleDate) {
                 const saleTotal = Number(sale.total) || 0;
 
@@ -1830,7 +1831,6 @@
 
                     addTransaction(
                         String(saleDate.getHours()).padStart(2, "0") + ":00",
-
                         sale,
                         saleDate
                     );
@@ -1896,7 +1896,6 @@
                     if (!saleDate) return;
                     if (String(saleDate.getFullYear()) !== String(selectedValue)) return;
 
-
                     addTransaction(monthNames[saleDate.getMonth()], sale, saleDate);
                 });
 
@@ -1929,7 +1928,6 @@
                         labels: labels,
                         datasets: [
                             {
-
                                 label: "Sales (₱)",
                                 data: values,
                                 borderColor: "#24479b",
@@ -1961,7 +1959,6 @@
                                 callbacks: {
                                     title: function (context) {
                                         if (!context || context.length === 0) return "";
-
 
                                         const label = labels[context[0].dataIndex];
 
@@ -1995,7 +1992,6 @@
                                 ticks: {
                                     maxRotation: 45,
                                     minRotation: 0,
-
                                     autoSkip: true,
                                     maxTicksLimit: maxTicks
                                 }
@@ -2027,7 +2023,6 @@
             );
         } catch (error) {
             console.error("Sales Flow Error:", error);
-
 
             setText("flowStatus", "Unable to load the sales flow.");
         }

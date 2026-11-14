@@ -280,10 +280,12 @@ router.post("/insight", async (req, res) => {
         facts.out_of_stock_products + " are out of stock" +
         (attention ? ", including " + attention + "." : ".");
 
-    const prompt =
-        "You are advising the owner of a motorcycle parts shop. " +
+        const prompt =
+        "You are advising the owner of a motorcycle parts shop in the Philippines. " +
         "Write 2 short sentences in simple English that explain this inventory report " +
         "and suggest one practical action. Use 'you' and 'your'. " +
+        "All money amounts are in Philippine pesos, so write them with the ₱ sign and never use the $ sign. " +
+        "This is a physical shop, so do not mention online listings, websites, or online sales. " +
         "Use ONLY the numbers given and do not invent numbers.\n\n" +
         JSON.stringify(facts);
 
