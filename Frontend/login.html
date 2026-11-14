@@ -137,7 +137,7 @@
 
         <p id="loginMessage" class="login-message"></p>
 
-               <div class="login-links">
+        <div class="login-links">
 
             <button type="button" class="login-terms-link" onclick="openTerms()">
                 Terms and Conditions
@@ -365,6 +365,7 @@
     const TERMS_VERSION = "2026-09-19-v1";
 
     let termsRead = false;
+    let lockTimer = null;
 
     function resetTermsState() {
         const checkbox = document.getElementById("termsCheckbox");
@@ -413,11 +414,43 @@
         document.getElementById("termsMessage").innerText = "";
     }
 
+    function startLockCountdown(totalSeconds, messageEl, loginBtn) {
+        clearInterval(lockTimer);
+
+        let remaining = Number(totalSeconds) || 0;
+
+        loginBtn.disabled = true;
+
+        function tick() {
+            const minutes = Math.floor(remaining / 60);
+            const seconds = String(remaining % 60).padStart(2, "0");
+
+            messageEl.textContent =
+                `Too many failed attempts. Try again in ${minutes}:${seconds}`;
+
+            if (remaining <= 0) {
+                clearInterval(lockTimer);
+
+                loginBtn.disabled = false;
+                messageEl.textContent = "You can try logging in again.";
+
+                return;
+            }
+
+            remaining--;
+        }
+
+        tick();
+
+        lockTimer = setInterval(tick, 1000);
+    }
+
     async function login() {
         const usernameInput = document.getElementById("username");
         const passwordInput = document.getElementById("password");
         const termsCheckbox = document.getElementById("termsCheckbox");
         const loginBtn = document.getElementById("loginBtn");
+        const loginMessage = document.getElementById("loginMessage");
 
         const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
@@ -449,6 +482,15 @@
             });
 
             const data = await response.json();
+
+            if (data.locked) {
+                usernameInput.classList.add("input-error");
+                passwordInput.classList.add("input-error");
+
+                startLockCountdown(data.retryAfter, loginMessage, loginBtn);
+
+                return;
+            }
 
             if (data.success) {
                 localStorage.setItem("authToken", data.token);

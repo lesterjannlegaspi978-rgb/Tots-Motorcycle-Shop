@@ -47,9 +47,10 @@ function lockedResponse(res, info) {
             ? `${minutes}:${String(remainder).padStart(2, "0")}`
             : `${seconds} second(s)`;
 
-    return res.status(429).json({
+       return res.status(429).json({
         success: false,
         locked: true,
+        retryAfter: seconds,
         message: `Too many failed attempts. Try again in ${timeText}.`
     });
 }
