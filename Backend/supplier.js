@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 const db = require("./db");
@@ -31,6 +30,7 @@ function isValidGmail(value) {
 
 function isValidAddress(value) {
     return value.length >= 5 && value.length <= 255;
+
 }
 
 function cleanAndValidate(body) {
@@ -63,6 +63,7 @@ function cleanAndValidate(body) {
     if (!isValidPhilippineMobile(data.contact_number)) {
         return {
             error: "Contact Number must contain exactly 11 digits and start with 09."
+
         };
     }
 
@@ -77,6 +78,27 @@ function cleanAndValidate(body) {
     }
 
     return { data };
+}
+
+function getNextSupplierCode(callback) {
+    db.query("SELECT supplier_code FROM suppliers", (err, rows) => {
+        if (err) return callback(err);
+
+        let highest = 0;
+
+        rows.forEach(row => {
+            const match = /^SUP(\d{3})$/.exec(
+                String(row.supplier_code || "").toUpperCase()
+            );
+
+            if (match) {
+                highest = Math.max(highest, Number(match[1]));
+            }
+        });
+
+
+        callback(null, "SUP" + String(highest + 1).padStart(3, "0"));
+    });
 }
 
 function checkDuplicateSupplier(data, excludeId, callback) {
@@ -107,6 +129,7 @@ function checkDuplicateSupplier(data, excludeId, callback) {
         if (err) return callback(err);
 
         if (result.length > 0) {
+
             const existing = result[0];
 
             if (existing.supplier_code === data.supplier_code) {
@@ -139,14 +162,15 @@ router.post("/add", (req, res) => {
         return res.status(400).json({
             success: false,
             message: checked.error
+
         });
     }
 
     const data = checked.data;
 
-    checkDuplicateSupplier(data, null, (err, duplicate) => {
-        if (err) {
-            console.log("CHECK DUPLICATE SUPPLIER ERROR:", err);
+    getNextSupplierCode((codeError, nextCode) => {
+        if (codeError) {
+            console.log("NEXT SUPPLIER CODE ERROR:", codeError);
 
             return res.status(500).json({
                 success: false,
@@ -154,59 +178,79 @@ router.post("/add", (req, res) => {
             });
         }
 
-        if (duplicate) {
-            return res.status(409).json({
+        if (data.supplier_code !== nextCode) {
+            return res.status(400).json({
                 success: false,
-                message: duplicate.error
+                message: `Supplier Code must be ${nextCode}. Skipping supplier numbers is not allowed.`
             });
         }
 
-        const sql = `
-            INSERT INTO suppliers (
-                supplier_code,
-                supplier_name,
-                contact_number,
-                email,
-                address
-            )
-            VALUES (?, ?, ?, ?, ?)
-        `;
+        checkDuplicateSupplier(data, null, (err, duplicate) => {
+            if (err) {
+                console.log("CHECK DUPLICATE SUPPLIER ERROR:", err);
 
-        db.query(
-            sql,
-            [
-                data.supplier_code,
-                data.supplier_name,
-                data.contact_number,
-                data.email,
-                data.address
-            ],
-            (err, result) => {
-                if (err) {
-                    console.log("ADD SUPPLIER ERROR:", err);
+                return res.status(500).json({
+                    success: false,
+                    message: "Database Error"
+                });
+            }
 
-                    if (err.code === "ER_DUP_ENTRY") {
-                        return res.status(409).json({
+
+            if (duplicate) {
+                return res.status(409).json({
+                    success: false,
+                    message: duplicate.error
+                });
+            }
+
+            const sql = `
+                INSERT INTO suppliers (
+                    supplier_code,
+                    supplier_name,
+                    contact_number,
+                    email,
+                    address
+                )
+                VALUES (?, ?, ?, ?, ?)
+            `;
+
+            db.query(
+                sql,
+                [
+                    data.supplier_code,
+                    data.supplier_name,
+                    data.contact_number,
+                    data.email,
+                    data.address
+                ],
+                (err, result) => {
+                    if (err) {
+                        console.log("ADD SUPPLIER ERROR:", err);
+
+                        if (err.code === "ER_DUP_ENTRY") {
+
+                            return res.status(409).json({
+                                success: false,
+                                message: "Supplier information already exists."
+                            });
+                        }
+
+                        return res.status(500).json({
                             success: false,
-                            message: "Supplier information already exists."
+                            message: "Failed to add supplier."
                         });
                     }
 
-                    return res.status(500).json({
-                        success: false,
-                        message: "Failed to add supplier."
+                    console.log("Supplier added successfully. ID:", result.insertId);
+
+                    return res.status(201).json({
+                        success: true,
+                        message: "Supplier Added Successfully!",
+                        supplierId: result.insertId
                     });
                 }
-
-                console.log("Supplier added successfully. ID:", result.insertId);
-
-                return res.status(201).json({
-                    success: true,
-                    message: "Supplier Added Successfully!",
-                    supplierId: result.insertId
-                });
-            }
-        );
+            );
+        });
     });
 });
 
@@ -217,6 +261,7 @@ router.get("/all", (req, res) => {
             supplier_code,
             supplier_name,
             contact_number,
+
             email,
             address,
             created_at
@@ -249,6 +294,7 @@ router.put("/update/:id", (req, res) => {
     }
 
     db.query(
+
         "SELECT supplier_code FROM suppliers WHERE id = ?",
         [id],
         (err, existing) => {
@@ -281,10 +327,18 @@ router.put("/update/:id", (req, res) => {
                 return res.status(400).json({
                     success: false,
                     message: checked.error
+
                 });
             }
 
             const data = checked.data;
+
+            if (data.supplier_code !== existing[0].supplier_code) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Supplier Code cannot be changed."
+                });
+            }
 
             checkDuplicateSupplier(data, id, (err, duplicate) => {
                 if (err) {
@@ -306,6 +360,7 @@ router.put("/update/:id", (req, res) => {
                 const sql = `
                     UPDATE suppliers
                     SET
+
                         supplier_code = ?,
                         supplier_name = ?,
                         contact_number = ?,
@@ -338,6 +393,7 @@ router.put("/update/:id", (req, res) => {
 
                             return res.status(500).json({
                                 success: false,
+
                                 message: "Failed to update supplier."
                             });
                         }

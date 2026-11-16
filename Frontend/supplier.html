@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +30,7 @@
 .supplier-form-box { margin-bottom: 25px; }
 
 .supplier-form-box h2 {
+
     margin-top: 0;
     margin-bottom: 20px;
     color: #1f3c88;
@@ -63,6 +63,7 @@
     font-size: 14px;
     background: #fff;
     outline: none;
+
     transition: 0.2s;
     box-sizing: border-box;
 }
@@ -95,6 +96,7 @@
 }
 
 .supplier-message.success {
+
     display: block;
     color: #166534;
     background: #dcfce7;
@@ -126,6 +128,7 @@
     cursor: pointer;
     transition: 0.2s;
 }
+
 
 .add-supplier-btn { background: #2563eb; }
 .add-supplier-btn:hover { background: #1d4ed8; }
@@ -159,6 +162,7 @@
 
 .edit-supplier-btn:hover { background: #1d4ed8; }
 
+
 .locked-supplier-btn {
     border: none;
     padding: 7px 12px;
@@ -190,6 +194,7 @@
     font-size: 12px;
     font-weight: 600;
 }
+
 
 .supplier-table-wrapper {
     width: 100%;
@@ -223,6 +228,7 @@
     text-align: center;
     vertical-align: middle;
     overflow: hidden;
+
     text-overflow: ellipsis;
 }
 
@@ -255,6 +261,7 @@
     .supplier-header {
         align-items: flex-start;
         flex-direction: column;
+
         gap: 10px;
     }
 }
@@ -287,6 +294,7 @@
     <div class="supplier-page">
 
         <div class="supplier-header">
+
             <h1>Supplier Management</h1>
         </div>
 
@@ -318,6 +326,7 @@
                             placeholder="Enter supplier name"
                             maxlength="150" required>
                     </div>
+
 
                     <div class="supplier-form-group">
                         <label for="contactNumber">
@@ -352,6 +361,7 @@
                             maxlength="255" required>
                     </div>
 
+
                 </div>
 
                 <div id="supplierMessage" class="supplier-message"></div>
@@ -383,6 +393,7 @@
                     0 Suppliers
                 </span>
             </div>
+
 
             <div class="supplier-table-wrapper">
                 <table class="supplier-table">
@@ -416,6 +427,7 @@ let mode = "view";
 const sidebar = document.querySelector(".sidebar");
 const content = document.querySelector(".content");
 
+
 if (sidebar && content) {
 
     sidebar.classList.add("hide");
@@ -448,6 +460,7 @@ function setLocks(codeAndNameLocked, othersLocked) {
     document.getElementById("address").readOnly = othersLocked;
 }
 
+
 function fillForm(supplier) {
     document.getElementById("supplierCode").value =
         supplier.supplier_code || "";
@@ -471,7 +484,6 @@ function getNextSupplierCode() {
 
     supplierList.forEach(supplier => {
 
-
         const match = /^SUP(\d{3})$/.exec(
             String(supplier.supplier_code || "").toUpperCase()
         );
@@ -479,6 +491,7 @@ function getNextSupplierCode() {
         if (match) {
             highest = Math.max(highest, Number(match[1]));
         }
+
 
     });
 
@@ -513,6 +526,7 @@ function isValidGmail(value) {
         return false;
     }
 
+
     if (localPart.includes("..")) {
         return false;
     }
@@ -537,7 +551,6 @@ function clearMessage() {
 
 function getSupplierFormData() {
 
-
     return {
 
         supplier_code:
@@ -545,6 +558,7 @@ function getSupplierFormData() {
 
         supplier_name:
             document.getElementById("supplierName").value.trim(),
+
 
         contact_number:
             document.getElementById("contactNumber").value.trim(),
@@ -577,6 +591,7 @@ function validateSupplierForm(data) {
     }
 
     if (!isValidSupplierName(data.supplier_name)) {
+
         return "Supplier Name contains invalid characters.";
     }
 
@@ -603,13 +618,13 @@ function enterViewMode() {
         return;
     }
 
-
     mode = "view";
     editingSupplierId = null;
 
     fillForm(supplierList[0]);
 
     setLocks(true, true);
+
 
     formTitle.textContent = "Registered Supplier";
 
@@ -635,13 +650,13 @@ function enterAddMode() {
 
     document.getElementById("supplierCode").value = getNextSupplierCode();
 
-
     formTitle.textContent = "Add Supplier";
 
     editModeTitle.style.display = "none";
 
     submitSupplierButton.textContent = "Add Supplier";
     submitSupplierButton.disabled = false;
+
 
     cancelEditButton.style.display = "none";
 
@@ -669,13 +684,13 @@ function editSupplier(supplier) {
 
     clearMessage();
 
-
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
 
 }
+
 
 function clearSupplierForm() {
 
@@ -701,7 +716,6 @@ supplierForm.addEventListener("submit", async function(event) {
         return;
     }
 
-
     clearMessage();
 
     const data = getSupplierFormData();
@@ -709,8 +723,21 @@ supplierForm.addEventListener("submit", async function(event) {
     const validationError = validateSupplierForm(data);
 
     if (validationError) {
+
         showMessage(validationError, "error");
         return;
+    }
+
+    if (mode === "add") {
+        const nextCode = getNextSupplierCode();
+
+        if (data.supplier_code !== nextCode) {
+            showMessage(
+                `Supplier Code must be ${nextCode}. Skipping supplier numbers is not allowed.`,
+                "error"
+            );
+            return;
+        }
     }
 
     const isEditing = mode === "edit";
@@ -729,11 +756,11 @@ supplierForm.addEventListener("submit", async function(event) {
         const response = await fetch(url, {
             method: isEditing ? "PUT" : "POST",
             headers: {
+
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
         });
-
 
         const result = await response.json();
 
@@ -763,10 +790,10 @@ supplierForm.addEventListener("submit", async function(event) {
     }
     catch (error) {
 
+
         console.error("SUPPLIER REQUEST ERROR:", error);
 
         showMessage("Unable to connect to the server.", "error");
-
 
     }
     finally {
@@ -795,12 +822,12 @@ async function loadSuppliers() {
 
     try {
 
+
         const response = await fetch(`${API_URL}/suppliers/all`);
 
         if (!response.ok) {
             throw new Error("Unable to load suppliers.");
         }
-
 
         const suppliers = await response.json();
 
@@ -829,11 +856,11 @@ async function loadSuppliers() {
 
         supplierList.forEach(supplier => {
 
+
             const row = document.createElement("tr");
 
             row.innerHTML = `
                 <td>${supplier.id ?? ""}</td>
-
 
                 <td>
                     <span class="supplier-code-badge">
@@ -862,10 +889,10 @@ async function loadSuppliers() {
                 editSupplier(supplier);
             });
 
+
             tableBody.appendChild(row);
 
         });
-
 
     }
     catch (error) {
@@ -893,6 +920,7 @@ async function initializeSupplierPage() {
     enterViewMode();
 
 }
+
 
 initializeSupplierPage();
 
