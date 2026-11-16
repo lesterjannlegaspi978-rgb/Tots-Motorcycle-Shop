@@ -118,10 +118,6 @@
             <option value="">No Image (use default logo)</option>
         </select>
 
-        <small style="display:block;margin-top:6px;color:#6b7280;font-size:12px;">
-            Optional. If no picture is selected, the shop logo will be used.
-        </small>
-
         <div class="image-preview-box">
             <img id="imagePreview" alt="Product picture preview">
             <span id="imageStatus"></span>
@@ -803,7 +799,6 @@ async function showForm() {
     document.getElementById("image").value = "";
 
         showDefaultImagePreview();
-        
 }
 
 function scrollToProduct(id) {
