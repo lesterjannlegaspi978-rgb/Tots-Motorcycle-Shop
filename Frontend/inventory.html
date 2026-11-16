@@ -114,10 +114,13 @@
             min="0"
             step="0.01"
         >
-
         <select id="image">
-            <option value="">Select Product Image</option>
+            <option value="">No Image (use default logo)</option>
         </select>
+
+        <small style="display:block;margin-top:6px;color:#6b7280;font-size:12px;">
+            Optional. If no picture is selected, the shop logo will be used.
+        </small>
 
         <div class="image-preview-box">
             <img id="imagePreview" alt="Product picture preview">
@@ -464,7 +467,11 @@ function isProductValid(p) {
 
     let valid = true;
 
-    FORM_FIELDS.forEach(id => {
+        FORM_FIELDS.forEach(id => {
+        if (id === "image") {
+            return;
+        }
+
         if (String(p[id]).trim() === "") {
             document.getElementById(id).classList.add("input-error");
             valid = false;
@@ -683,6 +690,19 @@ function resetImagePreview() {
     status.className = "";
 }
 
+function showDefaultImagePreview() {
+    const preview = document.getElementById("imagePreview");
+    const status = document.getElementById("imageStatus");
+
+    preview.onload = null;
+    preview.onerror = null;
+    preview.src = FALLBACK_IMAGE;
+    preview.style.display = "block";
+
+    status.textContent = "No picture selected. The shop logo will be used.";
+    status.className = "";
+}
+
 function nextPreview() {
     const preview = document.getElementById("imagePreview");
 
@@ -746,8 +766,8 @@ function showImagePreview(base) {
 document.getElementById("image").addEventListener("change", function() {
     const value = this.value.trim();
 
-    if (value === "") {
-        resetImagePreview();
+        if (value === "") {
+        showDefaultImagePreview();
         return;
     }
 
@@ -781,6 +801,9 @@ async function showForm() {
     document.getElementById("quantity").value = "";
     document.getElementById("price").value = "";
     document.getElementById("image").value = "";
+
+        showDefaultImagePreview();
+        
 }
 
 function scrollToProduct(id) {
