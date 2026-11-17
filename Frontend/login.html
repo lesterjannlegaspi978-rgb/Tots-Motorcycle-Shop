@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,44 +45,6 @@
             color: #dc2626;
         }
 
-        .login-links {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            margin-top: 6px;
-            text-align: center;
-        }
-
-        .login-links .register-link,
-        .login-links .login-terms-link {
-            display: inline-block;
-            margin: 0 !important;
-            padding: 0;
-            text-align: center;
-        }
-
-        .login-links .login-terms-checkbox {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            margin: 0 !important;
-            text-align: center;
-        }
-
-        .login-links .login-terms-checkbox input[type="checkbox"] {
-            margin: 0;
-            cursor: pointer;
-        }
-
-        .login-links .login-terms-checkbox input[type="checkbox"]:disabled {
-            cursor: not-allowed;
-        }
-
         .password-container {
             position: relative;
             width: 100%;
@@ -110,513 +73,283 @@
         .toggle-password:hover {
             color: #2563eb;
         }
+
+        #loginBtn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
     </style>
 
 </head>
 
 <body>
 
-<div class="login-container">
+    <div class="login-container">
 
-    <div class="login-box">
+        <div class="login-box">
 
-        <img src="logo.png" class="login-logo" alt="Tot's Motorshop Logo">
+            <img src="logo.png" class="login-logo" alt="Tot's Motorshop Logo">
 
-        <h2>Tot's Motorshop</h2>
+            <h2>Tot's Motorshop</h2>
 
-        <p class="subtitle">Sales And Inventory Monitoring System</p>
+            <p class="subtitle">Sales And Inventory Monitoring System</p>
 
-        <input type="text" id="username" placeholder="Enter Username">
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter Username"
+                autocomplete="username"
+            >
 
-        <div class="password-container">
-            <input type="password" id="password" placeholder="Enter Password" oninput="handlePasswordInput(this)">
-            <i class="fa-solid fa-eye toggle-password" id="togglePasswordIcon" onclick="togglePasswordVisibility()"></i>
-        </div>
+            <div class="password-container">
 
-        <button type="button" id="loginBtn" onclick="login()">Login</button>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter Password"
+                    autocomplete="current-password"
+                    oninput="handlePasswordInput(this)"
+                >
 
-        <p id="loginMessage" class="login-message"></p>
-
-               <div class="login-links">
-
-            <button type="button" class="login-terms-link" onclick="openTerms()">
-                Terms and Conditions
-            </button>
-
-            <div class="login-terms-checkbox">
-
-                <input type="checkbox" id="termsCheckbox" name="termsCheckbox" autocomplete="off" disabled>
-
-                <label for="termsCheckbox">
-                    I agree to the Terms and Conditions
-                </label>
+                <i
+                    class="fa-solid fa-eye toggle-password"
+                    id="togglePasswordIcon"
+                    onclick="togglePasswordVisibility()"
+                ></i>
 
             </div>
 
+            <button
+                type="button"
+                id="loginBtn"
+                onclick="login()"
+            >
+                Login
+            </button>
+
+            <p id="loginMessage" class="login-message"></p>
+
         </div>
 
     </div>
 
-</div>
 
-<div id="termsPopup">
+    <script>
 
-    <div class="terms-popup-box">
+        // Redirect authenticated users to the dashboard.
+        window.addEventListener("pageshow", function () {
 
-        <h2>Terms and Conditions</h2>
-
-        <p class="terms-popup-intro">
-            Please read and understand all Terms and Conditions before using
-            Tot's Motorshop Sales and Inventory Monitoring System.
-        </p>
-
-        <div class="terms-popup-content" id="termsContent">
-
-            <h3>1. Purpose and Authorized Use</h3>
-
-            <p>
-                Tot's Motorshop Sales and Inventory Monitoring System
-                is designed to support authorized motorshop management
-                activities, including inventory monitoring, sales recording,
-                product management, reports, and related business records.
-                The system must only be used for legitimate and authorized
-                motorshop purposes.
-            </p>
-
-            <h3>2. User Account and Account Security</h3>
-
-            <p>
-                Users are responsible for keeping their username, password,
-                and other account information confidential. Users must not
-                share their login credentials with unauthorized persons.
-                Any activity performed using an authorized account should
-                be properly monitored and reported when necessary.
-            </p>
-
-            <h3>
-                3. Data Privacy and Personal Information
-                — Republic Act No. 10173
-            </h3>
-
-            <p>
-                Personal information collected through the system, such as
-                name, email address, cellphone number, username, and other
-                account information, shall be handled responsibly and only
-                for legitimate system and business purposes.
-            </p>
-
-            <p>
-                The system recognizes the principles of the
-                <strong>Data Privacy Act of 2012 (RA 10173)</strong>,
-                which protects personal information and provides requirements
-                for lawful and responsible processing of personal data.
-            </p>
-
-            <h3>
-                4. Consumer Protection and Transaction Accuracy
-                — Republic Act No. 7394
-            </h3>
-
-            <p>
-                Product information, prices, quantities, and sales records
-                should be entered accurately. Users are responsible for
-                checking transaction information to help maintain reliable
-                business records and proper customer transactions.
-            </p>
-
-            <p>
-                The system recognizes the
-                <strong>Consumer Act of the Philippines (RA 7394)</strong>
-                as a relevant legal reference concerning consumer protection
-                and fair business practices.
-            </p>
-
-            <h3>
-                5. Electronic Transactions and Records
-                — Republic Act No. 8792
-            </h3>
-
-            <p>
-                Electronic records and information generated or maintained
-                by the system should be handled accurately and responsibly.
-                Users must not intentionally alter, misuse, or falsify
-                electronic business records.
-            </p>
-
-            <p>
-                The system recognizes the
-                <strong>Electronic Commerce Act of 2000 (RA 8792)</strong>
-                as a relevant legal reference concerning electronic data
-                messages, electronic documents, and electronic transactions.
-            </p>
-
-            <h3>
-                6. Cybersecurity and Unauthorized Access
-                — Republic Act No. 10175
-            </h3>
-
-            <p>
-                Users must not attempt to access, modify, damage, interfere
-                with, or misuse system resources, accounts, databases, or
-                information without authorization.
-            </p>
-
-            <p>
-                The system recognizes the
-                <strong>Cybercrime Prevention Act of 2012 (RA 10175)</strong>
-                as a relevant legal reference concerning unauthorized access,
-                interference, and other cybercrime-related activities.
-            </p>
-
-            <h3>
-                7. Internet Transactions and Online Conduct
-                — Republic Act No. 11967
-            </h3>
-
-            <p>
-                When the system is used for activities involving online
-                transactions or electronic business interactions, users must
-                provide accurate information and conduct transactions
-                responsibly.
-            </p>
-
-            <p>
-                The system recognizes the
-                <strong>Internet Transactions Act of 2023 (RA 11967)</strong>
-                as a relevant legal reference concerning consumer and
-                merchant protection in internet transactions.
-            </p>
-
-            <h3>8. Inventory Management</h3>
-
-            <p>
-                Product names, categories, suppliers, quantities, prices,
-                and other inventory information should be entered and
-                maintained accurately. Users should verify information before
-                saving or updating inventory records.
-            </p>
-
-            <h3>9. Sales Transactions and Data Accuracy</h3>
-
-            <p>
-                Sales transactions should contain accurate product,
-                quantity, price, total amount, and transaction information.
-                Users are responsible for checking the accuracy of records
-                before and after completing a transaction.
-            </p>
-
-            <h3>10. System Availability and Limitations</h3>
-
-            <p>
-                System availability may depend on the server, database,
-                network connection, hardware, software, and other technical
-                requirements. The system may experience temporary
-                interruptions caused by maintenance, technical problems,
-                or other circumstances.
-            </p>
-
-            <h3>11. Agreement and Acceptance</h3>
-
-            <p>
-                By selecting "Agree", you confirm that you have read,
-                reviewed, and understood these Terms and Conditions and
-                agree to follow the rules governing the authorized use
-                of the system.
-            </p>
-
-        </div>
-
-        <div class="terms-popup-buttons">
-
-            <button
-                type="button"
-                class="terms-agree"
-                id="termsAgreeButton"
-                onclick="agreeTerms()"
-                disabled
-            >
-                ✓ Agree
-            </button>
-
-            <button
-                type="button"
-                class="terms-disagree"
-                onclick="disagreeTerms()"
-            >
-                ✕ Disagree
-            </button>
-
-        </div>
-
-        <p id="termsMessage" class="terms-popup-message"></p>
-
-    </div>
-
-</div>
-
-<script>
-    window.addEventListener("pageshow", function () {
-        if (localStorage.getItem("authToken")) {
-            window.location.replace("dashboard.html");
-        }
-    });
-
-    const API_URL = "/auth/login";
-    const TERMS_VERSION = "2026-09-19-v1";
-
-    let termsRead = false;
-
-    function resetTermsState() {
-        const checkbox = document.getElementById("termsCheckbox");
-        const agreeButton = document.getElementById("termsAgreeButton");
-
-        termsRead = false;
-
-        if (checkbox) {
-            checkbox.checked = false;
-            checkbox.disabled = true;
-        }
-
-        if (agreeButton) {
-            agreeButton.disabled = true;
-        }
-
-        localStorage.removeItem("termsRead");
-        localStorage.removeItem("termsReadVersion");
-        localStorage.removeItem("termsAccepted");
-        localStorage.removeItem("termsVersion");
-
-        sessionStorage.removeItem("termsRead");
-        sessionStorage.removeItem("termsReadVersion");
-    }
-
-    function setLoginMessage(text) {
-        document.getElementById("loginMessage").textContent = text;
-    }
-
-    function clearLoginErrors() {
-        document.getElementById("username").classList.remove("input-error");
-        document.getElementById("password").classList.remove("input-error");
-
-        setLoginMessage("");
-    }
-
-    function setTermsMessage(text, color) {
-        const message = document.getElementById("termsMessage");
-
-        message.style.color = color;
-        message.innerText = text;
-    }
-
-    function closeTerms() {
-        document.getElementById("termsPopup").style.display = "none";
-        document.getElementById("termsMessage").innerText = "";
-    }
-
-    async function login() {
-        const usernameInput = document.getElementById("username");
-        const passwordInput = document.getElementById("password");
-        const termsCheckbox = document.getElementById("termsCheckbox");
-        const loginBtn = document.getElementById("loginBtn");
-
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value.trim();
-
-        clearLoginErrors();
-
-        if (!username || !password) {
-            if (!username) usernameInput.classList.add("input-error");
-            if (!password) passwordInput.classList.add("input-error");
-
-            setLoginMessage("Please enter your username and password.");
-
-            return;
-        }
-
-        if (!termsRead || termsCheckbox.disabled || !termsCheckbox.checked) {
-            setLoginMessage("Please read and agree to the Terms and Conditions first.");
-
-            return;
-        }
-
-        loginBtn.disabled = true;
-
-        try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                localStorage.setItem("authToken", data.token);
-                localStorage.setItem("termsAccepted", "true");
-                localStorage.setItem("termsVersion", TERMS_VERSION);
-
-                window.location.href = "dashboard.html";
-
-                return;
+            if (localStorage.getItem("authToken")) {
+                window.location.replace("dashboard.html");
             }
 
-            usernameInput.classList.add("input-error");
-            passwordInput.classList.add("input-error");
-
-            setLoginMessage(data.message || "Wrong username or password.");
-
-        } catch (error) {
-            console.error("Login Error:", error);
-
-            setLoginMessage("Cannot connect to the server. Please try again.");
-        }
-
-        loginBtn.disabled = false;
-    }
-
-    ["username", "password"].forEach(function (id) {
-        const input = document.getElementById(id);
-
-        input.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") login();
         });
 
-        input.addEventListener("input", clearLoginErrors);
-    });
 
-    function openTerms() {
-        const content = document.getElementById("termsContent");
-        const agreeButton = document.getElementById("termsAgreeButton");
+        // Login API endpoint.
+        const API_URL = "/auth/login";
 
-        document.getElementById("termsPopup").style.display = "flex";
 
-        content.scrollTop = 0;
+        // Display login error or information message.
+        function setLoginMessage(text) {
 
-        setTermsMessage("", "");
+            document.getElementById("loginMessage").textContent = text;
 
-        if (!termsRead) {
-            agreeButton.disabled = true;
+        }
 
-            setTermsMessage(
-                "Please scroll to the bottom to read all Terms and Conditions.",
-                "#dc2626"
+
+        // Remove previous input error highlights.
+        function clearLoginErrors() {
+
+            document.getElementById("username")
+                .classList.remove("input-error");
+
+            document.getElementById("password")
+                .classList.remove("input-error");
+
+            setLoginMessage("");
+
+        }
+
+
+        // Login function.
+        async function login() {
+
+            const usernameInput = document.getElementById("username");
+
+            const passwordInput = document.getElementById("password");
+
+            const loginBtn = document.getElementById("loginBtn");
+
+            const username = usernameInput.value.trim();
+
+            const password = passwordInput.value.trim();
+
+
+            clearLoginErrors();
+
+
+            // Validate required fields.
+            if (!username || !password) {
+
+                if (!username) {
+                    usernameInput.classList.add("input-error");
+                }
+
+                if (!password) {
+                    passwordInput.classList.add("input-error");
+                }
+
+                setLoginMessage(
+                    "Please enter your username and password."
+                );
+
+                return;
+
+            }
+
+
+            loginBtn.disabled = true;
+
+            loginBtn.textContent = "Logging in...";
+
+
+            try {
+
+                const response = await fetch(API_URL, {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username,
+                        password
+                    })
+
+                });
+
+
+                const data = await response.json();
+
+
+                if (data.success && data.token) {
+
+                    // Save authentication token.
+                    localStorage.setItem(
+                        "authToken",
+                        data.token
+                    );
+
+
+                    // Redirect to dashboard.
+                    window.location.href = "dashboard.html";
+
+                    return;
+
+                }
+
+
+                // Invalid username or password.
+                usernameInput.classList.add("input-error");
+
+                passwordInput.classList.add("input-error");
+
+                setLoginMessage(
+                    data.message || "Wrong username or password."
+                );
+
+
+            } catch (error) {
+
+                console.error("Login Error:", error);
+
+                setLoginMessage(
+                    "Cannot connect to the server. Please try again."
+                );
+
+            }
+
+
+            loginBtn.disabled = false;
+
+            loginBtn.textContent = "Login";
+
+        }
+
+
+        // Allow Enter key to submit login.
+        ["username", "password"].forEach(function (id) {
+
+            const input = document.getElementById(id);
+
+            input.addEventListener("keydown", function (event) {
+
+                if (event.key === "Enter") {
+                    login();
+                }
+
+            });
+
+
+            input.addEventListener("input", clearLoginErrors);
+
+        });
+
+
+        // Show password icon when password is entered.
+        function handlePasswordInput(input) {
+
+            const toggleIcon = document.getElementById(
+                "togglePasswordIcon"
             );
-        } else {
-            agreeButton.disabled = false;
 
-            setTermsMessage(
-                "You have already read the Terms and Conditions. You may click Agree.",
-                "#16a34a"
+            if (input.value.trim().length > 0) {
+
+                toggleIcon.style.display = "block";
+
+            } else {
+
+                toggleIcon.style.display = "none";
+
+            }
+
+        }
+
+
+        // Show or hide password.
+        function togglePasswordVisibility() {
+
+            const passwordInput = document.getElementById("password");
+
+            const toggleIcon = document.getElementById(
+                "togglePasswordIcon"
             );
+
+
+            if (passwordInput.type === "password") {
+
+                passwordInput.type = "text";
+
+                toggleIcon.classList.remove("fa-eye");
+
+                toggleIcon.classList.add("fa-eye-slash");
+
+            } else {
+
+                passwordInput.type = "password";
+
+                toggleIcon.classList.remove("fa-eye-slash");
+
+                toggleIcon.classList.add("fa-eye");
+
+            }
+
         }
 
-        checkTermsRead(content);
-    }
-
-    function checkTermsRead(content) {
-        const reachedBottom =
-            content.scrollTop + content.clientHeight >=
-            content.scrollHeight - 10;
-
-        if (reachedBottom) {
-            termsRead = true;
-
-            document.getElementById("termsAgreeButton").disabled = false;
-
-            setTermsMessage(
-                "You have reached the end of the Terms and Conditions. You may now click Agree.",
-                "#16a34a"
-            );
-        }
-    }
-
-    document.getElementById("termsContent").addEventListener("scroll", function () {
-        checkTermsRead(this);
-    });
-
-    function agreeTerms() {
-        const checkbox = document.getElementById("termsCheckbox");
-
-        if (!termsRead) {
-            setTermsMessage("Please read all Terms and Conditions first.", "#dc2626");
-
-            return;
-        }
-
-        checkbox.disabled = false;
-        checkbox.checked = false;
-
-        setLoginMessage("");
-
-        setTermsMessage(
-            "Thank you for reading. You may now check the agreement box.",
-            "#16a34a"
-        );
-
-        document.getElementById("termsAgreeButton").disabled = true;
-
-        setTimeout(closeTerms, 800);
-    }
-
-    function disagreeTerms() {
-        resetTermsState();
-
-        setTermsMessage(
-            "You must agree to the Terms and Conditions to continue.",
-            "#dc2626"
-        );
-
-        setTimeout(closeTerms, 1200);
-    }
-
-    document.getElementById("termsPopup").addEventListener("click", function (event) {
-        if (event.target === this) {
-            closeTerms();
-        }
-    });
-
-    resetTermsState();
-
-    window.addEventListener("DOMContentLoaded", resetTermsState);
-
-    window.addEventListener("load", function () {
-        resetTermsState();
-
-        setTimeout(resetTermsState, 150);
-        setTimeout(resetTermsState, 500);
-    });
-
-    window.addEventListener("pageshow", function () {
-        resetTermsState();
-
-        setTimeout(resetTermsState, 150);
-    });
-
-    function handlePasswordInput(input) {
-        const toggleIcon = document.getElementById("togglePasswordIcon");
-
-        if (input.value.trim().length > 0) {
-            toggleIcon.style.display = "block";
-        } else {
-            toggleIcon.style.display = "none";
-        }
-    }
-
-    function togglePasswordVisibility() {
-        const passwordInput = document.getElementById("password");
-        const toggleIcon = document.getElementById("togglePasswordIcon");
-
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            toggleIcon.classList.remove("fa-eye");
-            toggleIcon.classList.add("fa-eye-slash");
-        } else {
-            passwordInput.type = "password";
-            toggleIcon.classList.remove("fa-eye-slash");
-            toggleIcon.classList.add("fa-eye");
-        }
-    }
-</script>
+    </script>
 
 </body>
 
