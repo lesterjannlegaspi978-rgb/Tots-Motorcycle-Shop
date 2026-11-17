@@ -3,120 +3,206 @@ const router = express.Router();
 const db = require("./db");
 const { publishUpdate } = require("./realtime");
 
-router.post("/add", (req, res) => {
-    const productId = Number(req.body.product_id);
-    const quantity = Number(req.body.quantity);
+class SaleError extends Error {
+    constructor(status, message) {
+        super(message);
+        this.status = status;
+    }
+}
 
-    if (
-        !Number.isInteger(productId) ||
-        productId <= 0 ||
-        !Number.isInteger(quantity) ||
-        quantity <= 0
-    ) {
+function getConnection() {
+    return new Promise((resolve, reject) => {
+        if (typeof db.getConnection === "function") {
+            db.getConnection((err, conn) => {
+                if (err) return reject(err);
+                resolve({ conn, release: () => conn.release() });
+            });
+        } else {
+            resolve({ conn: db, release: () => {} });
+        }
+    });
+}
+
+function run(conn, sql, params = []) {
+    return new Promise((resolve, reject) => {
+        conn.query(sql, params, (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+}
+
+function begin(conn) {
+    return new Promise((resolve, reject) => {
+        conn.beginTransaction(err => (err ? reject(err) : resolve()));
+    });
+}
+
+function commit(conn) {
+    return new Promise((resolve, reject) => {
+        conn.commit(err => (err ? reject(err) : resolve()));
+    });
+}
+
+function rollback(conn) {
+    return new Promise(resolve => {
+        conn.rollback(() => resolve());
+    });
+}
+
+router.post("/add", async (req, res) => {
+    const rawItems = Array.isArray(req.body.items)
+        ? req.body.items
+        : [{ product_id: req.body.product_id, quantity: req.body.quantity }];
+
+    if (rawItems.length === 0 || rawItems.length > 50) {
         return res.status(400).json({
             success: false,
-            message: "Please provide a valid product and quantity."
+            message: "Please add at least one product to the transaction."
         });
     }
 
-    db.query(
-        "SELECT id, product_name, price FROM products WHERE id = ?",
-        [productId],
-        (err, result) => {
-            if (err) {
-                console.error("GET PRODUCT ERROR:", err);
+    const merged = new Map();
 
-                return res.status(500).json({
-                    success: false,
-                    message: "Failed to retrieve product."
-                });
-            }
+    for (const item of rawItems) {
+        const productId = Number(item && item.product_id);
+        const quantity = Number(item && item.quantity);
 
-            if (result.length === 0) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Product not found."
-                });
-            }
-
-            const product = result[0];
-            const total = Number(product.price) * quantity;
-
-            db.query(
-                `UPDATE products
-                 SET quantity = quantity - ?
-                 WHERE id = ?
-                   AND quantity >= ?`,
-                [quantity, productId, quantity],
-                (stockErr, stockResult) => {
-                    if (stockErr) {
-                        console.error("STOCK UPDATE ERROR:", stockErr);
-
-                        return res.status(500).json({
-                            success: false,
-                            message: "Failed to update inventory."
-                        });
-                    }
-
-                    if (stockResult.affectedRows === 0) {
-                        return res.status(400).json({
-                            success: false,
-                            message: "Insufficient stock."
-                        });
-                    }
-
-                    db.query(
-                        `INSERT INTO sales
-                            (product_id, quantity, total)
-                         VALUES (?, ?, ?)`,
-                        [productId, quantity, total],
-                        (saleErr, saleResult) => {
-                            if (saleErr) {
-                                console.error("SALE INSERT ERROR:", saleErr);
-
-                                return db.query(
-                                    `UPDATE products
-                                     SET quantity = quantity + ?
-                                     WHERE id = ?`,
-                                    [quantity, productId],
-                                    restoreErr => {
-                                        if (restoreErr) {
-                                            console.error(
-                                                "STOCK RESTORE ERROR:",
-                                                restoreErr
-                                            );
-                                        }
-
-                                        return res.status(500).json({
-                                            success: false,
-                                            message: "Sale failed. Please verify inventory."
-                                        });
-                                    }
-                                );
-                            }
-
-                            publishUpdate(["sales", "inventory"]);
-
-                            return res.json({
-                                success: true,
-                                message: "Sale completed.",
-                                sale_id: saleResult.insertId,
-                                product_name: product.product_name,
-                                quantity,
-                                total: Number(total.toFixed(2))
-                            });
-                        }
-                    );
-                }
-            );
+        if (
+            !Number.isInteger(productId) ||
+            productId <= 0 ||
+            !Number.isInteger(quantity) ||
+            quantity <= 0
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide a valid product and quantity."
+            });
         }
-    );
+
+        merged.set(productId, (merged.get(productId) || 0) + quantity);
+    }
+
+    const lines = Array.from(merged.entries()).sort((a, b) => a[0] - b[0]);
+
+    let handle = null;
+
+    try {
+        handle = await getConnection();
+        const conn = handle.conn;
+
+        await begin(conn);
+
+        let transactionId = null;
+        let grandTotal = 0;
+        const savedItems = [];
+
+        for (const [productId, quantity] of lines) {
+            const rows = await run(
+                conn,
+                `SELECT id, product_name, price, quantity
+                 FROM products
+                 WHERE id = ?
+                 FOR UPDATE`,
+                [productId]
+            );
+
+            if (rows.length === 0) {
+                throw new SaleError(404, "Product not found.");
+            }
+
+            const product = rows[0];
+            const stock = Number(product.quantity);
+
+            if (stock < quantity) {
+                throw new SaleError(
+                    400,
+                    "Insufficient stock for " + product.product_name +
+                    ". Only " + stock + " pc(s) available."
+                );
+            }
+
+            await run(
+                conn,
+                "UPDATE products SET quantity = quantity - ? WHERE id = ?",
+                [quantity, productId]
+            );
+
+            const unitPrice = Number(product.price);
+            const lineTotal = Number((unitPrice * quantity).toFixed(2));
+
+            const inserted = await run(
+                conn,
+                `INSERT INTO sales
+                    (product_id, quantity, total, transaction_id)
+                 VALUES (?, ?, ?, ?)`,
+                [productId, quantity, lineTotal, transactionId]
+            );
+
+            if (transactionId === null) {
+                transactionId = inserted.insertId;
+
+                await run(
+                    conn,
+                    "UPDATE sales SET transaction_id = ? WHERE id = ?",
+                    [transactionId, inserted.insertId]
+                );
+            }
+
+            grandTotal += lineTotal;
+
+            savedItems.push({
+                sale_id: inserted.insertId,
+                product_id: productId,
+                product_name: product.product_name,
+                unit_price: unitPrice,
+                quantity,
+                total: lineTotal
+            });
+        }
+
+        await commit(conn);
+
+        publishUpdate(["sales", "inventory"]);
+
+        return res.json({
+            success: true,
+            message: "Sale completed.",
+            transaction_id: transactionId,
+            sale_id: transactionId,
+            items: savedItems,
+            total: Number(grandTotal.toFixed(2))
+        });
+    } catch (err) {
+        if (handle) {
+            await rollback(handle.conn);
+        }
+
+        if (err instanceof SaleError) {
+            return res.status(err.status).json({
+                success: false,
+                message: err.message
+            });
+        }
+
+        console.error("RECORD SALE ERROR:", err);
+
+        return res.status(500).json({
+            success: false,
+            message: "Sale failed. No changes were saved."
+        });
+    } finally {
+        if (handle) {
+            handle.release();
+        }
+    }
 });
 
 router.get("/all", (req, res) => {
     const sql = `
         SELECT
             sales.id,
+            COALESCE(sales.transaction_id, sales.id) AS transaction_id,
             sales.product_id,
             products.product_name,
             sales.quantity,
@@ -128,7 +214,9 @@ router.get("/all", (req, res) => {
         FROM sales
         JOIN products
             ON sales.product_id = products.id
-        ORDER BY sales.sale_date DESC
+        ORDER BY
+            COALESCE(sales.transaction_id, sales.id) DESC,
+            sales.id ASC
     `;
 
     db.query(sql, (err, result) => {

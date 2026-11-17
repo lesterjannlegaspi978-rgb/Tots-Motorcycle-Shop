@@ -139,282 +139,360 @@
         }
 
         .sales-filter-buttons button {
-    margin: 0 !important;
-    height: 36px !important;
-    box-sizing: border-box;
-}
+            margin: 0 !important;
+            height: 36px !important;
+            box-sizing: border-box;
+        }
 
-.sales-filter-field input {
-    margin: 0 !important;
-}
+        .sales-filter-field input {
+            margin: 0 !important;
+        }
 
-.sales-page table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-}
+        .sales-page table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
 
-.sales-page table th,
-.sales-page table td {
-    text-align: center !important;
-    vertical-align: middle !important;
-}
-.receipt-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.6);
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    z-index: 99999;
-}
+        .sales-page table th,
+        .sales-page table td {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
 
-.receipt-overlay.show {
-    display: flex;
-}
+        .receipt-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 99999;
+        }
 
-.receipt-box {
-    width: 100%;
-    max-width: 360px;
-    max-height: 90vh;
-    overflow-y: auto;
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    box-sizing: border-box;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    color: #111827;
-}
+        .receipt-overlay.show {
+            display: flex;
+        }
 
-.receipt-shop {
-    text-align: center;
-    border-bottom: 1px dashed #9ca3af;
-    padding-bottom: 12px;
-    margin-bottom: 12px;
-}
+        .receipt-box {
+            width: 100%;
+            max-width: 360px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-sizing: border-box;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            color: #111827;
+        }
 
-.receipt-shop h2 {
-    margin: 0 0 4px;
-    font-size: 18px;
-    color: #1f3c88;
-}
+        .receipt-shop {
+            text-align: center;
+            border-bottom: 1px dashed #9ca3af;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
 
-.receipt-shop p {
-    margin: 2px 0;
-    font-size: 11px;
-    color: #4b5563;
-}
+        .receipt-shop h2 {
+            margin: 0 0 4px;
+            font-size: 18px;
+            color: #1f3c88;
+        }
 
-.receipt-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin: 6px 0;
-    font-size: 13px;
-}
+        .receipt-shop p {
+            margin: 2px 0;
+            font-size: 11px;
+            color: #4b5563;
+        }
 
-.receipt-row span:last-child {
-    text-align: right;
-    font-weight: 600;
-}
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 6px 0;
+            font-size: 13px;
+        }
 
-.receipt-total {
-    border-top: 1px dashed #9ca3af;
-    margin-top: 12px;
-    padding-top: 12px;
-    font-size: 15px;
-}
+        .receipt-row span:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
 
-.receipt-thanks {
-    text-align: center;
-    margin: 14px 0 0;
-    font-size: 12px;
-    color: #4b5563;
-}
+        .receipt-items {
+            border-top: 1px dashed #9ca3af;
+            border-bottom: 1px dashed #9ca3af;
+            margin: 12px 0 0;
+            padding: 8px 0;
+        }
 
-.receipt-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 18px;
-}
+        .receipt-item {
+            margin: 8px 0;
+        }
 
-.receipt-actions button {
-    flex: 1;
-    height: 38px;
-    border: none;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-}
+        .receipt-item-name {
+            font-size: 13px;
+            font-weight: 600;
+            text-align: left;
+            word-break: break-word;
+        }
 
-.receipt-print-btn {
-    background: #244294;
-    color: #ffffff;
-}
+        .receipt-item .receipt-row {
+            margin: 2px 0 0;
+            font-size: 12px;
+            color: #4b5563;
+        }
 
-.receipt-close-btn {
-    background: #6b7280;
-    color: #ffffff;
-}
+        .receipt-total {
+            margin-top: 12px;
+            padding-top: 4px;
+            font-size: 15px;
+        }
 
-@media print {
-    body * {
-        visibility: hidden;
-    }
+        .receipt-thanks {
+            text-align: center;
+            margin: 14px 0 0;
+            font-size: 12px;
+            color: #4b5563;
+        }
 
-    #receiptOverlay,
-    #receiptOverlay * {
-        visibility: visible;
-    }
+        .receipt-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
 
-    #receiptOverlay {
-        position: absolute;
-        inset: 0;
-        background: #ffffff;
-        align-items: flex-start;
-    }
+        .receipt-actions button {
+            flex: 1;
+            height: 38px;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
-    .receipt-box {
-        box-shadow: none;
-        max-height: none;
-    }
+        .receipt-print-btn {
+            background: #244294;
+            color: #ffffff;
+        }
 
-    .receipt-actions {
-        display: none;
-    }
-}
+        .receipt-close-btn {
+            background: #6b7280;
+            color: #ffffff;
+        }
 
-.sale-message {
-    display: none;
-    margin: 10px 0 0;
-    padding: 10px 13px;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: 600;
-}
+        @media print {
+            body * {
+                visibility: hidden;
+            }
 
-.sale-message.error {
-    display: block;
-    color: #991b1b;
-    background: #fee2e2;
-    border: 1px solid #fca5a5;
-}
+            #receiptOverlay,
+            #receiptOverlay * {
+                visibility: visible;
+            }
 
-.ss-wrapper {
-    position: relative;
-    width: 100%;
-}
+            #receiptOverlay {
+                position: absolute;
+                inset: 0;
+                background: #ffffff;
+                align-items: flex-start;
+            }
 
-.ss-wrapper .ss-input {
-    width: 100%;
-    height: 44px;
-    margin: 0 !important;
-    padding: 0 36px 0 13px;
-    border: 1px solid #cfd6e4;
-    border-radius: 7px;
-    background: #ffffff;
-    color: #111827;
-    font-size: 14px;
-    box-sizing: border-box;
-    outline: none;
-    cursor: pointer;
-}
+            .receipt-box {
+                box-shadow: none;
+                max-height: none;
+            }
 
-.ss-wrapper .ss-input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
-}
+            .receipt-actions {
+                display: none;
+            }
+        }
 
-.ss-wrapper .ss-input.input-error {
-    border: 1px solid #dc2626 !important;
-}
+        .sale-message {
+            display: none;
+            margin: 10px 0 0;
+            padding: 10px 13px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+        }
 
-.ss-wrapper .ss-input:disabled {
-    background: #f3f4f6;
-    cursor: not-allowed;
-}
+        .sale-message.error {
+            display: block;
+            color: #991b1b;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
 
-.ss-arrow {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-size: 12px;
-    pointer-events: none;
-}
+        .ss-wrapper {
+            position: relative;
+            width: 100%;
+        }
 
-.ss-list {
-    display: none;
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    max-height: 260px;
-    overflow-y: auto;
-    background: #ffffff;
-    border: 1px solid #cfd6e4;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
-    z-index: 1000;
-}
+        .ss-wrapper .ss-input {
+            width: 100%;
+            height: 44px;
+            margin: 0 !important;
+            padding: 0 36px 0 13px;
+            border: 1px solid #cfd6e4;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #111827;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+            cursor: pointer;
+        }
 
-.ss-wrapper.open .ss-list {
-    display: block;
-}
+        .ss-wrapper .ss-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+        }
 
-.ss-item {
-    padding: 10px 13px;
-    color: #111827;
-    font-size: 13px;
-    line-height: 1.4;
-    text-align: left;
-    cursor: pointer;
-}
+        .ss-wrapper .ss-input.input-error {
+            border: 1px solid #dc2626 !important;
+        }
 
-.ss-item:hover,
-.ss-item.active {
-    background: #eef4ff;
-}
+        .ss-wrapper .ss-input:disabled {
+            background: #f3f4f6;
+            cursor: not-allowed;
+        }
 
-.ss-empty {
-    padding: 12px 13px;
-    color: #6b7280;
-    font-size: 13px;
-    text-align: left;
-}
+        .ss-arrow {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 12px;
+            pointer-events: none;
+        }
 
-.sales-page .report-box br {
-    display: none;
-}
+        .ss-list {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            max-height: 260px;
+            overflow-y: auto;
+            background: #ffffff;
+            border: 1px solid #cfd6e4;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+            z-index: 1000;
+        }
 
-.sales-page .report-box p {
-    margin: 4px 0;
-}
+        .ss-wrapper.open .ss-list {
+            display: block;
+        }
 
-.sales-page .ss-wrapper {
-    margin-bottom: 6px;
-}
+        .ss-item {
+            padding: 10px 13px;
+            color: #111827;
+            font-size: 13px;
+            line-height: 1.4;
+            text-align: left;
+            cursor: pointer;
+        }
 
-.sales-page label[for="quantity"] {
-    display: block;
-    margin-top: 10px;
-}
+        .ss-item:hover,
+        .ss-item.active {
+            background: #eef4ff;
+        }
 
-.sales-page #quantity {
-    margin-bottom: 4px;
-}
+        .ss-empty {
+            padding: 12px 13px;
+            color: #6b7280;
+            font-size: 13px;
+            text-align: left;
+        }
 
-.sales-page .sale-message {
-    margin: 6px 0;
-}
+        .sales-page .report-box br {
+            display: none;
+        }
 
-.sales-page #recordSaleBtn {
-    margin-top: 8px;
-}
+        .sales-page .report-box p {
+            margin: 4px 0;
+        }
 
+        .sales-page .ss-wrapper {
+            margin-bottom: 6px;
+        }
+
+        .sales-page label[for="quantity"] {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .sales-page #quantity {
+            margin-bottom: 4px;
+        }
+
+        .sales-page .sale-message {
+            margin: 6px 0;
+        }
+
+        .sales-page #recordSaleBtn {
+            margin-top: 8px;
+        }
+
+        .sales-page #addItemBtn {
+            margin-top: 8px;
+        }
+
+        .cart-section {
+            margin-top: 20px;
+            padding-top: 14px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .cart-section h3 {
+            margin: 0 0 8px;
+            color: #244294;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .sales-page .cart-table td {
+            font-size: 13px;
+            padding: 8px 6px;
+            border-bottom: 1px solid #eef0f4;
+            word-break: break-word;
+        }
+
+        .cart-remove-btn {
+            height: 28px;
+            padding: 0 12px;
+            border: none;
+            border-radius: 5px;
+            background: #fee2e2;
+            color: #991b1b;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .cart-remove-btn:hover {
+            background: #fecaca;
+        }
+
+        .cart-grand-total {
+            margin-top: 10px !important;
+            font-size: 15px;
+            text-align: right;
+        }
+
+        .sale-products-cell {
+            text-align: left !important;
+        }
+
+        .sale-product-line {
+            margin: 2px 0;
+            font-size: 13px;
+        }
     </style>
 </head>
 
@@ -449,8 +527,8 @@
         <h2>Record Sales Transaction</h2>
 
         <p>
-            Record a completed product sale and automatically
-            update the available inventory stock.
+            Record a completed sale with one or more products and
+            automatically update the available inventory stock.
         </p>
 
         <br>
@@ -486,9 +564,36 @@
         >
 
         <p>
-            <b>Total Sales Amount:</b>
+            <b>Item Subtotal:</b>
             ₱<span id="saleTotal">0.00</span>
         </p>
+
+        <button type="button" id="addItemBtn" onclick="addToCart()">
+            Add to Sale
+        </button>
+
+        <div class="cart-section">
+            <h3>Products in this Transaction</h3>
+
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="cartTable"></tbody>
+            </table>
+
+            <p class="cart-grand-total">
+                <b>Total Sales Amount:</b>
+                ₱<span id="cartGrandTotal">0.00</span>
+            </p>
+        </div>
 
         <br>
 
@@ -555,11 +660,11 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Product Name</th>
-                    <th>Quantity Sold</th>
-                    <th>Total Amount</th>
-                    <th>Date</th>
+                    <th style="width: 12%;">Receipt No.</th>
+                    <th style="width: 34%;">Products</th>
+                    <th style="width: 12%;">Total Items</th>
+                    <th style="width: 20%;">Total Amount</th>
+                    <th style="width: 22%;">Date</th>
                 </tr>
             </thead>
 
@@ -586,20 +691,7 @@
             <span id="receiptDate"></span>
         </div>
 
-        <div class="receipt-row">
-            <span>Product</span>
-            <span id="receiptProduct"></span>
-        </div>
-
-        <div class="receipt-row">
-            <span>Quantity</span>
-            <span id="receiptQuantity"></span>
-        </div>
-
-        <div class="receipt-row">
-            <span>Unit Price</span>
-            <span id="receiptUnitPrice"></span>
-        </div>
+        <div id="receiptItems" class="receipt-items"></div>
 
         <div class="receipt-row receipt-total">
             <span>Total</span>
@@ -634,6 +726,7 @@ sidebar.addEventListener("mouseleave", () => {
 
 let allProducts = [];
 let allSales = [];
+let cart = [];
 
 function formatMoney(value) {
     const number = Number(value) || 0;
@@ -642,6 +735,15 @@ function formatMoney(value) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
+}
+
+function escapeHtml(value) {
+    return String(value === null || value === undefined ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 function markFieldError(field) {
@@ -673,18 +775,45 @@ function clearFieldError(field) {
 });
 
 function showReceipt(receipt) {
-    const quantity = Number(receipt.quantity) || 0;
-    const total = Number(receipt.total) || 0;
-    const unitPrice = quantity > 0 ? total / quantity : 0;
-
     document.getElementById("receiptNo").textContent =
         "RCPT-" + String(receipt.id).padStart(4, "0");
 
     document.getElementById("receiptDate").textContent = receipt.date;
-    document.getElementById("receiptProduct").textContent = receipt.product_name;
-    document.getElementById("receiptQuantity").textContent = quantity + " pcs";
-    document.getElementById("receiptUnitPrice").textContent = "₱" + formatMoney(unitPrice);
-    document.getElementById("receiptTotal").textContent = "₱" + formatMoney(total);
+
+    const itemsBox = document.getElementById("receiptItems");
+    itemsBox.innerHTML = "";
+
+    receipt.items.forEach(item => {
+        const quantity = Number(item.quantity) || 0;
+        const unitPrice = Number(item.unit_price) || 0;
+        const lineTotal = Number(item.total) || 0;
+
+        const wrap = document.createElement("div");
+        wrap.className = "receipt-item";
+
+        const name = document.createElement("div");
+        name.className = "receipt-item-name";
+        name.textContent = item.product_name;
+
+        const detail = document.createElement("div");
+        detail.className = "receipt-row";
+
+        const left = document.createElement("span");
+        left.textContent = quantity + " pcs x ₱" + formatMoney(unitPrice);
+
+        const right = document.createElement("span");
+        right.textContent = "₱" + formatMoney(lineTotal);
+
+        detail.appendChild(left);
+        detail.appendChild(right);
+
+        wrap.appendChild(name);
+        wrap.appendChild(detail);
+        itemsBox.appendChild(wrap);
+    });
+
+    document.getElementById("receiptTotal").textContent =
+        "₱" + formatMoney(receipt.total);
 
     document.getElementById("receiptOverlay").classList.add("show");
 }
@@ -711,14 +840,24 @@ function clearSaleMessage() {
     box.className = "sale-message";
 }
 
+function getCartQuantity(productId) {
+    const line = cart.find(item => String(item.product_id) === String(productId));
+
+    return line ? line.quantity : 0;
+}
+
+function getRemainingStock(product) {
+    return Number(product.quantity) - getCartQuantity(product.id);
+}
+
 function checkStockWarning() {
     const id = document.getElementById("product_id").value;
     const qty = Number(document.getElementById("quantity").value);
     const product = allProducts.find(p => p.id == id);
 
-    if (product && qty > Number(product.quantity)) {
+    if (product && qty > getRemainingStock(product)) {
         showSaleMessage(
-            "Insufficient stock. Only " + Number(product.quantity) +
+            "Insufficient stock. Only " + getRemainingStock(product) +
             " pc(s) available."
         );
 
@@ -730,14 +869,58 @@ function checkStockWarning() {
     clearSaleMessage();
 }
 
-
 document.getElementById("quantity").addEventListener("input", checkStockWarning);
 document.getElementById("product_id").addEventListener("change", checkStockWarning);
 
-async function processSale() {
-    const product_id = document.getElementById("product_id").value;
-    const quantity = document.getElementById("quantity").value;
+function renderCart() {
+    const body = document.getElementById("cartTable");
+    let grandTotal = 0;
 
+    if (cart.length === 0) {
+        body.innerHTML = `
+            <tr>
+                <td
+                    colspan="5"
+                    style="padding:16px; color:#6b7280; font-weight:600;"
+                >
+                    No products added yet.
+                </td>
+            </tr>
+        `;
+    } else {
+        let rows = "";
+
+        cart.forEach((item, index) => {
+            const subtotal = item.quantity * item.price;
+
+            grandTotal += subtotal;
+
+            rows += `
+                <tr>
+                    <td>${escapeHtml(item.product_name)}</td>
+                    <td>₱${formatMoney(item.price)}</td>
+                    <td>${item.quantity}</td>
+                    <td>₱${formatMoney(subtotal)}</td>
+                    <td>
+                        <button
+                            type="button"
+                            class="cart-remove-btn"
+                            onclick="removeFromCart(${index})"
+                        >
+                            Remove
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        body.innerHTML = rows;
+    }
+
+    document.getElementById("cartGrandTotal").innerHTML = formatMoney(grandTotal);
+}
+
+function addToCart() {
     const productField = document.getElementById("product_id");
     const quantityField = document.getElementById("quantity");
 
@@ -745,28 +928,27 @@ async function processSale() {
     clearFieldError(quantityField);
     clearSaleMessage();
 
-    if (product_id === "") {
+    if (productField.value === "") {
         markFieldError(productField);
         showSaleMessage("Please select a product.");
         return;
     }
 
-    if (quantity === "") {
+    if (quantityField.value === "") {
         markFieldError(quantityField);
         showSaleMessage("Please enter the quantity sold.");
         return;
     }
 
-    const saleQuantity = Number(quantity);
+    const quantity = Number(quantityField.value);
 
-    if (!Number.isInteger(saleQuantity) || saleQuantity <= 0) {
+    if (!Number.isInteger(quantity) || quantity <= 0) {
         markFieldError(quantityField);
         showSaleMessage("Quantity must be a whole number greater than 0.");
-
         return;
     }
 
-    const product = allProducts.find(p => p.id == product_id);
+    const product = allProducts.find(p => p.id == productField.value);
 
     if (!product) {
         markFieldError(productField);
@@ -774,14 +956,56 @@ async function processSale() {
         return;
     }
 
-    const availableStock = Number(product.quantity);
+    const remaining = getRemainingStock(product);
 
-    if (saleQuantity > availableStock) {
+    if (quantity > remaining) {
         markFieldError(quantityField);
         showSaleMessage(
-            "Insufficient stock. Only " + availableStock +
-            " pc(s) available."
+            "Insufficient stock. Only " + remaining + " pc(s) available."
         );
+        return;
+    }
+
+    const existing = cart.find(item => String(item.product_id) === String(product.id));
+
+    if (existing) {
+        existing.quantity += quantity;
+        existing.price = Number(product.price);
+    } else {
+        cart.push({
+            product_id: product.id,
+            product_name: product.product_name,
+            price: Number(product.price),
+            quantity: quantity
+        });
+    }
+
+    quantityField.value = "";
+    document.getElementById("saleTotal").innerHTML = "0.00";
+
+    renderCart();
+    showProductInfo();
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+
+    clearSaleMessage();
+    renderCart();
+    showProductInfo();
+}
+
+async function processSale() {
+    const productField = document.getElementById("product_id");
+    const quantityField = document.getElementById("quantity");
+
+    clearFieldError(productField);
+    clearFieldError(quantityField);
+    clearSaleMessage();
+
+    if (cart.length === 0) {
+        markFieldError(productField);
+        showSaleMessage("Please add at least one product to the transaction.");
         return;
     }
 
@@ -791,18 +1015,18 @@ async function processSale() {
     saleButton.innerText = "Recording Sale...";
 
     try {
-
         const response = await fetch(
             "/sales/add",
             {
-
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    product_id: product_id,
-                    quantity: saleQuantity
+                    items: cart.map(item => ({
+                        product_id: item.product_id,
+                        quantity: item.quantity
+                    }))
                 })
             }
         );
@@ -810,11 +1034,12 @@ async function processSale() {
         const data = await response.json();
 
         if (data.success) {
-            clearFieldError(productField);
-            clearFieldError(quantityField);
+            cart = [];
 
-            document.getElementById("quantity").value = "";
+            quantityField.value = "";
             document.getElementById("saleTotal").innerHTML = "0.00";
+
+            renderCart();
 
             await loadProducts();
             await loadSales();
@@ -822,13 +1047,11 @@ async function processSale() {
             showProductInfo();
 
             showReceipt({
-                id: data.sale_id,
-                product_name: data.product_name,
-                quantity: data.quantity,
+                id: data.transaction_id,
+                items: data.items,
                 total: data.total,
                 date: new Date().toLocaleString("en-PH", {
                     year: "numeric",
-
                     month: "short",
                     day: "2-digit",
                     hour: "2-digit",
@@ -837,15 +1060,12 @@ async function processSale() {
                 })
             });
         } else {
-            markFieldError(quantityField);
             showSaleMessage(data.message || "Unable to record the sale.");
         }
 
     } catch (error) {
         console.error("Error recording sale:", error);
 
-        markFieldError(productField);
-        markFieldError(quantityField);
         showSaleMessage("Unable to connect to the server.");
 
     } finally {
@@ -882,10 +1102,39 @@ async function loadSales() {
     }
 }
 
+function groupSales(sales) {
+    const groups = new Map();
+
+    sales.forEach(sale => {
+        const key = sale.transaction_id !== undefined && sale.transaction_id !== null
+            ? sale.transaction_id
+            : sale.id;
+
+        if (!groups.has(key)) {
+            groups.set(key, {
+                transaction_id: key,
+                sale_date: sale.sale_date,
+                items: [],
+                quantity: 0,
+                total: 0
+            });
+        }
+
+        const group = groups.get(key);
+
+        group.items.push(sale);
+        group.quantity += Number(sale.quantity) || 0;
+        group.total += Number(sale.total) || 0;
+    });
+
+    return Array.from(groups.values());
+}
+
 function displaySales(sales) {
     let rows = "";
+    const transactions = Array.isArray(sales) ? groupSales(sales) : [];
 
-    if (!Array.isArray(sales) || sales.length === 0) {
+    if (transactions.length === 0) {
         rows = `
             <tr>
                 <td
@@ -897,14 +1146,21 @@ function displaySales(sales) {
             </tr>
         `;
     } else {
-        sales.forEach(sale => {
+        transactions.forEach(sale => {
+            const lines = sale.items.map(item => `
+                <div class="sale-product-line">
+                    ${escapeHtml(item.product_name)}
+                    &times; ${Number(item.quantity)}
+                </div>
+            `).join("");
+
             rows += `
                 <tr>
-                    <td>${sale.id}</td>
-                    <td>${sale.product_name}</td>
+                    <td>RCPT-${String(sale.transaction_id).padStart(4, "0")}</td>
+                    <td class="sale-products-cell">${lines}</td>
                     <td>${sale.quantity}</td>
                     <td>₱${formatMoney(sale.total)}</td>
-                    <td>${sale.sale_date}</td>
+                    <td>${escapeHtml(sale.sale_date)}</td>
                 </tr>
             `;
         });
@@ -930,7 +1186,6 @@ function filterSales() {
     }
 
     const filteredSales = allSales.filter(sale => {
-        /* NO DATE FILTER */
         if (!fromDate && !toDate) {
             return true;
         }
@@ -957,7 +1212,7 @@ function filterSales() {
     displaySales(filteredSales);
 
     document.getElementById("salesFilterResult").innerText =
-        "Showing " + filteredSales.length + " sales record(s).";
+        "Showing " + groupSales(filteredSales).length + " sales record(s).";
 }
 
 function resetSalesFilter() {
@@ -1022,17 +1277,17 @@ async function loadProducts() {
         products.forEach(product => {
             const stock = Number(product.quantity);
 
-            /* ONLY PRODUCTS WITH STOCK */
             if (stock > 0) {
                 options += `
                     <option value="${product.id}">
-                        ${product.product_name}
+                        ${escapeHtml(product.product_name)}
                         (${stock} pcs)
                     </option>
                 `;
             }
         });
 
+        const addButton = document.getElementById("addItemBtn");
         const saleButton = document.getElementById("recordSaleBtn");
 
         const availableProducts = products.filter(
@@ -1046,13 +1301,15 @@ async function loadProducts() {
                 </option>
             `;
 
-            saleButton.disabled = true;
+            addButton.disabled = true;
+            saleButton.disabled = cart.length === 0;
 
             document.getElementById("availableStock").innerHTML = "0";
             document.getElementById("productPrice").innerHTML = "0.00";
 
         } else {
             productSelect.innerHTML = options;
+            addButton.disabled = false;
             saleButton.disabled = false;
 
             productSelect.value = availableProducts.some(
@@ -1072,6 +1329,7 @@ async function loadProducts() {
             </option>
         `;
 
+        document.getElementById("addItemBtn").disabled = true;
         document.getElementById("recordSaleBtn").disabled = true;
 
         markFieldError(document.getElementById("product_id"));
@@ -1093,7 +1351,7 @@ function showProductInfo() {
     clearFieldError(document.getElementById("product_id"));
 
     document.getElementById("availableStock").innerHTML =
-        product.quantity;
+        Math.max(getRemainingStock(product), 0);
 
     document.getElementById("productPrice").innerHTML =
         formatMoney(product.price);
@@ -1126,6 +1384,7 @@ function computeTotal() {
         formatMoney(total);
 }
 
+renderCart();
 loadProducts();
 loadSales();
 
@@ -1176,7 +1435,6 @@ function makeSearchableSelect(selectId, placeholderText) {
     select.parentNode.insertBefore(wrapper, select);
 
     const valueDescriptor = Object.getOwnPropertyDescriptor(
-
         HTMLSelectElement.prototype,
         "value"
     );
@@ -1209,7 +1467,6 @@ function makeSearchableSelect(selectId, placeholderText) {
             return valueDescriptor.get.call(this);
         },
         set(newValue) {
-
             valueDescriptor.set.call(this, newValue);
             syncInput();
         }
@@ -1243,7 +1500,6 @@ function makeSearchableSelect(selectId, placeholderText) {
         list.innerHTML = "";
         items = [];
 
-
         Array.from(select.options).forEach(option => {
             if (option.value === "") return;
 
@@ -1275,7 +1531,6 @@ function makeSearchableSelect(selectId, placeholderText) {
         }
 
         setActive(items.length > 0 ? 0 : -1);
-
     }
 
     function openList(text) {
@@ -1308,7 +1563,6 @@ function makeSearchableSelect(selectId, placeholderText) {
 
     input.addEventListener("click", () => {
         if (!wrapper.classList.contains("open") && !input.disabled) {
-
             openList("");
         }
     });
@@ -1341,7 +1595,6 @@ function makeSearchableSelect(selectId, placeholderText) {
             event.preventDefault();
 
             if (wrapper.classList.contains("open") && items[activeIndex]) {
-
                 const label = items[activeIndex].textContent;
 
                 const option = Array.from(select.options).find(
