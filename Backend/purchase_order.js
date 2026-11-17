@@ -10,7 +10,6 @@ router.get("/suppliers", (req, res) => {
             id,
             supplier_code,
             supplier_name,
-            contact_person,
             contact_number,
             email,
             address
@@ -611,7 +610,6 @@ router.get("/:id", (req, res) => {
             po.supplier_id,
             s.supplier_code,
             s.supplier_name,
-            s.contact_person,
             s.contact_number,
             s.email,
             s.address,
