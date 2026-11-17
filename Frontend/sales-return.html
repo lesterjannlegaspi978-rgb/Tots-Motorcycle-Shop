@@ -701,7 +701,7 @@ async function submitReturn() {
 
             try {
 
-                const refundResponse = await fetch(REFUND_API + "/process", {
+               const refundResponse = await fetch(RETURN_API + "/process", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -899,7 +899,7 @@ async function submitRefund() {
 
     try {
 
-        const response = await fetch(REFUND_API + "/process", {
+        const response = await fetch(RETURN_API + "/process", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
