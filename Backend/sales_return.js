@@ -249,6 +249,46 @@ router.post("/create", (req, res) => {
     });
 });
 
+/* ---------- Refund (merged from the old refund.js) ---------- */
+
+router.post("/process", (req, res) => {
+    const { return_id } = req.body;
+
+    if (!return_id) {
+        return res.send({
+            success: false,
+            message: "Return ID is required."
+        });
+    }
+
+    const sql = `
+        UPDATE sales_returns
+        SET status = 'Refunded'
+        WHERE id = ?
+        AND status = 'Completed'
+    `;
+
+    db.query(sql, [return_id], (err, result) => {
+        if (err) {
+            console.log("Sales Return - Refund Error:", err);
+            return res.send({
+                success: false,
+                message: "Failed to process refund."
+            });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.send({
+                success: false,
+                message: "Return not found or already refunded."
+            });
+        }
+
+        publishUpdate(["returns", "refunds"]);
+        res.send({ success: true, message: "Refund processed." });
+    });
+});
+
 router.get("/all", (req, res) => {
     const showHistory = req.query.history === "true";
 
