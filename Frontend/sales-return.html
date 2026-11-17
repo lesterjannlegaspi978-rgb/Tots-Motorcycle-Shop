@@ -341,7 +341,7 @@
 
         .sales-return-page .return-table {
             width: 100%;
-            min-width: 850px;
+            min-width: 950px;
             border-collapse: collapse;
             background: white;
             color: #111827;
@@ -398,6 +398,16 @@
         .sales-return-page .status-refunded {
             background: #dcfce7;
             color: #166534;
+        }
+
+        .sales-return-page .condition-good {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .sales-return-page .condition-bad {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
         @media (max-width: 1000px) {
@@ -461,7 +471,7 @@
         <li><a href="reports.html">Reports</a></li>
         <li><a href="analytics.html">Analytics</a></li>
         <li><a href="ai_recommendation.html">AI Recommendations</a></li>
-       <li><a href="#" onclick="logoutUser(); return false;">Logout</a></li>
+        <li><a href="#" onclick="logoutUser(); return false;">Logout</a></li>
 
     </ul>
 
@@ -551,6 +561,20 @@
 
         <div class="return-form-group">
 
+            <label for="item_condition">Item Condition</label>
+
+            <select id="item_condition" onchange="hideReview()">
+
+                <option value="Good">Good - ibabalik sa stock</option>
+
+                <option value="Bad Order">Bad Order - hindi ibabalik sa stock</option>
+
+            </select>
+
+        </div>
+
+        <div class="return-form-group">
+
             <label for="reason">Return Reason</label>
 
             <textarea
@@ -619,6 +643,11 @@
                 <div class="review-item">
                     <span class="review-label">Refund Amount</span>
                     <span class="review-value" id="reviewRefund"></span>
+                </div>
+
+                <div class="review-item">
+                    <span class="review-label">Item Condition</span>
+                    <span class="review-value" id="reviewCondition"></span>
                 </div>
 
                 <div class="review-item full">
@@ -691,6 +720,7 @@
                         <th>Quantity Returned</th>
                         <th>Refund Amount</th>
                         <th>Reason</th>
+                        <th>Condition</th>
                         <th>Status</th>
                         <th>Return Date</th>
                     </tr>
@@ -700,7 +730,7 @@
                 <tbody id="returnTableBody">
 
                     <tr>
-                        <td colspan="8" class="no-return-records">
+                        <td colspan="9" class="no-return-records">
                             Loading...
                         </td>
                     </tr>
@@ -816,6 +846,9 @@ function showReview(data) {
 
     document.getElementById("reviewRefund").textContent =
         "₱" + formatMoney(refund);
+
+    document.getElementById("reviewCondition").textContent =
+        data.condition;
 
     document.getElementById("reviewReason").textContent =
         data.reason;
@@ -957,6 +990,8 @@ function loadSaleDetails() {
 
     document.getElementById("quantity_returned").value = "";
 
+    document.getElementById("item_condition").value = "Good";
+
     document.getElementById("reason").value = "";
 
     document.getElementById("summaryQuantity").textContent = "0";
@@ -1026,6 +1061,8 @@ function validateReturnForm() {
         document.getElementById("quantity_returned").value
     );
 
+    const condition = document.getElementById("item_condition").value;
+
     const reason = document.getElementById("reason").value.trim();
 
     const remaining = Number(selectedSale.remaining_quantity);
@@ -1049,6 +1086,14 @@ function validateReturnForm() {
 
     }
 
+    if (condition !== "Good" && condition !== "Bad Order") {
+
+        showMessage("Please select the item condition.", "error");
+
+        return null;
+
+    }
+
     if (!reason) {
 
         showMessage("Please enter the reason for the return.", "error");
@@ -1057,7 +1102,7 @@ function validateReturnForm() {
 
     }
 
-    return { quantity, reason };
+    return { quantity, reason, condition };
 
 }
 
@@ -1107,6 +1152,7 @@ async function submitReturn() {
                 body: JSON.stringify({
                     sale_id: selectedSale.sale_id,
                     quantity_returned: data.quantity,
+                    item_condition: data.condition,
                     reason: data.reason
                 })
             }
@@ -1127,10 +1173,21 @@ async function submitReturn() {
 
         }
 
-        showMessage(
-            `Sales Return Completed. ${data.quantity} pc(s) returned to inventory.`,
-            "success"
-        );
+        if (data.condition === "Bad Order") {
+
+            showMessage(
+                `Sales Return Completed. ${data.quantity} pc(s) recorded as Bad Order and were not added to inventory.`,
+                "success"
+            );
+
+        } else {
+
+            showMessage(
+                `Sales Return Completed. ${data.quantity} pc(s) returned to inventory.`,
+                "success"
+            );
+
+        }
 
         resetReturnFields();
 
@@ -1228,7 +1285,7 @@ async function loadReturnRecords() {
             tbody.innerHTML = `
 
                 <tr>
-                    <td colspan="8" class="no-return-records">
+                    <td colspan="9" class="no-return-records">
                         ${
                             showHistory
                                 ? "No sales return records found."
@@ -1252,6 +1309,13 @@ async function loadReturnRecords() {
                     ? "status-refunded"
                     : "status-completed";
 
+            const itemCondition = returnRecord.item_condition || "Good";
+
+            const conditionClass =
+                itemCondition === "Bad Order"
+                    ? "condition-bad"
+                    : "condition-good";
+
             row.innerHTML = `
 
                 <td>${escapeHtml(returnRecord.id)}</td>
@@ -1265,6 +1329,12 @@ async function loadReturnRecords() {
                 <td>₱${formatMoney(returnRecord.refund_amount)}</td>
 
                 <td>${escapeHtml(returnRecord.reason || "-")}</td>
+
+                <td>
+                    <span class="status-badge ${conditionClass}">
+                        ${escapeHtml(itemCondition)}
+                    </span>
+                </td>
 
                 <td>
                     <span class="status-badge ${statusClass}">
@@ -1287,7 +1357,7 @@ async function loadReturnRecords() {
         document.getElementById("returnTableBody").innerHTML = `
 
             <tr>
-                <td colspan="8" class="no-return-records">
+                <td colspan="9" class="no-return-records">
                     Failed to load return records.
                 </td>
             </tr>
@@ -1305,6 +1375,8 @@ function resetReturnFields() {
     document.getElementById("returnInfo").style.display = "none";
 
     document.getElementById("quantity_returned").value = "";
+
+    document.getElementById("item_condition").value = "Good";
 
     document.getElementById("reason").value = "";
 

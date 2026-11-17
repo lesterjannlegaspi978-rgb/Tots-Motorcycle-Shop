@@ -111,6 +111,7 @@ const tableStatements = [
             quantity_returned INT NOT NULL,
             refund_amount DECIMAL(10, 2) NOT NULL,
             reason TEXT,
+            item_condition VARCHAR(20) NOT NULL DEFAULT 'Good',
             status VARCHAR(20) NOT NULL DEFAULT 'Completed',
             return_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             INDEX idx_sales_returns_sale_id (sale_id),

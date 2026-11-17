@@ -38,12 +38,6 @@
         #imageStatus.missing {
             color: #dc2626;
         }
-        .upload-label {
-            display: block;
-            margin-top: 10px;
-            font-size: 13px;
-            font-weight: 600;
-        }
         .top-actions {
             display: flex;
             gap: 10px;
@@ -53,17 +47,54 @@
             background: #dc2626 !important;
             color: #fff !important;
         }
-        .bad-order-form textarea {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-family: inherit;
-            resize: vertical;
+        .bad-order-btn.active {
+            background: #991b1b !important;
         }
-        .section-title {
-            margin: 30px 0 10px;
+        .bad-order-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+        }
+        .bad-order-section h2 {
+            margin: 0 0 6px 0;
+            color: #991b1b;
+        }
+        .bad-order-section p {
+            margin: 0 0 15px 0;
+            color: #666;
+            font-size: 13px;
+        }
+        .bad-order-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+        #badOrderTable {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            color: #111827;
+        }
+        #badOrderTable th {
+            padding: 12px;
+            background: #991b1b;
+            color: #fff;
+            font-size: 13px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        #badOrderTable td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+            text-align: center;
+            background: #fff;
+            color: #111827;
+        }
+        #badOrderTable tbody tr:nth-child(even) td {
+            background: #f3f4f6;
         }
     </style>
 </head>
@@ -95,7 +126,7 @@
 
     <div class="top-actions">
         <button onclick="showForm()">Add Product</button>
-        <button class="bad-order-btn" onclick="showBadOrderForm()">Bad Order</button>
+        <button id="badOrderBtn" class="bad-order-btn" onclick="toggleBadOrders()">Bad Order</button>
     </div>
 
     <div class="search-container" style="margin:20px 0;">
@@ -112,7 +143,10 @@
 
         <input type="hidden" id="product_id">
         <input type="text" id="product_name" placeholder="Product Name">
-        <input type="text" id="category" placeholder="Category">
+
+        <select id="category">
+            <option value="">Select Category</option>
+        </select>
 
         <select id="supplier_select" required>
             <option value="">Loading suppliers...</option>
@@ -125,7 +159,6 @@
             <option value="">No Image (use default logo)</option>
         </select>
 
-        <label for="imageFile" class="upload-label">O mag-upload ng bagong picture</label>
         <input type="file" id="imageFile" accept="image/png,image/jpeg,image/webp">
 
         <div class="image-preview-box">
@@ -140,31 +173,25 @@
         </div>
     </div>
 
-    <div id="badOrderForm" class="product-form bad-order-form" style="display:none;">
+    <div id="badOrderSection" class="bad-order-section">
         <h2>Bad Order</h2>
+        <p>Mga ibinalik ng customer na sira galing sa Sales Return. Hindi ito bumabalik sa stock.</p>
 
-        <select id="bo_product">
-            <option value="">Select Product</option>
-        </select>
-
-        <input type="number" id="bo_quantity" placeholder="Quantity" min="1">
-
-        <select id="bo_reason">
-            <option value="">Select Reason</option>
-            <option value="Damaged">Damaged</option>
-            <option value="Defective">Defective</option>
-            <option value="Expired">Expired</option>
-            <option value="Lost">Lost</option>
-            <option value="Other">Other</option>
-        </select>
-
-        <input type="date" id="bo_date">
-
-        <textarea id="bo_notes" rows="3" placeholder="Notes (optional)"></textarea>
-
-        <div style="margin-top:20px;">
-            <button class="bad-order-btn" onclick="saveBadOrder()">Save Bad Order</button>
-            <button onclick="cancelBadOrderForm()">Cancel</button>
+        <div class="bad-order-wrapper">
+            <table id="badOrderTable">
+                <thead>
+                    <tr>
+                        <th>Return ID</th>
+                        <th>Sale ID</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="badOrderBody"></tbody>
+            </table>
         </div>
     </div>
 
@@ -184,33 +211,43 @@
         </thead>
         <tbody id="productTable"></tbody>
     </table>
-
-    <h2 class="section-title">Bad Order History</h2>
-
-    <table id="badOrderTable">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Reason</th>
-                <th>Notes</th>
-            </tr>
-        </thead>
-        <tbody id="badOrderBody"></tbody>
-    </table>
 </div>
 
 <script>
 const API_URL = "/products";
+const BAD_ORDER_URL = "/sales-returns/bad-orders";
 const IMAGE_FOLDERS = ["images/products/", "images/"];
 const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
 const FALLBACK_IMAGE = "logo.png";
 const DEFAULT_SUPPLIER = "SUP001";
 const FORM_FIELDS = ["product_name", "category", "supplier_select", "quantity", "price", "image"];
-const BAD_ORDER_FIELDS = ["bo_product", "bo_quantity", "bo_reason", "bo_date"];
+const ALLOWED_UPLOAD_TYPES = ["image/png", "image/jpeg", "image/webp"];
+const MAX_UPLOAD_SIZE = 5 * 1024 * 1024;
+const MAX_IMAGE_SIDE = 600;
+
+const CATEGORIES = [
+    "Beast Tires",
+    "Center Springs",
+    "Clutch Linings",
+    "Clutch Springs",
+    "CVT Belts",
+    "DBS Sprocket Sets",
+    "Engine Oil",
+    "Koyo Bearings",
+    "Maximus Tires",
+    "MBI Sprocket Sets",
+    "NGK Spark Plugs",
+    "Pulley Sets",
+    "Quick Tires",
+    "Roller Weights",
+    "Slider Pieces",
+    "TTGR Brake Pads"
+];
 
 let allProducts = [];
+let uploadedImageData = "";
+let imageReady = Promise.resolve();
+let badOrdersVisible = false;
 
 const PRODUCT_IMAGES = [
     {
@@ -364,11 +401,8 @@ function escapeHTML(value) {
         .replace(/'/g, "&#39;");
 }
 
-function todayString() {
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${now.getFullYear()}-${month}-${day}`;
+function isDataImage(value) {
+    return typeof value === "string" && value.startsWith("data:image/");
 }
 
 function makeImageBase(name) {
@@ -387,6 +421,9 @@ function stripImageExtension(fileName) {
 
 function getImageBase(product) {
     const value = String(product.image ?? "").trim();
+    if (isDataImage(value)) {
+        return "";
+    }
     if (value === "") {
         return makeImageBase(product.product_name);
     }
@@ -437,18 +474,20 @@ function getFormData() {
         supplier_select: supplierSelect.value,
         quantity: document.getElementById("quantity").value,
         price: document.getElementById("price").value,
-        image: document.getElementById("image").value
+        image: uploadedImageData || document.getElementById("image").value
     };
 }
 
 function fillForm(values = {}) {
+    const image = values.image || "";
+
     document.getElementById("product_id").value = values.id ?? "";
     document.getElementById("product_name").value = values.product_name || "";
     document.getElementById("category").value = values.category || "";
     document.getElementById("supplier_select").value = values.supplier_code || DEFAULT_SUPPLIER;
     document.getElementById("quantity").value = values.quantity ?? "";
     document.getElementById("price").value = values.price ?? "";
-    document.getElementById("image").value = values.image || "";
+    document.getElementById("image").value = isDataImage(image) ? "" : image;
 }
 
 function setFormMode(isEdit) {
@@ -497,12 +536,6 @@ FORM_FIELDS.forEach(id => {
     el.addEventListener("change", () => el.classList.remove("input-error"));
 });
 
-BAD_ORDER_FIELDS.forEach(id => {
-    const el = document.getElementById(id);
-    el.addEventListener("input", () => el.classList.remove("input-error"));
-    el.addEventListener("change", () => el.classList.remove("input-error"));
-});
-
 function buildImageDropdown() {
     const select = document.getElementById("image");
 
@@ -522,6 +555,19 @@ function buildImageDropdown() {
 }
 
 buildImageDropdown();
+
+function buildCategoryDropdown() {
+    const select = document.getElementById("category");
+
+    CATEGORIES.forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+    });
+}
+
+buildCategoryDropdown();
 
 function getAuthToken() {
     const keys = ["token", "authToken", "accessToken", "jwt", "userToken"];
@@ -612,29 +658,6 @@ function clearInventoryError() {
     }
 }
 
-function showBadOrderError(message) {
-    let errorBox = document.getElementById("badOrderError");
-
-    if (!errorBox) {
-        errorBox = document.createElement("div");
-        errorBox.id = "badOrderError";
-        errorBox.style.cssText =
-            "color:#dc2626;font-weight:600;margin:10px 0;padding:10px;border-left:4px solid #dc2626;background:#fff1f2;";
-        document.getElementById("badOrderForm").prepend(errorBox);
-    }
-
-    errorBox.textContent = message;
-    errorBox.style.display = "block";
-}
-
-function clearBadOrderError() {
-    const errorBox = document.getElementById("badOrderError");
-    if (errorBox) {
-        errorBox.textContent = "";
-        errorBox.style.display = "none";
-    }
-}
-
 async function loadSupplierOptions() {
     const select = document.getElementById("supplier_select");
     const currentValue = select.value;
@@ -688,6 +711,8 @@ function resetImagePreview() {
     status.textContent = "";
     status.className = "";
     document.getElementById("imageFile").value = "";
+    uploadedImageData = "";
+    imageReady = Promise.resolve();
 }
 
 function showDefaultImagePreview() {
@@ -732,50 +757,110 @@ function showImagePreview(base) {
     preview.src = IMAGE_FOLDERS[0] + encodeURIComponent(base) + IMAGE_EXTENSIONS[0];
 }
 
-async function uploadSelectedImage() {
-    const file = document.getElementById("imageFile").files[0];
-    if (!file) {
-        return null;
-    }
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    const data = await apiRequest(API_URL + "/upload-image", {
-        method: "POST",
-        body: formData
-    });
-
-    return data.filename || null;
-}
-
-document.getElementById("imageFile").addEventListener("change", function () {
-    const file = this.files[0];
+function showUploadedPreview(dataUrl, message) {
     const preview = document.getElementById("imagePreview");
     const status = document.getElementById("imageStatus");
 
+    preview.onload = null;
+    preview.onerror = null;
+    preview.src = dataUrl;
+    preview.style.display = "block";
+    status.textContent = message;
+    status.className = "found";
+}
+
+function resizeImageFile(file) {
+    return new Promise((resolve, reject) => {
+        const objectUrl = URL.createObjectURL(file);
+        const img = new Image();
+
+        img.onload = () => {
+            const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(img.width, img.height));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(img.width * scale));
+            canvas.height = Math.max(1, Math.round(img.height * scale));
+
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            URL.revokeObjectURL(objectUrl);
+            resolve(canvas.toDataURL("image/jpeg", 0.85));
+        };
+
+        img.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error("Hindi mabasa ang picture. Subukan ang ibang file."));
+        };
+
+        img.src = objectUrl;
+    });
+}
+
+async function handleImageFile() {
+    const fileInput = document.getElementById("imageFile");
+    const file = fileInput.files[0];
+
+    clearInventoryError();
+
     if (!file) {
-        showDefaultImagePreview();
+        uploadedImageData = "";
+        const value = document.getElementById("image").value.trim();
+        if (value === "") {
+            showDefaultImagePreview();
+        } else {
+            showImagePreview(stripImageExtension(value.split("/").pop()));
+        }
         return;
     }
 
-    document.getElementById("image").value = "";
-    preview.onload = null;
-    preview.onerror = null;
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
-    status.textContent = "Ready to upload: " + file.name;
-    status.className = "found";
+    if (!ALLOWED_UPLOAD_TYPES.includes(file.type)) {
+        fileInput.value = "";
+        uploadedImageData = "";
+        showInventoryError("PNG, JPG, o WEBP lang ang puwede.");
+        return;
+    }
+
+    if (file.size > MAX_UPLOAD_SIZE) {
+        fileInput.value = "";
+        uploadedImageData = "";
+        showInventoryError("Masyadong malaki ang picture. Hanggang 5MB lang.");
+        return;
+    }
+
+    try {
+        uploadedImageData = await resizeImageFile(file);
+        document.getElementById("image").value = "";
+        showUploadedPreview(uploadedImageData, "Ready to save: " + file.name);
+    } catch (error) {
+        fileInput.value = "";
+        uploadedImageData = "";
+        showInventoryError(error.message);
+    }
+}
+
+document.getElementById("imageFile").addEventListener("change", () => {
+    imageReady = handleImageFile();
 });
 
 document.getElementById("image").addEventListener("change", function () {
     document.getElementById("imageFile").value = "";
+    uploadedImageData = "";
 
     const value = this.value.trim();
 
     if (value === "") {
         showDefaultImagePreview();
         return;
+    }
+
+    const group = this.options[this.selectedIndex].parentElement.label;
+
+    if (group && CATEGORIES.includes(group)) {
+        const categorySelect = document.getElementById("category");
+        categorySelect.value = group;
+        categorySelect.classList.remove("input-error");
     }
 
     showImagePreview(stripImageExtension(value.split("/").pop()));
@@ -785,7 +870,6 @@ async function prepareForm() {
     clearFieldErrors();
     clearInventoryError();
     resetImagePreview();
-    cancelBadOrderForm();
 
     try {
         await loadSupplierOptions();
@@ -823,6 +907,7 @@ function scrollToProduct(id) {
 
 async function saveProduct() {
     clearInventoryError();
+    await imageReady;
 
     const product = getFormData();
     if (!isProductValid(product)) {
@@ -830,11 +915,6 @@ async function saveProduct() {
     }
 
     try {
-        const uploadedImage = await uploadSelectedImage();
-        if (uploadedImage) {
-            product.image = uploadedImage;
-        }
-
         const data = await apiRequest(API_URL + "/add", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -860,7 +940,6 @@ async function loadProducts() {
         const result = await apiRequest(API_URL + "/all");
         allProducts = extractList(result, "products");
         searchProduct();
-        fillBadOrderProducts();
     } catch (err) {
         console.error("LOAD PRODUCTS ERROR:", err);
         document.getElementById("productTable").innerHTML = `
@@ -891,7 +970,9 @@ function renderProducts(products) {
 
     products.forEach(product => {
         const imageBase = getImageBase(product);
-        const imagePath = IMAGE_FOLDERS[0] + encodeURIComponent(imageBase) + IMAGE_EXTENSIONS[0];
+        const imagePath = isDataImage(product.image)
+            ? product.image
+            : IMAGE_FOLDERS[0] + encodeURIComponent(imageBase) + IMAGE_EXTENSIONS[0];
 
         const supplierName = String(product.supplier_name || "").trim() || "JLS Logistic Service";
         const supplierCode = String(product.supplier_code || "").trim() || DEFAULT_SUPPLIER;
@@ -953,24 +1034,31 @@ async function editProduct(id) {
     setFormMode(true);
     fillForm(product);
 
-    const imageSelect = document.getElementById("image");
     const currentImage = product.image || "";
 
-    if (currentImage !== "" && ![...imageSelect.options].some(o => o.value === currentImage)) {
-        const option = document.createElement("option");
-        option.value = currentImage;
-        option.textContent = currentImage;
-        imageSelect.appendChild(option);
-    }
+    if (isDataImage(currentImage)) {
+        uploadedImageData = currentImage;
+        showUploadedPreview(currentImage, "Current uploaded picture");
+    } else {
+        const imageSelect = document.getElementById("image");
 
-    imageSelect.value = currentImage;
-    showImagePreview(getImageBase(product));
+        if (currentImage !== "" && ![...imageSelect.options].some(o => o.value === currentImage)) {
+            const option = document.createElement("option");
+            option.value = currentImage;
+            option.textContent = currentImage;
+            imageSelect.appendChild(option);
+        }
+
+        imageSelect.value = currentImage;
+        showImagePreview(getImageBase(product));
+    }
 
     document.getElementById("productForm").scrollIntoView({ behavior: "smooth" });
 }
 
 async function updateProduct() {
     clearInventoryError();
+    await imageReady;
 
     const id = document.getElementById("product_id").value;
     const product = getFormData();
@@ -985,11 +1073,6 @@ async function updateProduct() {
     }
 
     try {
-        const uploadedImage = await uploadSelectedImage();
-        if (uploadedImage) {
-            product.image = uploadedImage;
-        }
-
         const data = await apiRequest(API_URL + "/update/" + encodeURIComponent(id), {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -1036,134 +1119,18 @@ function cancelForm() {
     clearForm();
 }
 
-function fillBadOrderProducts() {
-    const select = document.getElementById("bo_product");
-    const currentValue = select.value;
-
-    select.innerHTML = '<option value="">Select Product</option>';
-
-    allProducts.forEach(product => {
-        const option = document.createElement("option");
-        option.value = product.id;
-        option.textContent = `${product.product_name} (Stock: ${Number(product.quantity) || 0})`;
-        select.appendChild(option);
-    });
-
-    if ([...select.options].some(option => option.value === currentValue)) {
-        select.value = currentValue;
-    }
-}
-
-function showBadOrderForm() {
-    clearForm();
-    clearBadOrderError();
-    BAD_ORDER_FIELDS.forEach(id => document.getElementById(id).classList.remove("input-error"));
-    fillBadOrderProducts();
-
-    document.getElementById("bo_product").value = "";
-    document.getElementById("bo_quantity").value = "";
-    document.getElementById("bo_reason").value = "";
-    document.getElementById("bo_date").value = todayString();
-    document.getElementById("bo_notes").value = "";
-    document.getElementById("badOrderForm").style.display = "block";
-    document.getElementById("badOrderForm").scrollIntoView({ behavior: "smooth" });
-}
-
-function cancelBadOrderForm() {
-    clearBadOrderError();
-    document.getElementById("badOrderForm").style.display = "none";
-}
-
-function isBadOrderValid(data) {
-    let valid = true;
-    let message = "";
-
-    BAD_ORDER_FIELDS.forEach(id => document.getElementById(id).classList.remove("input-error"));
-
-    if (data.product_id === "") {
-        markError("bo_product");
-        valid = false;
-    }
-
-    if (data.reason === "") {
-        markError("bo_reason");
-        valid = false;
-    }
-
-    if (data.date === "") {
-        markError("bo_date");
-        valid = false;
-    }
-
-    if (data.quantity === "" || Number(data.quantity) <= 0 || !Number.isInteger(Number(data.quantity))) {
-        markError("bo_quantity");
-        valid = false;
-    } else if (data.product_id !== "") {
-        const product = allProducts.find(p => Number(p.id) === Number(data.product_id));
-        const stock = product ? Number(product.quantity) || 0 : 0;
-
-        if (Number(data.quantity) > stock) {
-            markError("bo_quantity");
-            valid = false;
-            message = `Hindi puwedeng lumagpas sa current stock (${stock}).`;
-        }
-    }
-
-    if (!valid) {
-        showBadOrderError(message || "Paki-fill out ang lahat ng required fields.");
-    }
-
-    return valid;
-}
-
-async function saveBadOrder() {
-    clearBadOrderError();
-
-    const data = {
-        product_id: document.getElementById("bo_product").value,
-        quantity: document.getElementById("bo_quantity").value,
-        reason: document.getElementById("bo_reason").value,
-        date: document.getElementById("bo_date").value,
-        notes: document.getElementById("bo_notes").value.trim()
-    };
-
-    if (!isBadOrderValid(data)) {
-        return;
-    }
-
-    try {
-        const result = await apiRequest(API_URL + "/bad-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
-
-        if (result.success) {
-            cancelBadOrderForm();
-            await loadProducts();
-            await loadBadOrders();
-            scrollToProduct(data.product_id);
-        } else {
-            showBadOrderError(result.message || "Unable to save bad order.");
-        }
-    } catch (err) {
-        console.error("SAVE BAD ORDER ERROR:", err);
-        showBadOrderError(err.message || "Unable to save bad order. Please try again.");
-    }
-}
-
 async function loadBadOrders() {
     const body = document.getElementById("badOrderBody");
 
     try {
-        const result = await apiRequest(API_URL + "/bad-order/all");
+        const result = await apiRequest(BAD_ORDER_URL);
         const list = extractList(result, "bad_orders");
 
         if (list.length === 0) {
             body.innerHTML = `
                 <tr>
-                    <td colspan="5" style="padding:20px;text-align:center;color:#6b7280;font-weight:bold;">
-                        No bad orders recorded.
+                    <td colspan="7" style="padding:20px;text-align:center;color:#6b7280;font-weight:bold;">
+                        Wala pang Bad Order.
                     </td>
                 </tr>
             `;
@@ -1172,22 +1139,39 @@ async function loadBadOrders() {
 
         body.innerHTML = list.map(item => `
             <tr>
-                <td>${escapeHTML(String(item.date || item.created_at || "").slice(0, 10))}</td>
+                <td>${escapeHTML(item.id)}</td>
+                <td>${escapeHTML(item.sale_id)}</td>
                 <td>${escapeHTML(item.product_name)}</td>
-                <td>${Number(item.quantity) || 0}</td>
-                <td>${escapeHTML(item.reason)}</td>
-                <td>${escapeHTML(item.notes || "-")}</td>
+                <td>${Number(item.quantity_returned) || 0}</td>
+                <td>${escapeHTML(item.reason || "-")}</td>
+                <td>${escapeHTML(item.status)}</td>
+                <td>${escapeHTML(item.return_date)}</td>
             </tr>
         `).join("");
     } catch (err) {
         console.error("LOAD BAD ORDERS ERROR:", err);
         body.innerHTML = `
             <tr>
-                <td colspan="5" style="padding:20px;color:red;text-align:center;font-weight:bold;">
+                <td colspan="7" style="padding:20px;color:red;text-align:center;font-weight:bold;">
                     ${escapeHTML(err.message || "Failed to load bad orders.")}
                 </td>
             </tr>
         `;
+    }
+}
+
+async function toggleBadOrders() {
+    badOrdersVisible = !badOrdersVisible;
+
+    const section = document.getElementById("badOrderSection");
+    const button = document.getElementById("badOrderBtn");
+
+    section.style.display = badOrdersVisible ? "block" : "none";
+    button.classList.toggle("active", badOrdersVisible);
+
+    if (badOrdersVisible) {
+        await loadBadOrders();
+        section.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 }
 
@@ -1199,7 +1183,6 @@ async function initializeInventory() {
     }
 
     await loadProducts();
-    await loadBadOrders();
 }
 
 initializeInventory();
@@ -1207,6 +1190,9 @@ initializeInventory();
 subscribeRealtimeUpdates(update => {
     if (hasRealtimeUpdate(update, "inventory")) {
         loadProducts();
+    }
+
+    if (badOrdersVisible && (hasRealtimeUpdate(update, "returns") || hasRealtimeUpdate(update, "inventory"))) {
         loadBadOrders();
     }
 });
