@@ -38,6 +38,33 @@
         #imageStatus.missing {
             color: #dc2626;
         }
+        .upload-label {
+            display: block;
+            margin-top: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .top-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .bad-order-btn {
+            background: #dc2626 !important;
+            color: #fff !important;
+        }
+        .bad-order-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .section-title {
+            margin: 30px 0 10px;
+        }
     </style>
 </head>
 <body>
@@ -66,7 +93,10 @@
 <div class="content">
     <h1>Inventory Management</h1>
 
-    <button onclick="showForm()">Add Product</button>
+    <div class="top-actions">
+        <button onclick="showForm()">Add Product</button>
+        <button class="bad-order-btn" onclick="showBadOrderForm()">Bad Order</button>
+    </div>
 
     <div class="search-container" style="margin:20px 0;">
         <input
@@ -95,6 +125,9 @@
             <option value="">No Image (use default logo)</option>
         </select>
 
+        <label for="imageFile" class="upload-label">O mag-upload ng bagong picture</label>
+        <input type="file" id="imageFile" accept="image/png,image/jpeg,image/webp">
+
         <div class="image-preview-box">
             <img id="imagePreview" alt="Product picture preview">
             <span id="imageStatus"></span>
@@ -104,6 +137,34 @@
             <button id="saveBtn" onclick="saveProduct()">Save Product</button>
             <button id="updateBtn" onclick="updateProduct()" style="display:none;">Update Product</button>
             <button id="cancelBtn" onclick="cancelForm()">Cancel</button>
+        </div>
+    </div>
+
+    <div id="badOrderForm" class="product-form bad-order-form" style="display:none;">
+        <h2>Bad Order</h2>
+
+        <select id="bo_product">
+            <option value="">Select Product</option>
+        </select>
+
+        <input type="number" id="bo_quantity" placeholder="Quantity" min="1">
+
+        <select id="bo_reason">
+            <option value="">Select Reason</option>
+            <option value="Damaged">Damaged</option>
+            <option value="Defective">Defective</option>
+            <option value="Expired">Expired</option>
+            <option value="Lost">Lost</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <input type="date" id="bo_date">
+
+        <textarea id="bo_notes" rows="3" placeholder="Notes (optional)"></textarea>
+
+        <div style="margin-top:20px;">
+            <button class="bad-order-btn" onclick="saveBadOrder()">Save Bad Order</button>
+            <button onclick="cancelBadOrderForm()">Cancel</button>
         </div>
     </div>
 
@@ -123,6 +184,21 @@
         </thead>
         <tbody id="productTable"></tbody>
     </table>
+
+    <h2 class="section-title">Bad Order History</h2>
+
+    <table id="badOrderTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Reason</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody id="badOrderBody"></tbody>
+    </table>
 </div>
 
 <script>
@@ -132,6 +208,7 @@ const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
 const FALLBACK_IMAGE = "logo.png";
 const DEFAULT_SUPPLIER = "SUP001";
 const FORM_FIELDS = ["product_name", "category", "supplier_select", "quantity", "price", "image"];
+const BAD_ORDER_FIELDS = ["bo_product", "bo_quantity", "bo_reason", "bo_date"];
 
 let allProducts = [];
 
@@ -287,6 +364,13 @@ function escapeHTML(value) {
         .replace(/'/g, "&#39;");
 }
 
+function todayString() {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${now.getFullYear()}-${month}-${day}`;
+}
+
 function makeImageBase(name) {
     return String(name || "")
         .trim()
@@ -413,6 +497,12 @@ FORM_FIELDS.forEach(id => {
     el.addEventListener("change", () => el.classList.remove("input-error"));
 });
 
+BAD_ORDER_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener("input", () => el.classList.remove("input-error"));
+    el.addEventListener("change", () => el.classList.remove("input-error"));
+});
+
 function buildImageDropdown() {
     const select = document.getElementById("image");
 
@@ -522,6 +612,29 @@ function clearInventoryError() {
     }
 }
 
+function showBadOrderError(message) {
+    let errorBox = document.getElementById("badOrderError");
+
+    if (!errorBox) {
+        errorBox = document.createElement("div");
+        errorBox.id = "badOrderError";
+        errorBox.style.cssText =
+            "color:#dc2626;font-weight:600;margin:10px 0;padding:10px;border-left:4px solid #dc2626;background:#fff1f2;";
+        document.getElementById("badOrderForm").prepend(errorBox);
+    }
+
+    errorBox.textContent = message;
+    errorBox.style.display = "block";
+}
+
+function clearBadOrderError() {
+    const errorBox = document.getElementById("badOrderError");
+    if (errorBox) {
+        errorBox.textContent = "";
+        errorBox.style.display = "none";
+    }
+}
+
 async function loadSupplierOptions() {
     const select = document.getElementById("supplier_select");
     const currentValue = select.value;
@@ -574,6 +687,7 @@ function resetImagePreview() {
     preview.style.display = "none";
     status.textContent = "";
     status.className = "";
+    document.getElementById("imageFile").value = "";
 }
 
 function showDefaultImagePreview() {
@@ -618,7 +732,45 @@ function showImagePreview(base) {
     preview.src = IMAGE_FOLDERS[0] + encodeURIComponent(base) + IMAGE_EXTENSIONS[0];
 }
 
+async function uploadSelectedImage() {
+    const file = document.getElementById("imageFile").files[0];
+    if (!file) {
+        return null;
+    }
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const data = await apiRequest(API_URL + "/upload-image", {
+        method: "POST",
+        body: formData
+    });
+
+    return data.filename || null;
+}
+
+document.getElementById("imageFile").addEventListener("change", function () {
+    const file = this.files[0];
+    const preview = document.getElementById("imagePreview");
+    const status = document.getElementById("imageStatus");
+
+    if (!file) {
+        showDefaultImagePreview();
+        return;
+    }
+
+    document.getElementById("image").value = "";
+    preview.onload = null;
+    preview.onerror = null;
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+    status.textContent = "Ready to upload: " + file.name;
+    status.className = "found";
+});
+
 document.getElementById("image").addEventListener("change", function () {
+    document.getElementById("imageFile").value = "";
+
     const value = this.value.trim();
 
     if (value === "") {
@@ -633,6 +785,7 @@ async function prepareForm() {
     clearFieldErrors();
     clearInventoryError();
     resetImagePreview();
+    cancelBadOrderForm();
 
     try {
         await loadSupplierOptions();
@@ -677,6 +830,11 @@ async function saveProduct() {
     }
 
     try {
+        const uploadedImage = await uploadSelectedImage();
+        if (uploadedImage) {
+            product.image = uploadedImage;
+        }
+
         const data = await apiRequest(API_URL + "/add", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -702,6 +860,7 @@ async function loadProducts() {
         const result = await apiRequest(API_URL + "/all");
         allProducts = extractList(result, "products");
         searchProduct();
+        fillBadOrderProducts();
     } catch (err) {
         console.error("LOAD PRODUCTS ERROR:", err);
         document.getElementById("productTable").innerHTML = `
@@ -826,6 +985,11 @@ async function updateProduct() {
     }
 
     try {
+        const uploadedImage = await uploadSelectedImage();
+        if (uploadedImage) {
+            product.image = uploadedImage;
+        }
+
         const data = await apiRequest(API_URL + "/update/" + encodeURIComponent(id), {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -872,6 +1036,161 @@ function cancelForm() {
     clearForm();
 }
 
+function fillBadOrderProducts() {
+    const select = document.getElementById("bo_product");
+    const currentValue = select.value;
+
+    select.innerHTML = '<option value="">Select Product</option>';
+
+    allProducts.forEach(product => {
+        const option = document.createElement("option");
+        option.value = product.id;
+        option.textContent = `${product.product_name} (Stock: ${Number(product.quantity) || 0})`;
+        select.appendChild(option);
+    });
+
+    if ([...select.options].some(option => option.value === currentValue)) {
+        select.value = currentValue;
+    }
+}
+
+function showBadOrderForm() {
+    clearForm();
+    clearBadOrderError();
+    BAD_ORDER_FIELDS.forEach(id => document.getElementById(id).classList.remove("input-error"));
+    fillBadOrderProducts();
+
+    document.getElementById("bo_product").value = "";
+    document.getElementById("bo_quantity").value = "";
+    document.getElementById("bo_reason").value = "";
+    document.getElementById("bo_date").value = todayString();
+    document.getElementById("bo_notes").value = "";
+    document.getElementById("badOrderForm").style.display = "block";
+    document.getElementById("badOrderForm").scrollIntoView({ behavior: "smooth" });
+}
+
+function cancelBadOrderForm() {
+    clearBadOrderError();
+    document.getElementById("badOrderForm").style.display = "none";
+}
+
+function isBadOrderValid(data) {
+    let valid = true;
+    let message = "";
+
+    BAD_ORDER_FIELDS.forEach(id => document.getElementById(id).classList.remove("input-error"));
+
+    if (data.product_id === "") {
+        markError("bo_product");
+        valid = false;
+    }
+
+    if (data.reason === "") {
+        markError("bo_reason");
+        valid = false;
+    }
+
+    if (data.date === "") {
+        markError("bo_date");
+        valid = false;
+    }
+
+    if (data.quantity === "" || Number(data.quantity) <= 0 || !Number.isInteger(Number(data.quantity))) {
+        markError("bo_quantity");
+        valid = false;
+    } else if (data.product_id !== "") {
+        const product = allProducts.find(p => Number(p.id) === Number(data.product_id));
+        const stock = product ? Number(product.quantity) || 0 : 0;
+
+        if (Number(data.quantity) > stock) {
+            markError("bo_quantity");
+            valid = false;
+            message = `Hindi puwedeng lumagpas sa current stock (${stock}).`;
+        }
+    }
+
+    if (!valid) {
+        showBadOrderError(message || "Paki-fill out ang lahat ng required fields.");
+    }
+
+    return valid;
+}
+
+async function saveBadOrder() {
+    clearBadOrderError();
+
+    const data = {
+        product_id: document.getElementById("bo_product").value,
+        quantity: document.getElementById("bo_quantity").value,
+        reason: document.getElementById("bo_reason").value,
+        date: document.getElementById("bo_date").value,
+        notes: document.getElementById("bo_notes").value.trim()
+    };
+
+    if (!isBadOrderValid(data)) {
+        return;
+    }
+
+    try {
+        const result = await apiRequest(API_URL + "/bad-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        if (result.success) {
+            cancelBadOrderForm();
+            await loadProducts();
+            await loadBadOrders();
+            scrollToProduct(data.product_id);
+        } else {
+            showBadOrderError(result.message || "Unable to save bad order.");
+        }
+    } catch (err) {
+        console.error("SAVE BAD ORDER ERROR:", err);
+        showBadOrderError(err.message || "Unable to save bad order. Please try again.");
+    }
+}
+
+async function loadBadOrders() {
+    const body = document.getElementById("badOrderBody");
+
+    try {
+        const result = await apiRequest(API_URL + "/bad-order/all");
+        const list = extractList(result, "bad_orders");
+
+        if (list.length === 0) {
+            body.innerHTML = `
+                <tr>
+                    <td colspan="5" style="padding:20px;text-align:center;color:#6b7280;font-weight:bold;">
+                        No bad orders recorded.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        body.innerHTML = list.map(item => `
+            <tr>
+                <td>${escapeHTML(String(item.date || item.created_at || "").slice(0, 10))}</td>
+                <td>${escapeHTML(item.product_name)}</td>
+                <td>${Number(item.quantity) || 0}</td>
+                <td>${escapeHTML(item.reason)}</td>
+                <td>${escapeHTML(item.notes || "-")}</td>
+            </tr>
+        `).join("");
+    } catch (err) {
+        console.error("LOAD BAD ORDERS ERROR:", err);
+        body.innerHTML = `
+            <tr>
+                <td colspan="5" style="padding:20px;color:red;text-align:center;font-weight:bold;">
+                    ${escapeHTML(err.message || "Failed to load bad orders.")}
+                </td>
+            </tr>
+        `;
+    }
+}
+
 async function initializeInventory() {
     try {
         await loadSupplierOptions();
@@ -880,6 +1199,7 @@ async function initializeInventory() {
     }
 
     await loadProducts();
+    await loadBadOrders();
 }
 
 initializeInventory();
@@ -887,6 +1207,7 @@ initializeInventory();
 subscribeRealtimeUpdates(update => {
     if (hasRealtimeUpdate(update, "inventory")) {
         loadProducts();
+        loadBadOrders();
     }
 });
 </script>
