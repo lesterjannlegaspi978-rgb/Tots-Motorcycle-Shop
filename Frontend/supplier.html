@@ -19,21 +19,11 @@
 
 .supplier-header h1 { margin: 0; }
 
-.supplier-form-box,
 .supplier-table-box {
     background: rgba(255,255,255,0.95);
     border-radius: 12px;
     padding: 25px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.12);
-}
-
-.supplier-form-box { margin-bottom: 25px; }
-
-.supplier-form-box h2 {
-
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #1f3c88;
 }
 
 .supplier-form-grid {
@@ -63,7 +53,6 @@
     font-size: 14px;
     background: #fff;
     outline: none;
-
     transition: 0.2s;
     box-sizing: border-box;
 }
@@ -88,7 +77,7 @@
 
 .supplier-message {
     display: none;
-    margin-top: 15px;
+    margin-bottom: 15px;
     padding: 10px 13px;
     border-radius: 7px;
     font-size: 14px;
@@ -96,7 +85,6 @@
 }
 
 .supplier-message.success {
-
     display: block;
     color: #166534;
     background: #dcfce7;
@@ -110,6 +98,11 @@
     border: 1px solid #fca5a5;
 }
 
+.modal-message {
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
 .supplier-button-row {
     margin-top: 20px;
     display: flex;
@@ -118,8 +111,7 @@
 }
 
 .add-supplier-btn,
-.clear-supplier-btn,
-.cancel-edit-btn {
+.cancel-supplier-btn {
     border: none;
     padding: 11px 22px;
     border-radius: 7px;
@@ -129,7 +121,6 @@
     transition: 0.2s;
 }
 
-
 .add-supplier-btn { background: #2563eb; }
 .add-supplier-btn:hover { background: #1d4ed8; }
 
@@ -138,15 +129,8 @@
     cursor: not-allowed;
 }
 
-.clear-supplier-btn { background: #6b7280; }
-.clear-supplier-btn:hover { background: #4b5563; }
-
-.cancel-edit-btn {
-    display: none;
-    background: #dc2626;
-}
-
-.cancel-edit-btn:hover { background: #b91c1c; }
+.cancel-supplier-btn { background: #6b7280; }
+.cancel-supplier-btn:hover { background: #4b5563; }
 
 .edit-supplier-btn {
     border: none;
@@ -162,18 +146,6 @@
 
 .edit-supplier-btn:hover { background: #1d4ed8; }
 
-
-.locked-supplier-btn {
-    border: none;
-    padding: 7px 12px;
-    border-radius: 6px;
-    background: #6b7280;
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: not-allowed;
-}
-
 .supplier-table-header {
     display: flex;
     justify-content: space-between;
@@ -186,6 +158,12 @@
     color: #1f3c88;
 }
 
+.supplier-table-tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .supplier-count {
     background: #eef4ff;
     color: #1f3c88;
@@ -195,6 +173,24 @@
     font-weight: 600;
 }
 
+.add-plus-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.add-plus-btn:hover { background: #1d4ed8; }
 
 .supplier-table-wrapper {
     width: 100%;
@@ -228,7 +224,6 @@
     text-align: center;
     vertical-align: middle;
     overflow: hidden;
-
     text-overflow: ellipsis;
 }
 
@@ -250,9 +245,41 @@
     color: #777;
 }
 
-        .edit-mode-title {
-            display: none !important;
-        }
+.supplier-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.supplier-modal.show { display: flex; }
+
+.supplier-modal-box {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    width: 100%;
+    max-width: 720px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+.supplier-modal-box h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #1f3c88;
+}
 
 @media (max-width: 800px) {
     .supplier-form-grid { grid-template-columns: 1fr; }
@@ -261,7 +288,6 @@
     .supplier-header {
         align-items: flex-start;
         flex-direction: column;
-
         gap: 10px;
     }
 }
@@ -294,106 +320,28 @@
     <div class="supplier-page">
 
         <div class="supplier-header">
-
             <h1>Supplier Management</h1>
         </div>
 
-        <div class="supplier-form-box">
-            <h2 id="formTitle">Registered Supplier</h2>
-
-            <div id="editModeTitle" class="edit-mode-title"></div>
-
-            <form id="supplierForm">
-                <div class="supplier-form-grid">
-
-                    <div class="supplier-form-group">
-                        <label for="supplierCode">
-                            Supplier Code <span class="required">*</span>
-                        </label>
-                        <input type="text" id="supplierCode"
-                            placeholder="Example: SUP002"
-                            maxlength="6" required>
-                        <span class="field-help">
-                            Format: SUP followed by 3 digits.
-                        </span>
-                    </div>
-
-                    <div class="supplier-form-group">
-                        <label for="supplierName">
-                            Supplier Name <span class="required">*</span>
-                        </label>
-                        <input type="text" id="supplierName"
-                            placeholder="Enter supplier name"
-                            maxlength="150" required>
-                    </div>
-
-
-                    <div class="supplier-form-group">
-                        <label for="contactNumber">
-                            Contact Number <span class="required">*</span>
-                        </label>
-                        <input type="text" id="contactNumber"
-                            placeholder="09XXXXXXXXX"
-                            maxlength="11" inputmode="numeric" required>
-                        <span class="field-help">
-                            Philippine mobile number: 11 digits starting with 09.
-                        </span>
-                    </div>
-
-                    <div class="supplier-form-group">
-                        <label for="email">
-                            Gmail Address <span class="required">*</span>
-                        </label>
-                        <input type="email" id="email"
-                            placeholder="supplier@gmail.com"
-                            maxlength="100" required>
-                        <span class="field-help">
-                            Gmail address ending in @gmail.com.
-                        </span>
-                    </div>
-
-                    <div class="supplier-form-group full-width">
-                        <label for="address">
-                            Address <span class="required">*</span>
-                        </label>
-                        <input type="text" id="address"
-                            placeholder="Enter supplier address"
-                            maxlength="255" required>
-                    </div>
-
-
-                </div>
-
-                <div id="supplierMessage" class="supplier-message"></div>
-
-                <div class="supplier-button-row">
-                    <button type="submit" class="add-supplier-btn"
-                        id="submitSupplierButton">
-                        Supplier Locked
-                    </button>
-
-                    <button type="button" class="clear-supplier-btn"
-                        id="newSupplierButton"
-                        onclick="clearSupplierForm()">
-                        Add New Supplier
-                    </button>
-
-                    <button type="button" class="cancel-edit-btn"
-                        id="cancelEditButton" onclick="cancelEdit()">
-                        Cancel Edit
-                    </button>
-                </div>
-            </form>
-        </div>
+        <div id="supplierMessage" class="supplier-message"></div>
 
         <div class="supplier-table-box">
             <div class="supplier-table-header">
                 <h2>Supplier List</h2>
-                <span class="supplier-count" id="supplierCount">
-                    0 Suppliers
-                </span>
-            </div>
 
+                <div class="supplier-table-tools">
+                    <span class="supplier-count" id="supplierCount">
+                        0 Suppliers
+                    </span>
+
+                    <button type="button" class="add-plus-btn"
+                        id="addSupplierPlus"
+                        title="Add Supplier"
+                        onclick="openAddSupplier()">
+                        +
+                    </button>
+                </div>
+            </div>
 
             <div class="supplier-table-wrapper">
                 <table class="supplier-table">
@@ -416,17 +364,99 @@
     </div>
 </div>
 
+<div id="supplierModal" class="supplier-modal">
+    <div class="supplier-modal-box">
+
+        <h2 id="formTitle">Add Supplier</h2>
+
+        <form id="supplierForm">
+            <div class="supplier-form-grid">
+
+                <div class="supplier-form-group">
+                    <label for="supplierCode">
+                        Supplier Code <span class="required">*</span>
+                    </label>
+                    <input type="text" id="supplierCode"
+                        placeholder="Example: SUP002"
+                        maxlength="6" required>
+                    <span class="field-help">
+                        Format: SUP followed by 3 digits.
+                    </span>
+                </div>
+
+                <div class="supplier-form-group">
+                    <label for="supplierName">
+                        Supplier Name <span class="required">*</span>
+                    </label>
+                    <input type="text" id="supplierName"
+                        placeholder="Enter supplier name"
+                        maxlength="150" required>
+                </div>
+
+                <div class="supplier-form-group">
+                    <label for="contactNumber">
+                        Contact Number <span class="required">*</span>
+                    </label>
+                    <input type="text" id="contactNumber"
+                        placeholder="09XXXXXXXXX"
+                        maxlength="11" inputmode="numeric" required>
+                    <span class="field-help">
+                        Philippine mobile number: 11 digits starting with 09.
+                    </span>
+                </div>
+
+                <div class="supplier-form-group">
+                    <label for="email">
+                        Gmail Address <span class="required">*</span>
+                    </label>
+                    <input type="email" id="email"
+                        placeholder="supplier@gmail.com"
+                        maxlength="100" required>
+                    <span class="field-help">
+                        Gmail address ending in @gmail.com.
+                    </span>
+                </div>
+
+                <div class="supplier-form-group full-width">
+                    <label for="address">
+                        Address <span class="required">*</span>
+                    </label>
+                    <input type="text" id="address"
+                        placeholder="Enter supplier address"
+                        maxlength="255" required>
+                </div>
+
+            </div>
+
+            <div id="modalMessage" class="supplier-message modal-message"></div>
+
+            <div class="supplier-button-row">
+                <button type="submit" class="add-supplier-btn"
+                    id="submitSupplierButton">
+                    Add Supplier
+                </button>
+
+                <button type="button" class="cancel-supplier-btn"
+                    onclick="closeSupplierModal()">
+                    Cancel
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
 <script>
 
 const API_URL = "";
 
 let editingSupplierId = null;
 let supplierList = [];
-let mode = "view";
+let mode = "add";
+let pageMessageTimer = null;
 
 const sidebar = document.querySelector(".sidebar");
 const content = document.querySelector(".content");
-
 
 if (sidebar && content) {
 
@@ -445,21 +475,20 @@ if (sidebar && content) {
 }
 
 const supplierForm = document.getElementById("supplierForm");
+const supplierModal = document.getElementById("supplierModal");
 const supplierMessage = document.getElementById("supplierMessage");
+const modalMessage = document.getElementById("modalMessage");
 const submitSupplierButton = document.getElementById("submitSupplierButton");
-const cancelEditButton = document.getElementById("cancelEditButton");
 const formTitle = document.getElementById("formTitle");
 
-const editModeTitle = document.getElementById("editModeTitle");
-
-function setLocks(codeAndNameLocked, othersLocked) {
-    document.getElementById("supplierCode").readOnly = codeAndNameLocked;
-    document.getElementById("supplierName").readOnly = codeAndNameLocked;
-    document.getElementById("contactNumber").readOnly = othersLocked;
-    document.getElementById("email").readOnly = othersLocked;
-    document.getElementById("address").readOnly = othersLocked;
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
-
 
 function fillForm(supplier) {
     document.getElementById("supplierCode").value =
@@ -492,7 +521,6 @@ function getNextSupplierCode() {
             highest = Math.max(highest, Number(match[1]));
         }
 
-
     });
 
     return "SUP" + String(highest + 1).padStart(3, "0");
@@ -516,7 +544,6 @@ function isValidGmail(value) {
     const gmailPattern = /^[a-z0-9][a-z0-9._%+-]*@gmail\.com$/i;
 
     if (!gmailPattern.test(value)) {
-
         return false;
     }
 
@@ -525,7 +552,6 @@ function isValidGmail(value) {
     if (localPart.startsWith(".") || localPart.endsWith(".")) {
         return false;
     }
-
 
     if (localPart.includes("..")) {
         return false;
@@ -539,14 +565,28 @@ function isValidAddress(value) {
     return value.length >= 5 && value.length <= 255;
 }
 
-function showMessage(message, type) {
+function showPageMessage(message, type) {
+    clearTimeout(pageMessageTimer);
+
     supplierMessage.textContent = message;
     supplierMessage.className = "supplier-message " + type;
+
+    pageMessageTimer = setTimeout(clearPageMessage, 5000);
 }
 
-function clearMessage() {
+function clearPageMessage() {
     supplierMessage.textContent = "";
     supplierMessage.className = "supplier-message";
+}
+
+function showModalMessage(message, type) {
+    modalMessage.textContent = message;
+    modalMessage.className = "supplier-message modal-message " + type;
+}
+
+function clearModalMessage() {
+    modalMessage.textContent = "";
+    modalMessage.className = "supplier-message modal-message";
 }
 
 function getSupplierFormData() {
@@ -558,7 +598,6 @@ function getSupplierFormData() {
 
         supplier_name:
             document.getElementById("supplierName").value.trim(),
-
 
         contact_number:
             document.getElementById("contactNumber").value.trim(),
@@ -583,7 +622,6 @@ function validateSupplierForm(data) {
         !data.address
     ) {
         return "Please complete all required supplier fields.";
-
     }
 
     if (!isValidSupplierCode(data.supplier_code)) {
@@ -591,7 +629,6 @@ function validateSupplierForm(data) {
     }
 
     if (!isValidSupplierName(data.supplier_name)) {
-
         return "Supplier Name contains invalid characters.";
     }
 
@@ -611,54 +648,26 @@ function validateSupplierForm(data) {
 
 }
 
-function enterViewMode() {
-
-    if (supplierList.length === 0) {
-        enterAddMode();
-        return;
-    }
-
-    mode = "view";
-    editingSupplierId = null;
-
-    fillForm(supplierList[0]);
-
-    setLocks(true, true);
-
-
-    formTitle.textContent = "Registered Supplier";
-
-    editModeTitle.textContent =
-        "Showing the registered supplier. Click Clear to add a new supplier.";
-    editModeTitle.style.display = "block";
-
-    submitSupplierButton.textContent = "Add Supplier";
-    submitSupplierButton.disabled = true;
-
-    cancelEditButton.style.display = "none";
-
-}
-
-function enterAddMode() {
+function openAddSupplier() {
 
     mode = "add";
     editingSupplierId = null;
 
     supplierForm.reset();
 
-    setLocks(false, false);
-
+    document.getElementById("supplierCode").readOnly = false;
     document.getElementById("supplierCode").value = getNextSupplierCode();
 
     formTitle.textContent = "Add Supplier";
 
-    editModeTitle.style.display = "none";
-
     submitSupplierButton.textContent = "Add Supplier";
     submitSupplierButton.disabled = false;
 
+    clearModalMessage();
 
-    cancelEditButton.style.display = "none";
+    supplierModal.classList.add("show");
+
+    document.getElementById("supplierName").focus();
 
 }
 
@@ -669,62 +678,50 @@ function editSupplier(supplier) {
 
     fillForm(supplier);
 
-    setLocks(true, false);
+    document.getElementById("supplierCode").readOnly = true;
 
     formTitle.textContent = "Update Supplier";
-
-    editModeTitle.textContent =
-        "Editing existing supplier. Supplier Code and Name cannot be changed.";
-    editModeTitle.style.display = "block";
 
     submitSupplierButton.textContent = "Save Changes";
     submitSupplierButton.disabled = false;
 
-    cancelEditButton.style.display = "inline-block";
+    clearModalMessage();
 
-    clearMessage();
+    supplierModal.classList.add("show");
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    document.getElementById("supplierName").focus();
 
 }
 
-
-function clearSupplierForm() {
-
-    clearMessage();
-
-    enterAddMode();
-
+function closeSupplierModal() {
+    supplierModal.classList.remove("show");
+    clearModalMessage();
 }
 
-function cancelEdit() {
+supplierModal.addEventListener("click", function(event) {
+    if (event.target === supplierModal) {
+        closeSupplierModal();
+    }
+});
 
-    clearMessage();
-
-    enterViewMode();
-
-}
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape" && supplierModal.classList.contains("show")) {
+        closeSupplierModal();
+    }
+});
 
 supplierForm.addEventListener("submit", async function(event) {
 
     event.preventDefault();
 
-    if (mode === "view") {
-        return;
-    }
-
-    clearMessage();
+    clearModalMessage();
 
     const data = getSupplierFormData();
 
     const validationError = validateSupplierForm(data);
 
     if (validationError) {
-
-        showMessage(validationError, "error");
+        showModalMessage(validationError, "error");
         return;
     }
 
@@ -732,7 +729,7 @@ supplierForm.addEventListener("submit", async function(event) {
         const nextCode = getNextSupplierCode();
 
         if (data.supplier_code !== nextCode) {
-            showMessage(
+            showModalMessage(
                 `Supplier Code must be ${nextCode}. Skipping supplier numbers is not allowed.`,
                 "error"
             );
@@ -756,7 +753,6 @@ supplierForm.addEventListener("submit", async function(event) {
         const response = await fetch(url, {
             method: isEditing ? "PUT" : "POST",
             headers: {
-
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
@@ -765,7 +761,7 @@ supplierForm.addEventListener("submit", async function(event) {
         const result = await response.json();
 
         if (!response.ok || !result.success) {
-            showMessage(
+            showModalMessage(
                 result.message ||
                 (isEditing
                     ? "Unable to update supplier."
@@ -783,33 +779,24 @@ supplierForm.addEventListener("submit", async function(event) {
 
         await loadSuppliers();
 
-        enterViewMode();
+        closeSupplierModal();
 
-        showMessage(successMessage, "success");
+        showPageMessage(successMessage, "success");
 
     }
     catch (error) {
 
-
         console.error("SUPPLIER REQUEST ERROR:", error);
 
-        showMessage("Unable to connect to the server.", "error");
+        showModalMessage("Unable to connect to the server.", "error");
 
     }
     finally {
 
-        if (mode === "edit") {
-            submitSupplierButton.disabled = false;
-            submitSupplierButton.textContent = "Save Changes";
-        }
-        else if (mode === "add") {
-            submitSupplierButton.disabled = false;
-            submitSupplierButton.textContent = "Add Supplier";
-        }
-        else {
-            submitSupplierButton.disabled = true;
-            submitSupplierButton.textContent = "Add Supplier";
-        }
+        submitSupplierButton.disabled = false;
+
+        submitSupplierButton.textContent =
+            mode === "edit" ? "Save Changes" : "Add Supplier";
 
     }
 
@@ -821,7 +808,6 @@ async function loadSuppliers() {
     const supplierCount = document.getElementById("supplierCount");
 
     try {
-
 
         const response = await fetch(`${API_URL}/suppliers/all`);
 
@@ -856,25 +842,24 @@ async function loadSuppliers() {
 
         supplierList.forEach(supplier => {
 
-
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${supplier.id ?? ""}</td>
+                <td>${escapeHtml(supplier.id)}</td>
 
                 <td>
                     <span class="supplier-code-badge">
-                        ${supplier.supplier_code ?? ""}
+                        ${escapeHtml(supplier.supplier_code)}
                     </span>
                 </td>
 
-                <td>${supplier.supplier_name ?? ""}</td>
+                <td>${escapeHtml(supplier.supplier_name)}</td>
 
-                <td>${supplier.contact_number ?? ""}</td>
+                <td>${escapeHtml(supplier.contact_number)}</td>
 
-                <td>${supplier.email ?? ""}</td>
+                <td>${escapeHtml(supplier.email)}</td>
 
-                <td>${supplier.address ?? ""}</td>
+                <td>${escapeHtml(supplier.address)}</td>
 
                 <td>
                     <button type="button" class="edit-supplier-btn">
@@ -888,7 +873,6 @@ async function loadSuppliers() {
             editButton.addEventListener("click", () => {
                 editSupplier(supplier);
             });
-
 
             tableBody.appendChild(row);
 
@@ -913,16 +897,7 @@ async function loadSuppliers() {
 
 }
 
-async function initializeSupplierPage() {
-
-    await loadSuppliers();
-
-    enterViewMode();
-
-}
-
-
-initializeSupplierPage();
+loadSuppliers();
 
 </script>
 
