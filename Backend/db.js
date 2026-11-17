@@ -31,7 +31,7 @@ const tableStatements = [
             category VARCHAR(100) NOT NULL,
             quantity INT NOT NULL DEFAULT 0,
             price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-            image TEXT,
+            image LONGTEXT,
             supplier_code VARCHAR(20) NOT NULL,
             supplier_name VARCHAR(150) NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -3,6 +3,51 @@ const router = express.Router();
 const db = require('./db');
 const { publishUpdate } = require("./realtime");
 
+const ALLOWED_CATEGORIES = [
+    "Beast Tires",
+    "Center Springs",
+    "Clutch Linings",
+    "Clutch Springs",
+    "CVT Belts",
+    "DBS Sprocket Sets",
+    "Engine Oil",
+    "Koyo Bearings",
+    "Maximus Tires",
+    "MBI Sprocket Sets",
+    "NGK Spark Plugs",
+    "Pulley Sets",
+    "Quick Tires",
+    "Roller Weights",
+    "Slider Pieces",
+    "TTGR Brake Pads"
+];
+
+function validateProductImage(image) {
+    if (!image) return null;
+
+    if (typeof image !== "string") {
+        return "Invalid product image.";
+    }
+
+    if (!image.startsWith("data:image/")) {
+        return null;
+    }
+
+    if (
+        !image.startsWith("data:image/jpeg;base64,") &&
+        !image.startsWith("data:image/png;base64,") &&
+        !image.startsWith("data:image/webp;base64,")
+    ) {
+        return "Only JPG, PNG, and WEBP images are allowed.";
+    }
+
+    if (image.length > 4 * 1024 * 1024) {
+        return "Image is too large. Please upload a smaller image.";
+    }
+
+    return null;
+}
+
 function validateProduct(body) {
     const {
         product_name,
@@ -31,6 +76,18 @@ function validateProduct(body) {
     if (!Number.isFinite(Number(price)) || Number(price) <= 0) {
         return "Please enter a valid product price.";
     }
+
+    const cleanCategory = String(category || "").trim();
+
+if (!ALLOWED_CATEGORIES.includes(cleanCategory)) {
+    return "Please select a valid product category.";
+}
+
+const imageError = validateProductImage(body.image);
+
+if (imageError) {
+    return imageError;
+}
 
     return null;
 }
