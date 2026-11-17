@@ -20,7 +20,6 @@ const suppliers = require("./supplier");
 const purchaseOrders = require("./purchase_order");
 const stockIn = require("./stock_in");
 const salesReturn = require("./sales_return");
-const refund = require("./refund");
 const ai = require("./ai_recommendation");
 const analytics = require("./analytics");
 
@@ -73,7 +72,6 @@ app.use("/suppliers", verifyToken, suppliers);
 app.use("/purchase-orders", verifyToken, purchaseOrders);
 app.use("/stock-in", verifyToken, stockIn);
 app.use("/sales-returns", verifyToken, salesReturn);
-app.use("/refunds", verifyToken, refund);
 app.use("/ai", verifyToken, ai);
 app.use("/analytics", verifyToken, analytics);
 
