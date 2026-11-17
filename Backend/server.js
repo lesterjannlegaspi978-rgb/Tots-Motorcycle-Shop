@@ -77,11 +77,15 @@ app.use("/refunds", verifyToken, refund);
 app.use("/ai", verifyToken, ai);
 app.use("/analytics", verifyToken, analytics);
 
-app.use(express.static(path.join(__dirname, "../Frontend")));
+
+app.use(express.static(path.join(__dirname, "../Frontend"), {
+    index: false
+}));
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../Frontend/index.html"));
+    res.redirect("/login.html");
 });
+
 
 const PORT = Number(process.env.PORT) || 5000;
 
