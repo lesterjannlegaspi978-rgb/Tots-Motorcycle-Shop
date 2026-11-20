@@ -3,9 +3,7 @@ const router = express.Router();
 const db = require("./db");
 
 const LOW_STOCK_LIMIT = 10;
-const FAST_LIMIT = 10;
-const SLOW_LIMIT = 50;
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 function runQuery(sql, params = []) {
     return new Promise((resolve, reject) => {
@@ -25,64 +23,25 @@ function round(value, decimals = 2) {
     return Math.round(num(value) * factor) / factor;
 }
 
-function dayToDate(key) {
-    const parts = key.split("-").map(Number);
-    return new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
-}
+function readRange(req) {
+    const from = String(req.query.from || "");
+    const to = String(req.query.to || "");
 
-
-function dateToDay(date) {
-    return date.toISOString().slice(0, 10);
-}
-
-function weekStart(date) {
-    const result = new Date(date.getTime());
-    const weekday = (result.getUTCDay() + 6) % 7;
-    result.setUTCDate(result.getUTCDate() - weekday);
-    return result;
-}
-
-function bucketKey(dayKey, mode) {
-    if (mode === "daily") return dayKey;
-    if (mode === "weekly") return dateToDay(weekStart(dayToDate(dayKey)));
-    return dayKey.slice(0, 7);
-}
-
-function bucketLabel(key, mode) {
-    if (mode === "monthly") {
-        const parts = key.split("-");
-        return MONTHS[Number(parts[1]) - 1] + " " + parts[0];
+    if (!DATE_PATTERN.test(from) || !DATE_PATTERN.test(to)) {
+        return { error: "Please select a valid From Date and To Date." };
     }
 
-    const parts = key.split("-");
-    const text = MONTHS[Number(parts[1]) - 1] + " " + parts[2];
 
-    return mode === "weekly" ? "Week of " + text : text;
-}
-
-function buildBuckets(from, to, mode) {
-    const keys = [];
-    const cursor = dayToDate(from);
-
-    const last = dayToDate(to);
-
-    while (cursor <= last) {
-        const key = bucketKey(dateToDay(cursor), mode);
-
-        if (keys[keys.length - 1] !== key) {
-            keys.push(key);
-        }
-
-        cursor.setUTCDate(cursor.getUTCDate() + 1);
+    if (from > to) {
+        return { error: "From Date cannot be later than To Date." };
     }
 
-    return keys;
-}
-
-function pickMode(days) {
-    if (days <= 31) return "daily";
-    if (days <= 92) return "weekly";
-    return "monthly";
+    return {
+        from,
+        to,
+        start: from + " 00:00:00",
+        end: to + " 23:59:59"
+    };
 }
 
 router.get("/summary", (req, res) => {
@@ -96,7 +55,6 @@ router.get("/summary", (req, res) => {
             FROM sales_returns
             WHERE status = 'Refunded'
         ) AS totalRefunds
-
     `;
 
     db.query(sql, (err, result) => {
@@ -104,6 +62,7 @@ router.get("/summary", (req, res) => {
             console.log(err);
             return res.send({});
         }
+
 
         const row = result[0];
         const grossSales = Number(row.grossSales) || 0;
@@ -120,171 +79,77 @@ router.get("/summary", (req, res) => {
     });
 });
 
-router.get("/overview", async (req, res) => {
-    const from = String(req.query.from || "");
-    const to = String(req.query.to || "");
-    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+router.get("/inventory", async (req, res) => {
+    const range = readRange(req);
 
-    if (!datePattern.test(from) || !datePattern.test(to)) {
+    if (range.error) {
         return res.status(400).json({
             success: false,
-            message: "Please select a valid From Date and To Date."
-
+            message: range.error
         });
     }
-
-    if (from > to) {
-        return res.status(400).json({
-            success: false,
-            message: "From Date cannot be later than To Date."
-        });
-    }
-
-    const start = from + " 00:00:00";
-    const end = to + " 23:59:59";
-    const days = Math.round((Date.parse(to) - Date.parse(from)) / 86400000) + 1;
-    const mode = pickMode(days);
 
     try {
-        const salesRows = await runQuery(`
-            SELECT
-                s.id,
-                s.product_id,
-                COALESCE(p.product_name, 'Deleted product') AS product_name,
-                COALESCE(p.category, 'Uncategorized') AS category,
-                s.quantity,
-                s.total,
-                DATE_FORMAT(s.sale_date, '%Y-%m-%d') AS day_key,
-                DATE_FORMAT(s.sale_date, '%b %d, %Y %h:%i %p') AS sale_date
-            FROM sales s
-            LEFT JOIN products p ON p.id = s.product_id
-            WHERE s.sale_date BETWEEN ? AND ?
-            ORDER BY s.sale_date DESC, s.id DESC
-        `, [start, end]);
-
-
-        const returnRows = await runQuery(`
-            SELECT
-                product_id,
-                COALESCE(SUM(quantity_returned), 0) AS returned_quantity,
-                COALESCE(SUM(CASE WHEN item_condition = 'Bad Order' THEN quantity_returned ELSE 0 END), 0) AS bad_quantity
-            FROM sales_returns
-            WHERE status IN ('Completed', 'Refunded')
-              AND return_date BETWEEN ? AND ?
-            GROUP BY product_id
-        `, [start, end]);
-
-        const stockInRows = await runQuery(`
-            SELECT
-                sii.product_id,
-                COALESCE(SUM(sii.quantity_received), 0) AS received_quantity
-            FROM stock_in_items sii
-            JOIN stock_ins si ON si.id = sii.stock_in_id
-            WHERE si.stock_in_date BETWEEN ? AND ?
-            GROUP BY sii.product_id
-        `, [start, end]);
-
-        const refundRows = await runQuery(`
-            SELECT
-                sr.product_id,
-                COALESCE(SUM(sr.refund_amount), 0) AS refunded_amount
-            FROM sales_returns sr
-            LEFT JOIN (
-                SELECT return_id, MAX(refund_date) AS refund_date
-                FROM refunds
-                WHERE status = 'Refunded'
-                GROUP BY return_id
-            ) r ON r.return_id = sr.id
-
-            WHERE sr.status = 'Refunded'
-              AND COALESCE(r.refund_date, sr.return_date) BETWEEN ? AND ?
-            GROUP BY sr.product_id
-        `, [start, end]);
-
-        const productRows = await runQuery(`
+        const products = await runQuery(`
             SELECT id, product_name, category, quantity, price
             FROM products
             ORDER BY id ASC
         `);
 
-        const soldMap = new Map();
-        const grossMap = new Map();
-        const returnMap = new Map();
-        const badMap = new Map();
-        const stockInMap = new Map();
-        const refundMap = new Map();
 
-        let grossSales = 0;
-
-        const bucketKeys = buildBuckets(from, to, mode);
-        const flowMap = new Map();
-
-        bucketKeys.forEach(key => {
-            flowMap.set(key, {
-                key,
-                label: bucketLabel(key, mode),
-                total: 0,
-                quantity: 0,
-                transactions: 0
+        if (products.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No inventory data available. Please add products first."
             });
+        }
+
+        const soldRows = await runQuery(`
+            SELECT
+                product_id,
+                COALESCE(SUM(quantity), 0) AS sold_quantity
+            FROM sales
+            WHERE sale_date BETWEEN ? AND ?
+            GROUP BY product_id
+        `, [range.start, range.end]);
+
+        const returnRows = await runQuery(`
+            SELECT
+                product_id,
+                COALESCE(SUM(quantity_returned), 0) AS returned_quantity
+            FROM sales_returns
+            WHERE status IN ('Completed', 'Refunded')
+              AND return_date BETWEEN ? AND ?
+            GROUP BY product_id
+        `, [range.start, range.end]);
+
+        const soldMap = new Map();
+        const returnMap = new Map();
+
+        soldRows.forEach(row => {
+            soldMap.set(Number(row.product_id), num(row.sold_quantity));
         });
 
-
-        salesRows.forEach(row => {
-            const id = Number(row.product_id);
-            const quantity = num(row.quantity);
-            const total = num(row.total);
-
-            soldMap.set(id, (soldMap.get(id) || 0) + quantity);
-            grossMap.set(id, (grossMap.get(id) || 0) + total);
-            grossSales += total;
-
-            const bucket = flowMap.get(bucketKey(row.day_key, mode));
-
-            if (bucket) {
-                bucket.total += total;
-                bucket.quantity += quantity;
-                bucket.transactions += 1;
-            }
-        });
 
         returnRows.forEach(row => {
             returnMap.set(Number(row.product_id), num(row.returned_quantity));
-            badMap.set(Number(row.product_id), num(row.bad_quantity));
-        });
-
-        stockInRows.forEach(row => {
-            stockInMap.set(Number(row.product_id), num(row.received_quantity));
-        });
-
-        let totalRefunds = 0;
-
-        refundRows.forEach(row => {
-            refundMap.set(Number(row.product_id), num(row.refunded_amount));
-
-            totalRefunds += num(row.refunded_amount);
         });
 
         let totalStock = 0;
         let stockValue = 0;
         let lowStock = 0;
         let outOfStock = 0;
-        let totalStockIn = 0;
-        let totalReturned = 0;
-        let totalBad = 0;
-        let netQuantity = 0;
+        let netSold = 0;
 
-        const items = productRows.map(product => {
+        const items = products.map(product => {
             const id = Number(product.id);
             const stock = num(product.quantity);
             const price = num(product.price);
-            const sold = soldMap.get(id) || 0;
-            const returned = returnMap.get(id) || 0;
-            const bad = badMap.get(id) || 0;
-            const stockIn = stockInMap.get(id) || 0;
-            const net = Math.max(sold - returned, 0);
-            const gross = grossMap.get(id) || 0;
-            const refunded = refundMap.get(id) || 0;
+
+            const sold = Math.max(
+                (soldMap.get(id) || 0) - (returnMap.get(id) || 0),
+                0
+            );
 
             let status = "In Stock";
 
@@ -294,15 +159,12 @@ router.get("/overview", async (req, res) => {
             } else if (stock <= LOW_STOCK_LIMIT) {
                 status = "Low Stock";
                 lowStock += 1;
-
             }
 
             totalStock += stock;
+
             stockValue += stock * price;
-            totalStockIn += stockIn;
-            totalReturned += returned;
-            totalBad += bad;
-            netQuantity += net;
+            netSold += sold;
 
             return {
                 id,
@@ -310,104 +172,145 @@ router.get("/overview", async (req, res) => {
                 category: product.category || "Uncategorized",
                 stock,
                 price: round(price, 2),
-                stock_in: stockIn,
                 sold,
-                returned,
-                bad_order: bad,
-                net_quantity: net,
-                net_sales: round(gross - refunded, 2),
                 status
             };
         });
 
-        const fastAll = items
+        return res.json({
+            success: true,
+            period: {
+                from: range.from,
+                to: range.to,
+                label: range.from + " to " + range.to
+            },
+            generatedAt: new Date().toISOString(),
+            summary: {
+                totalProducts: items.length,
+                totalStock,
+                stockValue: round(stockValue, 2),
+                lowStock,
+                outOfStock,
+                netSold
+            },
+            items
+        });
+
+    } catch (error) {
+        console.error("Inventory Report Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to generate the inventory report."
+        });
+    }
+});
+
+router.get("/moving", async (req, res) => {
+    const range = readRange(req);
+
+    if (range.error) {
+        return res.status(400).json({
+            success: false,
+            message: range.error
+        });
+    }
+
+    try {
+        const products = await runQuery(`
+            SELECT id, product_name, category, quantity
+            FROM products
+        `);
+
+        const soldRows = await runQuery(`
+            SELECT
+                product_id,
+                COALESCE(SUM(quantity), 0) AS sold_quantity,
+                COALESCE(SUM(total), 0) AS gross_total
+            FROM sales
+
+            WHERE sale_date BETWEEN ? AND ?
+            GROUP BY product_id
+        `, [range.start, range.end]);
+
+        const returnRows = await runQuery(`
+            SELECT
+                product_id,
+                COALESCE(SUM(quantity_returned), 0) AS returned_quantity
+            FROM sales_returns
+            WHERE status IN ('Completed', 'Refunded')
+              AND return_date BETWEEN ? AND ?
+            GROUP BY product_id
+        `, [range.start, range.end]);
+
+        const soldMap = new Map();
+        const grossMap = new Map();
+        const returnMap = new Map();
+
+        soldRows.forEach(row => {
+            soldMap.set(Number(row.product_id), num(row.sold_quantity));
+            grossMap.set(Number(row.product_id), num(row.gross_total));
+        });
+
+        returnRows.forEach(row => {
+            returnMap.set(Number(row.product_id), num(row.returned_quantity));
+        });
+
+        const items = products.map(product => {
+            const id = Number(product.id);
+            const net = Math.max(
+                (soldMap.get(id) || 0) - (returnMap.get(id) || 0),
+                0
+
+            );
+
+            return {
+                product_name: product.product_name,
+                category: product.category || "Uncategorized",
+                stock: num(product.quantity),
+                net_quantity: net,
+                total: round(grossMap.get(id) || 0, 2)
+            };
+        });
+
+        const fast = items
             .filter(item => item.net_quantity > 0)
             .sort((a, b) =>
                 b.net_quantity - a.net_quantity ||
                 a.product_name.localeCompare(b.product_name)
             );
 
-
-        const slowAll = items
+        const slow = items
             .filter(item => item.net_quantity <= 0)
             .sort((a, b) =>
                 b.stock - a.stock ||
                 a.product_name.localeCompare(b.product_name)
             );
 
-        const netSales = grossSales - totalRefunds;
-        const topProduct = fastAll[0] || null;
-
         return res.json({
             success: true,
-
             period: {
-                from,
-                to,
-                days,
-                mode,
-                label: from + " to " + to
+                from: range.from,
+                to: range.to,
+                label: range.from + " to " + range.to
             },
 
             summary: {
-                grossSales: round(grossSales, 2),
-                totalRefunds: round(totalRefunds, 2),
-                netSales: round(netSales, 2),
-                transactions: salesRows.length,
-                netQuantity,
-                topProduct: topProduct ? topProduct.product_name : null,
-                topQuantity: topProduct ? topProduct.net_quantity : 0,
-                fastCount: fastAll.length,
-                slowCount: slowAll.length,
-                totalProducts: items.length,
-
-                totalStock,
-                stockValue: round(stockValue, 2),
-                lowStock,
-                outOfStock,
-                totalStockIn,
-                totalReturned,
-                totalBad
+                fastCount: fast.length,
+                slowCount: slow.length
             },
-
-            sales: salesRows.map(row => ({
-                id: row.id,
-                product_name: row.product_name,
-                category: row.category,
-                quantity: num(row.quantity),
-                total: round(row.total, 2),
-                sale_date: row.sale_date
-            })),
-
-            flow: Array.from(flowMap.values()).map(bucket => ({
-                ...bucket,
-                total: round(bucket.total, 2)
-            })),
-
-            fastMoving: fastAll.slice(0, FAST_LIMIT).map((item, index) => ({
+            fastMoving: fast.slice(0, 10).map((item, index) => ({
                 rank: index + 1,
-                product_name: item.product_name,
-                category: item.category,
-                net_quantity: item.net_quantity,
-                net_sales: item.net_sales
+                ...item
             })),
-
-            slowMoving: slowAll.slice(0, SLOW_LIMIT).map(item => ({
-
-                product_name: item.product_name,
-                category: item.category,
-                stock: item.stock,
-                net_quantity: item.net_quantity
-            })),
-
-            inventory: items
+            slowMoving: slow.slice(0, 50)
         });
     } catch (error) {
-        console.error("Reports Overview Error:", error);
+        console.error("Moving Products Error:", error);
 
         return res.status(500).json({
             success: false,
-            message: "Failed to generate the report."
+            message: "Failed to load fast and slow moving products."
         });
     }
 });
@@ -424,9 +327,9 @@ async function askGemini(prompt) {
         try {
             const response = await fetch(
                 "https://generativelanguage.googleapis.com/v1beta/models/" +
+
                 model + ":generateContent",
                 {
-
                     method: "POST",
                     signal: controller.signal,
                     headers: {
@@ -457,8 +360,8 @@ async function askGemini(prompt) {
     }
 
     return null;
-}
 
+}
 
 router.post("/insight", async (req, res) => {
     const body = req.body || {};
@@ -490,8 +393,8 @@ router.post("/insight", async (req, res) => {
         facts.stock_value.toLocaleString("en-PH", { minimumFractionDigits: 2 }) +
         ". " + facts.low_stock_products + " product(s) are low on stock and " +
         facts.out_of_stock_products + " are out of stock" +
-        (attention ? ", including " + attention + "." : ".");
 
+        (attention ? ", including " + attention + "." : ".");
 
     const prompt =
         "You are advising the owner of a motorcycle parts shop in the Philippines. " +
