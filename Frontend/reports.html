@@ -213,7 +213,7 @@
 
     .reports-page .inv-controls {
         display: grid;
-        grid-template-columns: 1fr auto auto;
+        grid-template-columns: 1fr 1fr auto auto;
         gap: 14px;
         align-items: end;
         margin-bottom: 16px;
@@ -818,6 +818,7 @@
         }
     }
 </style>
+
 </head>
 
 <body class="reports-page">
@@ -867,20 +868,19 @@
     <div class="report-section" id="inventorySection">
         <h2>Generate Inventory Report</h2>
         <p class="section-description">
-            Select a report period and click Generate Report to view the inventory
-            records, stock status, and sales movement for that period.
+            Select a date range and click Generate Report to view the inventory
+            records, stock status, and sales movement within that period.
         </p>
 
         <div class="inv-controls">
             <div class="filter-group">
-                <label for="invPeriod">Report Period</label>
-                <select id="invPeriod">
-                    <option value="">Select period</option>
-                    <option value="7">Last 7 Days</option>
-                    <option value="30">Last 30 Days</option>
-                    <option value="90">Last 90 Days</option>
-                    <option value="all">All Recorded Sales</option>
-                </select>
+                <label for="invFrom">From Date</label>
+                <input type="text" id="invFrom" placeholder="Select date" readonly>
+            </div>
+
+            <div class="filter-group">
+                <label for="invTo">To Date</label>
+                <input type="text" id="invTo" placeholder="Select date" readonly>
             </div>
 
             <button type="button" id="invGenerateBtn" class="report-button filter-button" onclick="generateInventoryReport()">
@@ -1135,6 +1135,26 @@
         allowInput: false
     });
 
+    const invFromPicker = flatpickr("#invFrom", {
+        dateFormat: "Y-m-d",
+        closeOnSelect: true,
+        allowInput: false,
+        maxDate: "today",
+        onChange: function (selectedDates) {
+            invToPicker.set("minDate", selectedDates.length ? selectedDates[0] : null);
+        }
+    });
+
+    const invToPicker = flatpickr("#invTo", {
+        dateFormat: "Y-m-d",
+        closeOnSelect: true,
+        allowInput: false,
+        maxDate: "today",
+        onChange: function (selectedDates) {
+            invFromPicker.set("maxDate", selectedDates.length ? selectedDates[0] : "today");
+        }
+    });
+
     window.addEventListener("afterprint", () => {
         document.body.classList.remove("print-inventory");
     });
@@ -1175,7 +1195,7 @@
         status.textContent = "";
     }
 
-    ["fromDate", "toDate", "flowDate", "invPeriod"].forEach(id => {
+    ["fromDate", "toDate", "flowDate", "invFrom", "invTo"].forEach(id => {
         const field = document.getElementById(id);
 
         if (field) {
@@ -1455,16 +1475,33 @@
     }
 
     async function generateInventoryReport() {
-        const select = document.getElementById("invPeriod");
+        const fromInput = document.getElementById("invFrom");
+        const toInput = document.getElementById("invTo");
         const button = document.getElementById("invGenerateBtn");
+        const fromDate = fromInput.value;
+        const toDate = toInput.value;
 
-        clearFieldError(select);
+        clearFieldError(fromInput);
+        clearFieldError(toInput);
         hideInvNotice();
         document.getElementById("invResult").style.display = "none";
 
-        if (!select.value) {
-            markFieldError(select);
-            showInvNotice("Please select a report period.", "error");
+        if (fromDate === "" || toDate === "") {
+            if (fromDate === "") markFieldError(fromInput);
+            if (toDate === "") markFieldError(toInput);
+
+            showInvNotice("Please select both From Date and To Date.", "error");
+            return;
+        }
+
+        if (fromDate > toDate) {
+            markFieldError(fromInput);
+            markFieldError(toInput);
+
+            showInvNotice(
+                "From Date cannot be later than To Date. Please select a valid date range.",
+                "error"
+            );
             return;
         }
 
@@ -1473,7 +1510,8 @@
 
         try {
             const response = await fetch(
-                "/reports/inventory?period=" + encodeURIComponent(select.value)
+                "/reports/inventory?from=" + encodeURIComponent(fromDate) +
+                "&to=" + encodeURIComponent(toDate)
             );
 
             const data = await response.json();
@@ -1513,7 +1551,7 @@
         window.print();
     }
 
-    async function loadSalesReport() {
+        async function loadSalesReport() {
         try {
             const sales = await getSales();
             displaySales(sales);
@@ -1544,6 +1582,7 @@
         try {
             const sales = await getSales();
             const productSales = {};
+
 
             let totalQuantity = 0;
 
@@ -1577,6 +1616,7 @@
                 const quantity = item[1];
                 const percentage = Math.max(5, (quantity / maxQuantity) * 100);
 
+
                 return `
                     <tr>
                         <td class="rank-number">${index + 1}</td>
@@ -1609,6 +1649,7 @@
         const fromDateInput = document.getElementById("fromDate");
         const toDateInput = document.getElementById("toDate");
         const fromDate = fromDateInput.value;
+
         const toDate = toDateInput.value;
 
         clearFieldError(fromDateInput);
@@ -1641,6 +1682,7 @@
             displaySales(filteredSales);
 
             showFilterInfo(
+
                 `Showing ${filteredSales.length} sales record(s) from ${fromDate} to ${toDate}.`
             );
         } catch (error) {
@@ -1673,6 +1715,7 @@
         if (fromDateInput.value === "" || toDateInput.value === "") {
             if (fromDateInput.value === "") markFieldError(fromDateInput);
             if (toDateInput.value === "") markFieldError(toDateInput);
+
             return;
         }
 
@@ -1705,6 +1748,7 @@
             input.min = "2000";
             input.max = "2100";
             input.placeholder = "YYYY";
+
             input.value = yearKey;
             label.textContent = "Select Year";
         } else if (period === "weekly") {
@@ -1737,6 +1781,7 @@
         const result = getWeekStart(date);
 
         result.setDate(result.getDate() + 6);
+
         result.setHours(23, 59, 59, 999);
 
         return result;
@@ -1769,6 +1814,7 @@
         if (!selectedValue) {
             markFieldError(flowDateInput);
             return;
+
         }
 
         try {
@@ -1802,6 +1848,7 @@
             function addTransaction(label, sale, saleDate) {
                 const saleTotal = Number(sale.total) || 0;
 
+
                 grouped[label] += saleTotal;
 
                 transactionsByLabel[label].push({
@@ -1833,6 +1880,7 @@
                         sale,
                         saleDate
                     );
+
                 });
 
                 flowDescription = `Daily sales flow for ${selectedValue}`;
@@ -1866,6 +1914,7 @@
                 const daysInMonth = new Date(year, month, 0).getDate();
                 const days = [];
 
+
                 for (let day = 1; day <= daysInMonth; day++) {
                     days.push(String(day).padStart(2, "0"));
                 }
@@ -1898,6 +1947,7 @@
                     addTransaction(monthNames[saleDate.getMonth()], sale, saleDate);
                 });
 
+
                 flowDescription = `Yearly sales flow for ${selectedValue}`;
             }
 
@@ -1929,6 +1979,7 @@
                             {
                                 label: "Sales (₱)",
                                 data: values,
+
                                 borderColor: "#24479b",
                                 backgroundColor: "rgba(36, 71, 155, 0.15)",
                                 borderWidth: 3,
@@ -1960,6 +2011,7 @@
                                         if (!context || context.length === 0) return "";
 
                                         const label = labels[context[0].dataIndex];
+
 
                                         return period === "monthly"
                                             ? "Day " + label
@@ -1993,6 +2045,7 @@
                                     minRotation: 0,
                                     autoSkip: true,
                                     maxTicksLimit: maxTicks
+
                                 }
                             },
 
@@ -2025,6 +2078,7 @@
 
             setText("flowStatus", "Unable to load the sales flow.");
         }
+
     }
 
     updateFlowDateInput();

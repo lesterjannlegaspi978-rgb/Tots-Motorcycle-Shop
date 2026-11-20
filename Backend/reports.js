@@ -4,12 +4,10 @@ const db = require("./db");
 
 const LOW_STOCK_LIMIT = 10;
 
-const PERIODS = {
-    "7": { days: 7, label: "Last 7 Days" },
-    "30": { days: 30, label: "Last 30 Days" },
-    "90": { days: 90, label: "Last 90 Days" },
-    all: { days: null, label: "All Recorded Sales" }
-};
+const MONTHS = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
 
 function runQuery(sql, params = []) {
     return new Promise((resolve, reject) => {
@@ -20,10 +18,36 @@ function runQuery(sql, params = []) {
     });
 }
 
-function toSqlDate(date) {
+function parseDateOnly(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+
+    if (!match) return null;
+
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    if (
+        date.getUTCFullYear() !== year ||
+        date.getUTCMonth() !== month - 1 ||
+        date.getUTCDate() !== day
+    ) {
+        return null;
+    }
+
+    return { year, month, day };
+}
+
+function formatDateLabel(parts) {
+    return MONTHS[parts.month - 1] + " " + parts.day + ", " + parts.year;
+}
+
+function nextDayStart(parts) {
+    const next = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + 1));
     const pad = n => String(n).padStart(2, "0");
 
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    return `${next.getUTCFullYear()}-${pad(next.getUTCMonth() + 1)}-${pad(next.getUTCDate())} 00:00:00`;
 }
 
 function num(value) {
@@ -72,21 +96,30 @@ router.get("/summary", (req, res) => {
 });
 
 router.get("/inventory", async (req, res) => {
-    const key = String(req.query.period || "");
+    const fromText = String(req.query.from || "");
+    const toText = String(req.query.to || "");
+    const from = parseDateOnly(fromText);
+    const to = parseDateOnly(toText);
 
-    if (!Object.prototype.hasOwnProperty.call(PERIODS, key)) {
+    if (!from || !to) {
         return res.status(400).json({
             success: false,
-            message: "Please select a valid report period."
+            message: "Please select a valid From Date and To Date."
         });
     }
 
-    const period = PERIODS[key];
+    if (fromText > toText) {
+        return res.status(400).json({
+            success: false,
+            message: "From Date cannot be later than To Date."
+        });
+    }
+
+    const startDate = fromText + " 00:00:00";
+    const endDate = nextDayStart(to);
+    const periodLabel = formatDateLabel(from) + " to " + formatDateLabel(to);
 
     try {
-        const startDate = period.days === null
-            ? "1000-01-01 00:00:00"
-            : toSqlDate(new Date(Date.now() - period.days * 86400000));
 
         const products = await runQuery(`
             SELECT id, product_name, category, quantity, price
@@ -108,8 +141,9 @@ router.get("/inventory", async (req, res) => {
                 COALESCE(SUM(quantity), 0) AS sold_quantity
             FROM sales
             WHERE sale_date >= ?
+              AND sale_date < ?
             GROUP BY product_id
-        `, [startDate]);
+        `, [startDate, endDate]);
 
         const returnRows = await runQuery(`
             SELECT
@@ -118,8 +152,9 @@ router.get("/inventory", async (req, res) => {
             FROM sales_returns
             WHERE status IN ('Completed', 'Refunded')
               AND return_date >= ?
+              AND return_date < ?
             GROUP BY product_id
-        `, [startDate]);
+        `, [startDate, endDate]);
 
         const soldMap = new Map();
         const returnMap = new Map();
@@ -177,7 +212,7 @@ router.get("/inventory", async (req, res) => {
 
         return res.json({
             success: true,
-            period: { key, label: period.label },
+            period: { from: fromText, to: toText, label: periodLabel },
             generatedAt: new Date().toISOString(),
             summary: {
                 totalProducts: items.length,
