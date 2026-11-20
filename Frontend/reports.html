@@ -30,6 +30,7 @@
     }
 
     .reports-page .report-summary {
+
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 20px;
@@ -62,6 +63,7 @@
     }
 
     .reports-page #totalSales {
+
         color: #d97706;
     }
 
@@ -93,9 +95,29 @@
         line-height: 1.5;
     }
 
+    .reports-page .sub-block {
+
+        margin-top: 28px;
+        padding-top: 24px;
+        border-top: 2px solid #e5e7eb;
+    }
+
+    .reports-page .sub-block.first {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+    }
+
+    .reports-page .sub-heading {
+        margin: 0 0 6px;
+        font-size: 19px !important;
+        font-weight: 700;
+        color: #1f3f8f;
+    }
+
     .reports-page .filter-container {
         display: grid;
-        grid-template-columns: 1fr 1fr auto auto;
+        grid-template-columns: 1fr 1fr auto auto auto;
         gap: 14px;
         align-items: end;
     }
@@ -107,17 +129,19 @@
     }
 
     .reports-page .filter-group label {
+
         font-size: 14px !important;
         font-weight: 700;
         color: #374151;
     }
 
-    .reports-page .filter-group input,
-    .reports-page .filter-group select {
+    .reports-page .filter-group input {
         width: 100%;
         box-sizing: border-box;
         padding: 12px 13px !important;
         min-height: 44px;
+        height: 44px;
+        margin: 0 !important;
         border: 1px solid #cbd5e1;
         border-radius: 7px;
         font-size: 15px !important;
@@ -126,8 +150,7 @@
         cursor: pointer;
     }
 
-    .reports-page .filter-group input:focus,
-    .reports-page .filter-group select:focus {
+    .reports-page .filter-group input:focus {
         outline: none;
         border-color: #24479b;
         box-shadow: 0 0 0 3px rgba(36, 71, 155, 0.12);
@@ -139,6 +162,7 @@
     }
 
     .reports-page .report-button {
+
         border: none;
         border-radius: 7px;
         padding: 0 20px !important;
@@ -171,6 +195,7 @@
         color: #374151;
     }
 
+
     .reports-page .clear-button:hover {
         background: #d1d5db;
     }
@@ -178,19 +203,9 @@
     .reports-page .print-button {
         background: #111827;
         color: #ffffff;
-        margin-top: 16px;
     }
 
     .reports-page .print-button:hover {
-        background: #000000;
-    }
-
-    .reports-page .inv-print-button {
-        background: #111827;
-        color: #ffffff;
-    }
-
-    .reports-page .inv-print-button:hover {
         background: #000000;
     }
 
@@ -211,39 +226,9 @@
         border: 1px solid #fecaca;
     }
 
-    .reports-page .inv-controls {
-        display: grid;
-        grid-template-columns: 1fr auto auto;
-        gap: 14px;
-        align-items: end;
-        margin-bottom: 16px;
-    }
-
-    .reports-page .inv-notice {
-        display: none;
-        margin-bottom: 16px;
-        padding: 12px 15px;
-        border-radius: 7px;
-        font-size: 14px !important;
-        font-weight: 600;
-    }
-
-    .reports-page .inv-notice.error {
-        display: block;
-        color: #b91c1c;
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-    }
-
-    .reports-page .inv-notice.info {
-        display: block;
-        color: #1e40af;
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-    }
-
     .reports-page .inv-insight {
         margin-bottom: 18px;
+
         padding: 15px 18px;
         background: #f5f3ff;
         border-left: 5px solid #6d28d9;
@@ -276,6 +261,7 @@
         margin: 16px 0 0;
         padding: 12px 16px;
         background: #f8fafc;
+
         border: 1px solid #e2e8f0;
         border-left: 4px solid #24479b;
         border-radius: 8px;
@@ -309,46 +295,6 @@
         color: #991b1b;
     }
 
-    .reports-page .sales-flow-controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr auto;
-        gap: 14px;
-        align-items: end;
-        margin-bottom: 20px;
-    }
-
-    .reports-page .sales-flow-controls .filter-group {
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
-    }
-
-    .reports-page .sales-flow-controls label {
-        font-size: 14px !important;
-        font-weight: 700;
-        color: #374151;
-    }
-
-    .reports-page .sales-flow-controls select,
-    .reports-page .sales-flow-controls input {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 12px 13px !important;
-        min-height: 44px;
-        border: 1px solid #cbd5e1;
-        border-radius: 7px;
-        font-size: 15px !important;
-        color: #1f2937;
-        background: #ffffff;
-        cursor: pointer;
-    }
-
-    .reports-page .sales-flow-controls select:focus,
-    .reports-page .sales-flow-controls input:focus {
-        outline: none;
-        border-color: #24479b;
-        box-shadow: 0 0 0 3px rgba(36, 71, 155, 0.12);
-    }
 
     .reports-page .sales-flow-chart-wrapper {
         width: 100%;
@@ -381,6 +327,7 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 16px;
+
         margin-bottom: 18px;
     }
 
@@ -413,6 +360,7 @@
         display: block;
         margin-top: 5px;
         color: #6b7280;
+
         font-size: 13px !important;
     }
 
@@ -426,7 +374,7 @@
     .reports-page .report-table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 750px;
+        min-width: 600px;
         background: #ffffff;
     }
 
@@ -445,6 +393,7 @@
         padding: 12px 14px !important;
         border-bottom: 1px solid #e5e7eb;
         color: #374151;
+
         font-size: 14px !important;
         line-height: 1.35;
         text-align: center !important;
@@ -477,6 +426,7 @@
 
     .reports-page .normal-stock {
         color: #15803d !important;
+
         font-weight: 700;
     }
 
@@ -505,15 +455,51 @@
         color: #15803d;
     }
 
+    .reports-page .inv-scroll {
+        max-height: 420px;
+        overflow-y: auto;
+    }
+
+
+    .reports-page .inv-scroll thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    .reports-page .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .reports-page .two-col .report-table {
+        min-width: 0;
+    }
+
+    .reports-page .sub-title {
+        margin: 0 0 12px;
+        font-size: 17px !important;
+        font-weight: 700;
+    }
+
+    .reports-page .sub-title.fast {
+        color: #15803d;
+    }
+
+    .reports-page .sub-title.slow {
+        color: #b45309;
+    }
+
     @media (max-width: 900px) {
+
         .reports-page .report-summary,
-        .reports-page .trend-summary {
+        .reports-page .trend-summary,
+        .reports-page .two-col {
             grid-template-columns: 1fr;
         }
 
-        .reports-page .filter-container,
-        .reports-page .sales-flow-controls,
-        .reports-page .inv-controls {
+        .reports-page .filter-container {
             grid-template-columns: 1fr 1fr;
         }
     }
@@ -531,9 +517,7 @@
             padding: 17px;
         }
 
-        .reports-page .filter-container,
-        .reports-page .sales-flow-controls,
-        .reports-page .inv-controls {
+        .reports-page .filter-container {
             grid-template-columns: 1fr;
         }
 
@@ -541,6 +525,7 @@
             height: 320px;
             padding: 8px;
         }
+
     }
 
     @page {
@@ -556,25 +541,8 @@
         }
 
         .reports-page .sidebar,
-        .reports-page #summarySection {
-            display: none !important;
-        }
-
-        .reports-page .report-section:has(.filter-container) {
-            display: none !important;
-        }
-
-        .reports-page #salesFlowSection,
-        .reports-page #salesTrendSection,
-        .reports-page #inventorySection {
-            display: none !important;
-        }
-
-        .reports-page .filter-container,
-        .reports-page .filter-status,
-        .reports-page .print-button,
-        .reports-page .clear-button,
-        .reports-page .filter-button {
+        .reports-page #summarySection,
+        .reports-page #rangeSection {
             display: none !important;
         }
 
@@ -587,131 +555,59 @@
         }
 
         .reports-page .reports-title {
-            display: block !important;
             color: #111827 !important;
             font-size: 22px !important;
             margin: 0 0 12px !important;
+
         }
 
-        .reports-page .report-section:has(#salesReportTable) {
-            display: block !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 12px !important;
-            box-sizing: border-box !important;
+        .reports-page .report-section {
             box-shadow: none !important;
             border: 1px solid #d1d5db !important;
             border-radius: 0 !important;
-            overflow: visible !important;
+            padding: 12px !important;
         }
 
-        .reports-page .table-wrapper {
-            width: 100% !important;
-            max-width: 100% !important;
+        .reports-page .table-wrapper,
+        .reports-page .inv-scroll {
+            max-height: none !important;
             overflow: visible !important;
         }
 
         .reports-page .report-table {
             width: 100% !important;
             min-width: 0 !important;
-            max-width: 100% !important;
-            table-layout: fixed !important;
-            border-collapse: collapse !important;
+            table-layout: auto !important;
             font-size: 9px !important;
         }
 
         .reports-page .report-table th,
         .reports-page .report-table td {
-            padding: 6px 5px !important;
+            padding: 5px !important;
             font-size: 9px !important;
             white-space: normal !important;
             overflow-wrap: anywhere !important;
-            word-break: normal !important;
-            box-sizing: border-box !important;
         }
 
-        .reports-page .report-table th:nth-child(1),
-        .reports-page .report-table td:nth-child(1) {
-            width: 8% !important;
-        }
+        .reports-page .report-table thead th,
+        .reports-page .status-badge,
 
-        .reports-page .report-table th:nth-child(2),
-        .reports-page .report-table td:nth-child(2) {
-            width: 30% !important;
-        }
-
-        .reports-page .report-table th:nth-child(3),
-        .reports-page .report-table td:nth-child(3) {
-            width: 12% !important;
-        }
-
-        .reports-page .report-table th:nth-child(4),
-        .reports-page .report-table td:nth-child(4) {
-            width: 20% !important;
-        }
-
-        .reports-page .report-table th:nth-child(5),
-        .reports-page .report-table td:nth-child(5) {
-            width: 30% !important;
-        }
-
-        .reports-page .report-table thead th {
-            background: #24479b !important;
-            color: #ffffff !important;
+        .reports-page .trend-bar {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
 
-        body.reports-page.print-inventory #inventorySection {
-            display: block !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 12px !important;
-            box-sizing: border-box !important;
-            box-shadow: none !important;
-            border: 1px solid #d1d5db !important;
-            border-radius: 0 !important;
+        .reports-page .sales-flow-chart-wrapper {
+            height: 320px !important;
         }
 
-        body.reports-page.print-inventory .report-section:has(#salesReportTable) {
-            display: none !important;
-        }
-
-        body.reports-page.print-inventory .inv-controls,
-        body.reports-page.print-inventory .inv-notice,
-        body.reports-page.print-inventory .inv-insight {
-            display: none !important;
-        }
-
-        body.reports-page.print-inventory .trend-summary {
-            grid-template-columns: repeat(6, 1fr) !important;
+        .reports-page .trend-summary {
+            grid-template-columns: repeat(3, 1fr) !important;
             gap: 8px !important;
         }
 
-        body.reports-page.print-inventory .trend-card {
-            padding: 8px !important;
-            min-height: 0 !important;
-        }
-
-        body.reports-page.print-inventory .trend-card-value {
-            font-size: 13px !important;
-        }
-
-        body.reports-page.print-inventory .trend-card-title,
-        body.reports-page.print-inventory .trend-card-subtitle {
-            font-size: 9px !important;
-        }
-
-        body.reports-page.print-inventory .inventory-table th,
-        body.reports-page.print-inventory .inventory-table td {
-            width: auto !important;
-        }
-
-        body.reports-page.print-inventory .status-badge {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+        .reports-page .two-col {
+            grid-template-columns: 1fr 1fr !important;
         }
     }
 
@@ -727,6 +623,7 @@
         border-radius: 12px 12px 0 0 !important;
         padding: 8px 0 !important;
     }
+
 
     .flatpickr-current-month {
         color: #ffffff !important;
@@ -761,6 +658,7 @@
         color: #ffffff !important;
     }
 
+
     .flatpickr-day.today {
         border-color: #24479b !important;
     }
@@ -772,50 +670,6 @@
 
     .flatpickr-day.selected.today {
         background: #24479b !important;
-    }
-
-    .reports-page .filter-group input,
-    .reports-page .filter-group select,
-    .reports-page .sales-flow-controls input,
-    .reports-page .sales-flow-controls select {
-        margin: 0 !important;
-        height: 44px;
-    }
-
-    .reports-page .filter-container,
-    .reports-page .inv-controls,
-    .reports-page .sales-flow-controls {
-        align-items: end;
-    }
-
-    .reports-page .filter-container .report-button,
-    .reports-page .inv-controls .report-button,
-    .reports-page .sales-flow-controls .report-button {
-        align-self: end;
-        margin: 0 !important;
-    }
-
-    /* Print button spacing */
-    .reports-page .report-button.print-button {
-        margin-top: 14px !important;
-    }
-
-    .reports-page .inv-scroll {
-        max-height: 420px;
-        overflow-y: auto;
-    }
-
-    .reports-page .inv-scroll thead th {
-        position: sticky;
-        top: 0;
-        z-index: 2;
-    }
-
-    @media print {
-        .reports-page .inv-scroll {
-            max-height: none !important;
-            overflow: visible !important;
-        }
     }
 </style>
 </head>
@@ -836,6 +690,7 @@
         <li><a href="stock_in.html">Stock In</a></li>
         <li><a href="sales.html">Sales</a></li>
         <li><a href="sales-return.html">Sales Return</a></li>
+
         <li><a href="reports.html">Reports</a></li>
         <li><a href="analytics.html">Analytics</a></li>
         <li><a href="ai_recommendation.html">AI Recommendations</a></li>
@@ -864,37 +719,45 @@
         </div>
     </div>
 
-    <div class="report-section" id="inventorySection">
-        <h2>Generate Inventory Report</h2>
+    <div class="report-section" id="rangeSection">
+        <h2>Generate Report</h2>
+
         <p class="section-description">
-            Select a report period and click Generate Report to view the inventory
-            records, stock status, and sales movement for that period.
+
+            Select a date range and click Generate Report. The Inventory Report and the Sales Report
+            (Sales Flow, Sales Trend, Fast and Slow Moving Products, Sales Records) all use this same date range.
         </p>
 
-        <div class="inv-controls">
+        <div class="filter-container">
             <div class="filter-group">
-                <label for="invPeriod">Report Period</label>
-                <select id="invPeriod">
-                    <option value="">Select period</option>
-                    <option value="7">Last 7 Days</option>
-                    <option value="30">Last 30 Days</option>
-                    <option value="90">Last 90 Days</option>
-                    <option value="all">All Recorded Sales</option>
-                </select>
+                <label for="fromDate">From Date</label>
+                <input type="text" id="fromDate" placeholder="Select date" readonly>
             </div>
 
-            <button type="button" id="invGenerateBtn" class="report-button filter-button" onclick="generateInventoryReport()">
-                Generate Report
-            </button>
+            <div class="filter-group">
+                <label for="toDate">To Date</label>
+                <input type="text" id="toDate" placeholder="Select date" readonly>
+            </div>
 
-            <button type="button" class="report-button inv-print-button" onclick="printInventoryReport()">
-                Print Report
-            </button>
+            <button type="button" id="generateBtn" class="report-button filter-button" onclick="generateReport()">Generate Report</button>
+
+            <button type="button" class="report-button clear-button" onclick="clearFilter()">Clear</button>
+
+            <button type="button" class="report-button print-button" onclick="printReport()">Print Report</button>
         </div>
 
-        <div id="invNotice" class="inv-notice" role="status"></div>
+        <div id="filterStatus" class="filter-status"></div>
+    </div>
 
-        <div id="invResult" style="display:none;">
+    <div id="reportResult" style="display:none;">
+
+        <div class="report-section" id="inventorySection">
+            <h2>Inventory Report</h2>
+
+            <p class="section-description" id="invDescription">
+                Inventory records, stock status, and sales movement within the selected date range.
+
+            </p>
 
             <div class="inv-insight">
                 <h3>AI Insights</h3>
@@ -927,6 +790,7 @@
                     <span class="trend-card-subtitle">1 to 10 pieces left</span>
                 </div>
 
+
                 <div class="trend-card">
                     <span class="trend-card-title">Out of Stock</span>
                     <span class="trend-card-value" id="invOutOfStock">0</span>
@@ -954,150 +818,154 @@
                         </tr>
                     </thead>
 
-                    <tbody id="inventoryBody">
-                        <tr>
-                            <td colspan="7" class="empty-row">No report generated yet.</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="inventoryBody"></tbody>
                 </table>
             </div>
 
+
             <p class="inv-footnote" id="invFootnote"></p>
         </div>
-    </div>
 
-    <div class="report-section">
-        <h2>Sales Report Filter</h2>
+        <div class="report-section" id="salesSection">
+            <h2>Sales Report</h2>
 
-        <p class="section-description">
-            Select a date range to display sales transactions recorded within the selected period.
-        </p>
+            <p class="section-description" id="salesDescription">
+                Sales flow, sales trend, fast and slow moving products, and sales records within the selected date range.
+            </p>
 
-        <div class="filter-container">
-            <div class="filter-group">
-                <label for="fromDate">From Date</label>
-                <input type="text" id="fromDate" placeholder="Select date" readonly>
+            <div class="sub-block first">
+                <h3 class="sub-heading">Sales Flow</h3>
+
+                <p class="section-description">
+                    Graphical view of recorded sales within the selected date range.
+                </p>
+
+                <div class="sales-flow-chart-wrapper">
+                    <canvas id="salesFlowChart"></canvas>
+                </div>
+
+                <div id="flowStatus" class="flow-status"></div>
             </div>
 
-            <div class="filter-group">
-                <label for="toDate">To Date</label>
-                <input type="text" id="toDate" placeholder="Select date" readonly>
+            <div class="sub-block">
+                <h3 class="sub-heading">Sales Trend</h3>
+
+                <p class="section-description">
+                    Shows the products with the highest recorded sales quantity within the selected date range.
+                </p>
+
+                <div class="trend-summary">
+
+                    <div class="trend-card">
+                        <span class="trend-card-title">Top-Selling Product</span>
+                        <span id="topSellingProduct" class="trend-card-value">-</span>
+                        <span class="trend-card-subtitle">Most sold product</span>
+                    </div>
+
+                    <div class="trend-card">
+                        <span class="trend-card-title">Highest Quantity Sold</span>
+                        <span id="highestQuantitySold" class="trend-card-value">0 pcs</span>
+                        <span class="trend-card-subtitle">In a single product</span>
+                    </div>
+
+                    <div class="trend-card">
+                        <span class="trend-card-title">Total Quantity Sold</span>
+                        <span id="totalQuantitySold" class="trend-card-value">0 pcs</span>
+                        <span class="trend-card-subtitle">Across the selected date range</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Product</th>
+                                <th>Quantity Sold</th>
+                                <th>Sales Level</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="trendTable"></tbody>
+                    </table>
+
+                </div>
             </div>
 
-            <button class="report-button filter-button" onclick="filterReport()">Filter</button>
+            <div class="sub-block">
+                <h3 class="sub-heading">Fast and Slow Moving Products</h3>
 
-            <button class="report-button clear-button" onclick="clearFilter()">Clear</button>
-        </div>
+                <p class="section-description" id="movingDescription"></p>
 
-        <div id="filterStatus" class="filter-status"></div>
+                <div class="two-col">
+                    <div>
+                        <h3 class="sub-title fast">Fast Moving</h3>
 
-        <button class="report-button print-button" onclick="printSalesReport()">Print Report</button>
-    </div>
+                        <div class="table-wrapper">
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Product</th>
+                                        <th>Days with Sales</th>
+                                        <th>Qty Sold</th>
+                                        <th>Sales</th>
+                                    </tr>
+                                </thead>
 
-    <div class="report-section">
-        <h2>Sales Report</h2>
+                                <tbody id="fastBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
 
-        <p class="section-description">Recorded sales transactions from the system.</p>
+                    <div>
+                        <h3 class="sub-title slow">Slow Moving</h3>
 
-        <div class="table-wrapper">
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Total Amount</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
 
-                <tbody id="salesReportTable">
-                    <tr>
-                        <td colspan="5" class="empty-row">Loading sales records...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+                        <div class="table-wrapper inv-scroll">
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Days with Sales</th>
+                                        <th>Stock</th>
+                                    </tr>
+                                </thead>
 
-    <div class="report-section" id="salesFlowSection">
-        <h2>Sales Flow</h2>
+                                <tbody id="slowBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-        <p class="section-description">
-            Graphical view of recorded sales by day, week, month, or year.
-        </p>
-
-        <div class="sales-flow-controls">
-            <div class="filter-group">
-                <label for="flowPeriod">Sales Period</label>
-
-                <select id="flowPeriod" onchange="updateFlowDateInput()">
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                </select>
+                <p class="inv-footnote" id="movingFootnote"></p>
             </div>
 
-            <div class="filter-group">
-                <label for="flowDate" id="flowDateLabel">Select Date</label>
-                <input type="date" id="flowDate">
+            <div class="sub-block">
+                <h3 class="sub-heading">Sales Records</h3>
+
+                <p class="section-description">
+                    Recorded sales transactions within the selected date range.
+                </p>
+
+                <div class="table-wrapper inv-scroll">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Total Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="salesReportTable"></tbody>
+                    </table>
+                </div>
             </div>
-
-            <button class="report-button filter-button" onclick="loadSalesFlow()">Show Graph</button>
-        </div>
-
-        <div class="sales-flow-chart-wrapper">
-            <canvas id="salesFlowChart"></canvas>
-        </div>
-
-        <div id="flowStatus" class="flow-status">Select a period and click Show Graph.</div>
-    </div>
-
-    <div class="report-section" id="salesTrendSection">
-        <h2>Sales Trend</h2>
-
-        <p class="section-description">
-            Shows the products with the highest recorded sales quantity based on sales transactions in the system.
-        </p>
-
-        <div class="trend-summary">
-            <div class="trend-card">
-                <span class="trend-card-title">Top-Selling Product</span>
-                <span id="topSellingProduct" class="trend-card-value">Loading...</span>
-                <span class="trend-card-subtitle">Most sold product</span>
-            </div>
-
-            <div class="trend-card">
-                <span class="trend-card-title">Highest Quantity Sold</span>
-                <span id="highestQuantitySold" class="trend-card-value">0 pcs</span>
-                <span class="trend-card-subtitle">In a single product</span>
-            </div>
-
-            <div class="trend-card">
-                <span class="trend-card-title">Total Quantity Sold</span>
-                <span id="totalQuantitySold" class="trend-card-value">0 pcs</span>
-                <span class="trend-card-subtitle">Across all recorded sales</span>
-            </div>
-        </div>
-
-        <div class="table-wrapper">
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Product</th>
-                        <th>Quantity Sold</th>
-                        <th>Sales Level</th>
-                    </tr>
-                </thead>
-
-                <tbody id="trendTable">
-                    <tr>
-                        <td colspan="4" class="empty-row">Loading sales trend...</td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 
@@ -1119,6 +987,7 @@
 
         sidebar.addEventListener("mouseleave", () => {
             sidebar.classList.add("hide");
+
             content.classList.remove("expand");
         });
     }
@@ -1135,9 +1004,8 @@
         allowInput: false
     });
 
-    window.addEventListener("afterprint", () => {
-        document.body.classList.remove("print-inventory");
-    });
+    let salesFlowChart = null;
+    let reportReady = false;
 
     function markFieldError(field) {
         if (!field) return;
@@ -1152,6 +1020,7 @@
     }
 
     function showFilterError(message) {
+
         const status = document.getElementById("filterStatus");
 
         status.className = "filter-status error";
@@ -1175,21 +1044,15 @@
         status.textContent = "";
     }
 
-    ["fromDate", "toDate", "flowDate", "invPeriod"].forEach(id => {
-        const field = document.getElementById(id);
-
-        if (field) {
-            field.addEventListener("change", () => clearFieldError(field));
-            field.addEventListener("input", () => clearFieldError(field));
-        }
-    });
-
     ["fromDate", "toDate"].forEach(id => {
         const field = document.getElementById(id);
 
         if (field) {
             field.addEventListener("change", () => {
+                clearFieldError(field);
+
                 const status = document.getElementById("filterStatus");
+
 
                 if (status.classList.contains("error")) {
                     hideFilterStatus();
@@ -1197,8 +1060,6 @@
             });
         }
     });
-
-    let salesFlowChart = null;
 
     function formatMoney(value) {
         return Number(value || 0).toLocaleString("en-PH", {
@@ -1224,6 +1085,7 @@
         const element = document.getElementById(id);
         if (element) element.textContent = value;
     }
+
 
     function parseSaleDate(value) {
         if (!value) return null;
@@ -1257,6 +1119,7 @@
             month: "short",
             day: "2-digit",
             hour: "2-digit",
+
             minute: "2-digit",
             second: "2-digit",
             hour12: true
@@ -1288,6 +1151,7 @@
             }
 
             const products = await response.json();
+
 
             let lowStocks = 0;
 
@@ -1321,6 +1185,7 @@
 
     async function loadSalesSummary() {
         try {
+
             const response = await fetch("/analytics/overview?period=all");
 
             if (!response.ok) {
@@ -1340,20 +1205,6 @@
         }
     }
 
-    function showInvNotice(message, type) {
-        const notice = document.getElementById("invNotice");
-
-        notice.textContent = message;
-        notice.className = "inv-notice " + type;
-    }
-
-    function hideInvNotice() {
-        const notice = document.getElementById("invNotice");
-
-        notice.textContent = "";
-        notice.className = "inv-notice";
-    }
-
     function statusClass(status) {
         if (status === "Out of Stock") return "out";
         if (status === "Low Stock") return "low";
@@ -1367,6 +1218,7 @@
 
         setText("invTotalProducts", formatNumber(summary.totalProducts));
         setText("invTotalStock", formatNumber(summary.totalStock) + " pcs");
+
         setText("invStockValue", "₱" + formatMoney(summary.stockValue));
         setText("invLowStock", formatNumber(summary.lowStock));
         setText("invOutOfStock", formatNumber(summary.outOfStock));
@@ -1399,11 +1251,10 @@
             "invFootnote",
             "Report period: " + (data.period ? data.period.label : "") +
             ". Stock is the current quantity in the inventory. Sold (Period) is the " +
-            "quantity sold minus returned items within the selected period. " +
+
+            "quantity sold minus returned items within the selected date range. " +
             "Generated on " + generated.toLocaleString("en-PH") + "."
         );
-
-        document.getElementById("invResult").style.display = "block";
     }
 
     async function loadInventoryInsight(data) {
@@ -1434,6 +1285,7 @@
                 .map(item => ({ name: item.product_name, qty: item.sold }))
         };
 
+
         try {
             const response = await fetch("/reports/insight", {
                 method: "POST",
@@ -1454,77 +1306,6 @@
         }
     }
 
-    async function generateInventoryReport() {
-        const select = document.getElementById("invPeriod");
-        const button = document.getElementById("invGenerateBtn");
-
-        clearFieldError(select);
-        hideInvNotice();
-        document.getElementById("invResult").style.display = "none";
-
-        if (!select.value) {
-            markFieldError(select);
-            showInvNotice("Please select a report period.", "error");
-            return;
-        }
-
-        button.disabled = true;
-        button.textContent = "Generating...";
-
-        try {
-            const response = await fetch(
-                "/reports/inventory?period=" + encodeURIComponent(select.value)
-            );
-
-            const data = await response.json();
-
-            if (!data.success) {
-                showInvNotice(
-                    data.message || "Unable to generate the inventory report.",
-                    "error"
-                );
-                return;
-            }
-
-            renderInventoryReport(data);
-            loadInventoryInsight(data);
-        } catch (error) {
-            console.error("Generate Inventory Report Error:", error);
-
-            showInvNotice(
-                "Unable to generate the inventory report. Please try again.",
-                "error"
-            );
-        } finally {
-            button.disabled = false;
-            button.textContent = "Generate Report";
-        }
-    }
-
-    function printInventoryReport() {
-        const result = document.getElementById("invResult");
-
-        if (result.style.display === "none") {
-            showInvNotice("Please generate the inventory report first.", "info");
-            return;
-        }
-
-        document.body.classList.add("print-inventory");
-        window.print();
-    }
-
-    async function loadSalesReport() {
-        try {
-            const sales = await getSales();
-            displaySales(sales);
-        } catch (error) {
-            console.error("Sales Report Error:", error);
-
-            document.getElementById("salesReportTable").innerHTML =
-                `<tr><td colspan="5" class="empty-row">Unable to load sales records.</td></tr>`;
-        }
-    }
-
     function displaySales(sales) {
         const rows = sales.map(sale => `
             <tr>
@@ -1536,188 +1317,114 @@
             </tr>
         `).join("");
 
+
         document.getElementById("salesReportTable").innerHTML = rows ||
-            `<tr><td colspan="5" class="empty-row">No sales records found.</td></tr>`;
+            `<tr><td colspan="5" class="empty-row">No sales records found in the selected date range.</td></tr>`;
     }
 
-    async function loadSalesTrend() {
-        try {
-            const sales = await getSales();
-            const productSales = {};
+    function renderSalesTrend(sales) {
+        const productSales = {};
 
-            let totalQuantity = 0;
+        let totalQuantity = 0;
 
-            sales.forEach(sale => {
-                const productName = sale.product_name || "Unknown Product";
-                const quantity = Number(sale.quantity) || 0;
+        sales.forEach(sale => {
+            const productName = sale.product_name || "Unknown Product";
+            const quantity = Number(sale.quantity) || 0;
 
-                totalQuantity += quantity;
+            totalQuantity += quantity;
 
-                if (!productSales[productName]) {
-                    productSales[productName] = 0;
-                }
+            if (!productSales[productName]) {
+                productSales[productName] = 0;
+            }
 
-                productSales[productName] += quantity;
-            });
+            productSales[productName] += quantity;
+        });
 
-            const ranking = Object.entries(productSales)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
+        const ranking = Object.entries(productSales)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
 
-            const topProduct = ranking.length > 0 ? ranking[0][0] : "No sales yet";
-            const highestQuantity = ranking.length > 0 ? ranking[0][1] : 0;
-            const maxQuantity = ranking.length > 0 ? ranking[0][1] : 1;
+        const topProduct = ranking.length > 0 ? ranking[0][0] : "No sales yet";
+        const highestQuantity = ranking.length > 0 ? ranking[0][1] : 0;
+        const maxQuantity = ranking.length > 0 ? ranking[0][1] : 1;
 
-            setText("topSellingProduct", topProduct);
-            setText("highestQuantitySold", highestQuantity + " pcs");
-            setText("totalQuantitySold", totalQuantity + " pcs");
+        setText("topSellingProduct", topProduct);
+        setText("highestQuantitySold", highestQuantity + " pcs");
 
-            const rows = ranking.map((item, index) => {
-                const product = item[0];
-                const quantity = item[1];
-                const percentage = Math.max(5, (quantity / maxQuantity) * 100);
+        setText("totalQuantitySold", totalQuantity + " pcs");
 
-                return `
-                    <tr>
-                        <td class="rank-number">${index + 1}</td>
-                        <td>${escapeHtml(product)}</td>
-                        <td class="quantity-value">${quantity} pcs</td>
-                        <td>
-                            <div class="trend-bar-container" title="${quantity} pcs sold">
-                                <div class="trend-bar" style="width: ${percentage}%"></div>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join("");
+        const rows = ranking.map((item, index) => {
+            const product = item[0];
+            const quantity = item[1];
+            const percentage = Math.max(5, (quantity / maxQuantity) * 100);
 
-            document.getElementById("trendTable").innerHTML = rows ||
-                `<tr><td colspan="4" class="empty-row">No sales data available yet.</td></tr>`;
-        } catch (error) {
-            console.error("Sales Trend Error:", error);
+            return `
+                <tr>
+                    <td class="rank-number">${index + 1}</td>
+                    <td>${escapeHtml(product)}</td>
+                    <td class="quantity-value">${quantity} pcs</td>
+                    <td>
+                        <div class="trend-bar-container" title="${quantity} pcs sold">
+                            <div class="trend-bar" style="width: ${percentage}%"></div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join("");
 
-            setText("topSellingProduct", "Error");
-            setText("highestQuantitySold", "Error");
-            setText("totalQuantitySold", "Error");
-
-            document.getElementById("trendTable").innerHTML =
-                `<tr><td colspan="4" class="empty-row">Unable to load sales trend.</td></tr>`;
-        }
+        document.getElementById("trendTable").innerHTML = rows ||
+            `<tr><td colspan="4" class="empty-row">No sales data available in the selected date range.</td></tr>`;
     }
 
-    async function filterReport() {
-        const fromDateInput = document.getElementById("fromDate");
-        const toDateInput = document.getElementById("toDate");
-        const fromDate = fromDateInput.value;
-        const toDate = toDateInput.value;
+    function renderMoving(data) {
+        const fast = data.fastMoving || [];
+        const slow = data.slowMoving || [];
+        const summary = data.summary || {};
+        const rule = data.rule || {};
 
-        clearFieldError(fromDateInput);
-        clearFieldError(toDateInput);
+        setText(
 
-        if (fromDate === "" || toDate === "") {
-            if (fromDate === "") markFieldError(fromDateInput);
-            if (toDate === "") markFieldError(toDateInput);
-            return;
-        }
+            "movingDescription",
+            `Based on sales from ${data.period.from} to ${data.period.to} (${formatNumber(rule.totalDays)} day(s)). ` +
+            `${formatNumber(summary.fastCount)} fast moving and ${formatNumber(summary.slowCount)} slow moving product(s).`
+        );
 
-        if (fromDate > toDate) {
-            markFieldError(fromDateInput);
-            markFieldError(toDateInput);
-            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
-            return;
-        }
+        setText(
+            "movingFootnote",
+            `Fast Moving: the product has sales on at least ${formatNumber(rule.requiredDays)} of the ` +
+            `${formatNumber(rule.totalDays)} day(s) in the selected date range (${Math.round((rule.ratio || 0) * 100)}% of the days), ` +
+            `even if the quantity sold each day is small. Slow Moving: the product has sales on fewer days than that, or has no sales at all. ` +
+            `A product that sells today but not on the other days is not Fast Moving.`
+        );
 
-        try {
-            const sales = await getSales();
+        document.getElementById("fastBody").innerHTML = fast.map(item => `
+            <tr>
+                <td class="rank-number">${formatNumber(item.rank)}</td>
+                <td>${escapeHtml(item.product_name)}</td>
+                <td class="quantity-value">${formatNumber(item.active_days)} / ${formatNumber(item.total_days)}</td>
+                <td>${formatNumber(item.net_quantity)}</td>
+                <td>₱${formatMoney(item.total)}</td>
+            </tr>
+        `).join("") ||
+            `<tr><td colspan="5" class="empty-row">No fast moving products in the selected date range.</td></tr>`;
 
-            const filteredSales = sales.filter(sale => {
-                const saleOnly = localDateKey(sale.sale_date);
+        document.getElementById("slowBody").innerHTML = slow.map(item => `
+            <tr>
+                <td>${escapeHtml(item.product_name)}</td>
+                <td>${escapeHtml(item.category)}</td>
+                <td>${formatNumber(item.active_days)} / ${formatNumber(item.total_days)}</td>
+                <td class="stock-number">${formatNumber(item.stock)}</td>
+            </tr>
+        `).join("") ||
 
-                if (!saleOnly) return false;
-
-                return saleOnly >= fromDate && saleOnly <= toDate;
-            });
-
-            displaySales(filteredSales);
-
-            showFilterInfo(
-                `Showing ${filteredSales.length} sales record(s) from ${fromDate} to ${toDate}.`
-            );
-        } catch (error) {
-            console.error("Filter Error:", error);
-
-            markFieldError(fromDateInput);
-            markFieldError(toDateInput);
-        }
+            `<tr><td colspan="4" class="empty-row">No slow moving products in the selected date range.</td></tr>`;
     }
 
-    function clearFilter() {
-        document.getElementById("fromDate")._flatpickr.clear();
-        document.getElementById("toDate")._flatpickr.clear();
+    function dayCount(from, to) {
+        const start = new Date(from + "T00:00:00");
+        const end = new Date(to + "T00:00:00");
 
-        clearFieldError(document.getElementById("fromDate"));
-        clearFieldError(document.getElementById("toDate"));
-
-        hideFilterStatus();
-
-        loadSalesReport();
-    }
-
-    function printSalesReport() {
-        const fromDateInput = document.getElementById("fromDate");
-        const toDateInput = document.getElementById("toDate");
-
-        clearFieldError(fromDateInput);
-        clearFieldError(toDateInput);
-
-        if (fromDateInput.value === "" || toDateInput.value === "") {
-            if (fromDateInput.value === "") markFieldError(fromDateInput);
-            if (toDateInput.value === "") markFieldError(toDateInput);
-            return;
-        }
-
-        if (fromDateInput.value > toDateInput.value) {
-            markFieldError(fromDateInput);
-            markFieldError(toDateInput);
-            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
-            return;
-        }
-
-        document.body.classList.remove("print-inventory");
-        window.print();
-    }
-
-    function updateFlowDateInput() {
-        const period = document.getElementById("flowPeriod").value;
-        const label = document.getElementById("flowDateLabel");
-        const input = document.getElementById("flowDate");
-        const today = new Date();
-        const todayKey = localDateKey(today);
-        const monthKey = todayKey.slice(0, 7);
-        const yearKey = String(today.getFullYear());
-
-        if (period === "monthly") {
-            input.type = "month";
-            input.value = monthKey;
-            label.textContent = "Select Month";
-        } else if (period === "yearly") {
-            input.type = "number";
-            input.min = "2000";
-            input.max = "2100";
-            input.placeholder = "YYYY";
-            input.value = yearKey;
-            label.textContent = "Select Year";
-        } else if (period === "weekly") {
-            input.type = "date";
-            input.value = todayKey;
-            input.placeholder = "";
-            label.textContent = "Select Any Date in Week";
-        } else {
-            input.type = "date";
-            input.value = todayKey;
-            input.placeholder = "";
-            label.textContent = "Select Date";
-        }
+        return Math.round((end - start) / 86400000) + 1;
     }
 
     function getWeekStart(date) {
@@ -1733,13 +1440,37 @@
         return result;
     }
 
-    function getWeekEnd(date) {
-        const result = getWeekStart(date);
+    function bucketKeyFor(date, mode) {
+        if (mode === "hourly") {
+            return String(date.getHours()).padStart(2, "0");
+        }
 
-        result.setDate(result.getDate() + 6);
-        result.setHours(23, 59, 59, 999);
+        if (mode === "daily") return localDateKey(date);
+        if (mode === "weekly") return localDateKey(getWeekStart(date));
 
-        return result;
+        return localDateKey(date).slice(0, 7);
+
+    }
+
+    function bucketLabelFor(key, mode) {
+        if (mode === "hourly") {
+            return key + ":00";
+        }
+
+        const months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
+        const parts = key.split("-");
+
+        if (mode === "monthly") {
+            return months[Number(parts[1]) - 1] + " " + parts[0];
+        }
+
+        const text = months[Number(parts[1]) - 1] + " " + parts[2];
+
+        return mode === "weekly" ? "Week of " + text : text;
     }
 
     function getTransactionTooltipLines(transactions) {
@@ -1748,290 +1479,344 @@
         }
 
         const lines = [];
+        const limit = 10;
 
-        transactions.forEach(sale => {
+        transactions.slice(0, limit).forEach(sale => {
+
             lines.push(` ${formatExactDateTime(sale.date)}`);
             lines.push(` Product: ${sale.product || "Unknown Product"}`);
             lines.push(` Quantity: ${Number(sale.quantity) || 0} pcs`);
             lines.push(` Sales: ₱${formatMoney(Number(sale.total) || 0)}`);
         });
 
+        if (transactions.length > limit) {
+            lines.push(` + ${transactions.length - limit} more transaction(s)`);
+        }
+
         return lines;
     }
 
-    async function loadSalesFlow() {
-        const period = document.getElementById("flowPeriod").value;
-        const flowDateInput = document.getElementById("flowDate");
-        const selectedValue = flowDateInput.value;
+    function renderSalesFlow(sales, from, to) {
+        const days = dayCount(from, to);
 
-        clearFieldError(flowDateInput);
+        let mode = "monthly";
 
-        if (!selectedValue) {
-            markFieldError(flowDateInput);
-            return;
+        if (days === 1) {
+            mode = "hourly";
+        } else if (days <= 31) {
+            mode = "daily";
+        } else if (days <= 92) {
+            mode = "weekly";
         }
 
-        try {
-            const sales = await getSales();
+        const labels = [];
+        const keys = [];
+        const grouped = {};
+        const transactionsByKey = {};
 
-            const monthNames = [
-                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-            ];
+        if (mode === "hourly") {
 
-            const dayNames = [
-                "Monday", "Tuesday", "Wednesday", "Thursday",
-                "Friday", "Saturday", "Sunday"
-            ];
+            for (let hour = 0; hour < 24; hour++) {
+                const key = String(hour).padStart(2, "0");
 
-            let labels = [];
-            let flowDescription = "";
-
-            const grouped = {};
-            const transactionsByLabel = {};
-
-            function prepare(list) {
-                labels = list;
-
-                list.forEach(label => {
-                    grouped[label] = 0;
-                    transactionsByLabel[label] = [];
-                });
+                keys.push(key);
+                labels.push(bucketLabelFor(key, mode));
+                grouped[key] = 0;
+                transactionsByKey[key] = [];
             }
+        } else {
+            const cursor = new Date(from + "T12:00:00");
+            const last = new Date(to + "T12:00:00");
 
-            function addTransaction(label, sale, saleDate) {
-                const saleTotal = Number(sale.total) || 0;
+            while (cursor <= last) {
+                const key = bucketKeyFor(cursor, mode);
 
-                grouped[label] += saleTotal;
-
-                transactionsByLabel[label].push({
-                    id: sale.id,
-                    product: sale.product_name || "Unknown Product",
-                    quantity: Number(sale.quantity) || 0,
-                    total: saleTotal,
-                    date: saleDate
-                });
-            }
-
-            if (period === "daily") {
-                const hours = [];
-
-                for (let hour = 0; hour < 24; hour++) {
-                    hours.push(String(hour).padStart(2, "0") + ":00");
+                if (keys[keys.length - 1] !== key) {
+                    keys.push(key);
+                    labels.push(bucketLabelFor(key, mode));
+                    grouped[key] = 0;
+                    transactionsByKey[key] = [];
                 }
 
-                prepare(hours);
-
-                sales.forEach(sale => {
-                    const saleDate = parseSaleDate(sale.sale_date);
-
-                    if (!saleDate) return;
-                    if (localDateKey(saleDate) !== selectedValue) return;
-
-                    addTransaction(
-                        String(saleDate.getHours()).padStart(2, "0") + ":00",
-                        sale,
-                        saleDate
-                    );
-                });
-
-                flowDescription = `Daily sales flow for ${selectedValue}`;
-            } else if (period === "weekly") {
-                const selected = new Date(selectedValue + "T12:00:00");
-                const start = getWeekStart(selected);
-                const end = getWeekEnd(selected);
-
-                prepare(dayNames);
-
-                sales.forEach(sale => {
-                    const saleDate = parseSaleDate(sale.sale_date);
-
-                    if (!saleDate) return;
-                    if (saleDate < start || saleDate > end) return;
-
-                    addTransaction(
-                        dayNames[(saleDate.getDay() + 6) % 7],
-                        sale,
-                        saleDate
-                    );
-                });
-
-                flowDescription =
-                    `Weekly sales flow: ${localDateKey(start)} to ${localDateKey(end)}`;
-            } else if (period === "monthly") {
-                const parts = selectedValue.split("-");
-                const year = Number(parts[0]);
-                const month = Number(parts[1]);
-
-                const daysInMonth = new Date(year, month, 0).getDate();
-                const days = [];
-
-                for (let day = 1; day <= daysInMonth; day++) {
-                    days.push(String(day).padStart(2, "0"));
-                }
-
-                prepare(days);
-
-                sales.forEach(sale => {
-                    const saleDate = parseSaleDate(sale.sale_date);
-
-                    if (!saleDate) return;
-                    if (!localDateKey(saleDate).startsWith(selectedValue)) return;
-
-                    addTransaction(
-                        String(saleDate.getDate()).padStart(2, "0"),
-                        sale,
-                        saleDate
-                    );
-                });
-
-                flowDescription = `Monthly sales flow for ${selectedValue}`;
-            } else if (period === "yearly") {
-                prepare(monthNames);
-
-                sales.forEach(sale => {
-                    const saleDate = parseSaleDate(sale.sale_date);
-
-                    if (!saleDate) return;
-                    if (String(saleDate.getFullYear()) !== String(selectedValue)) return;
-
-                    addTransaction(monthNames[saleDate.getMonth()], sale, saleDate);
-                });
-
-                flowDescription = `Yearly sales flow for ${selectedValue}`;
+                cursor.setDate(cursor.getDate() + 1);
             }
+        }
 
-            Object.keys(transactionsByLabel).forEach(key => {
-                transactionsByLabel[key].sort((a, b) => a.date - b.date);
+        sales.forEach(sale => {
+            const saleDate = parseSaleDate(sale.sale_date);
+
+            if (!saleDate) return;
+
+            const key = bucketKeyFor(saleDate, mode);
+
+
+            if (!(key in grouped)) return;
+
+            const saleTotal = Number(sale.total) || 0;
+
+            grouped[key] += saleTotal;
+
+            transactionsByKey[key].push({
+                id: sale.id,
+                product: sale.product_name || "Unknown Product",
+                quantity: Number(sale.quantity) || 0,
+                total: saleTotal,
+                date: saleDate
             });
+        });
 
-            const values = labels.map(label =>
-                Number((grouped[label] || 0).toFixed(2))
-            );
+        keys.forEach(key => {
+            transactionsByKey[key].sort((a, b) => a.date - b.date);
+        });
 
-            if (salesFlowChart) {
-                salesFlowChart.destroy();
-            }
+        const values = keys.map(key => Number((grouped[key] || 0).toFixed(2)));
 
-            const maxTicks =
-                period === "daily" ? 24 :
-                period === "monthly" ? 31 :
-                period === "weekly" ? 7 : 12;
+        if (salesFlowChart) {
+            salesFlowChart.destroy();
+        }
 
-            salesFlowChart = new Chart(
-                document.getElementById("salesFlowChart"),
-                {
-                    type: "line",
+        salesFlowChart = new Chart(
+            document.getElementById("salesFlowChart"),
+            {
+                type: "line",
 
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: "Sales (₱)",
-                                data: values,
-                                borderColor: "#24479b",
-                                backgroundColor: "rgba(36, 71, 155, 0.15)",
-                                borderWidth: 3,
-                                fill: true,
-                                tension: 0.3,
-                                pointRadius: 4,
-                                pointHoverRadius: 7
-                            }
-                        ]
+                data: {
+
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Sales (₱)",
+                            data: values,
+                            borderColor: "#24479b",
+                            backgroundColor: "rgba(36, 71, 155, 0.15)",
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointHoverRadius: 7
+                        }
+                    ]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    interaction: {
+                        intersect: false,
+                        mode: "index"
                     },
 
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true },
 
-                        interaction: {
-                            intersect: false,
-                            mode: "index"
-                        },
+                        tooltip: {
+                            displayColors: false,
 
-                        plugins: {
-                            legend: { display: true },
+                            callbacks: {
 
-                            tooltip: {
-                                displayColors: false,
+                                title: function (context) {
+                                    if (!context || context.length === 0) return "";
 
-                                callbacks: {
-                                    title: function (context) {
-                                        if (!context || context.length === 0) return "";
+                                    return labels[context[0].dataIndex];
+                                },
 
-                                        const label = labels[context[0].dataIndex];
+                                label: function (context) {
+                                    const transactions =
+                                        transactionsByKey[keys[context.dataIndex]] || [];
 
-                                        return period === "monthly"
-                                            ? "Day " + label
-                                            : label;
-                                    },
+                                    const total = formatMoney(context.parsed.y || 0);
 
-                                    label: function (context) {
-                                        const transactions =
-                                            transactionsByLabel[labels[context.dataIndex]] || [];
+                                    return transactions.length === 0
+                                        ? " Sales: ₱" + total
+                                        : " Total Sales: ₱" + total;
+                                },
 
-                                        const total = formatMoney(context.parsed.y || 0);
-
-                                        return transactions.length === 0
-                                            ? " Sales: ₱" + total
-                                            : " Total Sales: ₱" + total;
-                                    },
-
-                                    afterLabel: function (context) {
-                                        return getTransactionTooltipLines(
-                                            transactionsByLabel[labels[context.dataIndex]] || []
-                                        );
-                                    }
+                                afterLabel: function (context) {
+                                    return getTransactionTooltipLines(
+                                        transactionsByKey[keys[context.dataIndex]] || []
+                                    );
                                 }
+                            }
+                        }
+                    },
+
+                    scales: {
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 0,
+                                autoSkip: true,
+
+                                maxTicksLimit: 24
                             }
                         },
 
-                        scales: {
-                            x: {
-                                ticks: {
-                                    maxRotation: 45,
-                                    minRotation: 0,
-                                    autoSkip: true,
-                                    maxTicksLimit: maxTicks
-                                }
-                            },
+                        y: {
+                            beginAtZero: true,
+                            grace: "10%",
 
-                            y: {
-                                beginAtZero: true,
-                                grace: "10%",
-
-                                ticks: {
-                                    callback: function (value) {
-                                        return "₱" + Number(value).toLocaleString("en-PH");
-                                    }
+                            ticks: {
+                                callback: function (value) {
+                                    return "₱" + Number(value).toLocaleString("en-PH");
                                 }
                             }
                         }
                     }
                 }
-            );
+            }
+        );
 
-            const totalForView = values.reduce((sum, value) => sum + value, 0);
+        const totalForView = values.reduce((sum, value) => sum + value, 0);
 
-            const transactionCount = Object.values(transactionsByLabel)
-                .reduce((total, list) => total + list.length, 0);
+        const modeText =
+            mode === "hourly" ? "Hourly" :
+            mode === "daily" ? "Daily" :
+            mode === "weekly" ? "Weekly" : "Monthly";
+
+        setText(
+            "flowStatus",
+            `${modeText} sales flow from ${from} to ${to} — ${sales.length} transaction(s) shown. Total: ₱${formatMoney(totalForView)}.`
+        );
+    }
+
+
+    async function generateReport() {
+        const fromInput = document.getElementById("fromDate");
+        const toInput = document.getElementById("toDate");
+        const button = document.getElementById("generateBtn");
+        const fromDate = fromInput.value;
+        const toDate = toInput.value;
+
+        clearFieldError(fromInput);
+        clearFieldError(toInput);
+        hideFilterStatus();
+
+        if (fromDate === "" || toDate === "") {
+            if (fromDate === "") markFieldError(fromInput);
+            if (toDate === "") markFieldError(toInput);
+            showFilterError("Please select both From Date and To Date.");
+            return;
+        }
+
+        if (fromDate > toDate) {
+            markFieldError(fromInput);
+            markFieldError(toInput);
+            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Generating...";
+
+        try {
+            const query = "from=" + encodeURIComponent(fromDate) + "&to=" + encodeURIComponent(toDate);
+
+            const [allSales, inventoryResponse, movingResponse] = await Promise.all([
+
+                getSales(),
+                fetch("/reports/inventory?" + query),
+                fetch("/reports/moving?" + query)
+            ]);
+
+            const inventoryData = await inventoryResponse.json();
+            const movingData = await movingResponse.json();
+
+            if (!inventoryData.success) {
+                showFilterError(inventoryData.message || "Unable to generate the inventory report.");
+                return;
+            }
+
+            if (!movingData.success) {
+                showFilterError(movingData.message || "Unable to load fast and slow moving products.");
+                return;
+            }
+
+            const filteredSales = allSales.filter(sale => {
+                const key = localDateKey(sale.sale_date);
+
+                if (!key) return false;
+
+                return key >= fromDate && key <= toDate;
+            });
+
+            document.getElementById("reportResult").style.display = "block";
 
             setText(
-                "flowStatus",
-                `${flowDescription} — ${transactionCount} transaction(s) shown. Total: ₱${formatMoney(totalForView)}.`
+                "salesDescription",
+                `Sales flow, sales trend, fast and slow moving products, and sales records from ${fromDate} to ${toDate}.`
             );
-        } catch (error) {
-            console.error("Sales Flow Error:", error);
 
-            setText("flowStatus", "Unable to load the sales flow.");
+
+            renderInventoryReport(inventoryData);
+            renderSalesFlow(filteredSales, fromDate, toDate);
+            renderSalesTrend(filteredSales);
+            renderMoving(movingData);
+            displaySales(filteredSales);
+
+            reportReady = true;
+
+            showFilterInfo(
+                `Showing ${filteredSales.length} sales record(s) from ${fromDate} to ${toDate}.`
+            );
+
+            loadInventoryInsight(inventoryData);
+        } catch (error) {
+            console.error("Generate Report Error:", error);
+
+            showFilterError("Unable to generate the report. Please try again.");
+        } finally {
+            button.disabled = false;
+            button.textContent = "Generate Report";
         }
     }
 
-    updateFlowDateInput();
+    function clearFilter() {
+        document.getElementById("fromDate")._flatpickr.clear();
+        document.getElementById("toDate")._flatpickr.clear();
+
+        clearFieldError(document.getElementById("fromDate"));
+        clearFieldError(document.getElementById("toDate"));
+
+        hideFilterStatus();
+
+
+        document.getElementById("reportResult").style.display = "none";
+        reportReady = false;
+    }
+
+    function printReport() {
+        const fromInput = document.getElementById("fromDate");
+        const toInput = document.getElementById("toDate");
+
+        clearFieldError(fromInput);
+        clearFieldError(toInput);
+
+        if (fromInput.value === "" || toInput.value === "") {
+            if (fromInput.value === "") markFieldError(fromInput);
+            if (toInput.value === "") markFieldError(toInput);
+            showFilterError("Please select both From Date and To Date.");
+            return;
+        }
+
+        if (fromInput.value > toInput.value) {
+            markFieldError(fromInput);
+            markFieldError(toInput);
+            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
+            return;
+        }
+
+        if (!reportReady) {
+            showFilterError("Please click Generate Report first before printing.");
+            return;
+        }
+
+        window.print();
+
+    }
+
     loadReport();
     loadSalesSummary();
-    loadSalesReport();
-    loadSalesTrend();
 
 </script>
 
