@@ -69,46 +69,6 @@
         color: #dc2626;
     }
 
-    .reports-page .report-tabs {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    }
-
-    .reports-page .tab-btn {
-        border: none;
-        padding: 12px 22px;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.92);
-        color: #24479b;
-        font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.2s ease;
-    }
-
-    .reports-page .tab-btn:hover {
-        background: #ffffff;
-    }
-
-    .reports-page .tab-btn.active {
-        background: #24479b;
-        color: #ffffff;
-    }
-
-    .reports-page .tab-panel {
-        display: none;
-    }
-
-    .reports-page .tab-panel.active {
-        display: block;
-    }
-
-    .reports-page .print-only {
-        display: none;
-    }
-
     .reports-page .report-section {
         background: #ffffff;
         border-radius: 10px;
@@ -218,7 +178,7 @@
     .reports-page .print-button {
         background: #111827;
         color: #ffffff;
-        margin-top: 16px !important;
+        margin-top: 16px;
     }
 
     .reports-page .print-button:hover {
@@ -232,28 +192,6 @@
 
     .reports-page .inv-print-button:hover {
         background: #000000;
-    }
-
-    .reports-page .quick-range {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 16px;
-    }
-
-    .reports-page .quick-btn {
-        border: 1px solid #cbd5e1;
-        background: #ffffff;
-        color: #24479b;
-        padding: 7px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    .reports-page .quick-btn:hover {
-        background: #eef4ff;
     }
 
     .reports-page .filter-status {
@@ -275,26 +213,10 @@
 
     .reports-page .inv-controls {
         display: grid;
-        grid-template-columns: 1fr 1fr auto auto;
+        grid-template-columns: 1fr auto auto;
         gap: 14px;
         align-items: end;
-        margin-bottom: 14px;
-    }
-
-    .reports-page .move-controls {
-        display: flex;
-        gap: 14px;
-        flex-wrap: wrap;
-        align-items: flex-end;
         margin-bottom: 16px;
-    }
-
-    .reports-page .move-controls .filter-group {
-        flex: 1 1 200px;
-    }
-
-    .reports-page .move-controls .report-button {
-        flex: 0 0 auto;
     }
 
     .reports-page .inv-notice {
@@ -363,26 +285,6 @@
         text-align: left;
     }
 
-    .reports-page .movement-note {
-        margin: 0 0 16px;
-        padding: 12px 16px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-left: 4px solid #24479b;
-        border-radius: 8px;
-        font-size: 13px !important;
-        line-height: 1.7;
-        color: #475569;
-        text-align: left;
-    }
-
-    .reports-page .movement-title {
-        margin: 22px 0 10px;
-        color: #1f3f8f;
-        font-size: 17px !important;
-        font-weight: 700;
-    }
-
     .reports-page .status-badge {
         display: inline-block;
         padding: 5px 11px;
@@ -392,8 +294,7 @@
         white-space: nowrap;
     }
 
-    .reports-page .status-badge.in,
-    .reports-page .status-badge.fast {
+    .reports-page .status-badge.in {
         background: #dcfce7;
         color: #166534;
     }
@@ -403,15 +304,9 @@
         color: #92400e;
     }
 
-    .reports-page .status-badge.out,
-    .reports-page .status-badge.slow {
+    .reports-page .status-badge.out {
         background: #fee2e2;
         color: #991b1b;
-    }
-
-    .reports-page .status-badge.none {
-        background: #e5e7eb;
-        color: #374151;
     }
 
     .reports-page .sales-flow-controls {
@@ -487,10 +382,6 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 16px;
         margin-bottom: 18px;
-    }
-
-    .reports-page .trend-summary.four {
-        grid-template-columns: repeat(4, 1fr);
     }
 
     .reports-page .trend-card {
@@ -614,40 +505,10 @@
         color: #15803d;
     }
 
-    .reports-page .inv-scroll {
-        max-height: 420px;
-        overflow-y: auto;
-    }
-
-    .reports-page .inv-scroll thead th {
-        position: sticky;
-        top: 0;
-        z-index: 2;
-    }
-
-    .reports-page .filter-group input,
-    .reports-page .filter-group select,
-    .reports-page .sales-flow-controls input,
-    .reports-page .sales-flow-controls select {
-        margin: 0 !important;
-        height: 44px;
-    }
-
-    .reports-page .filter-container .report-button,
-    .reports-page .inv-controls .report-button,
-    .reports-page .sales-flow-controls .report-button {
-        align-self: end;
-        margin: 0 !important;
-    }
-
     @media (max-width: 900px) {
         .reports-page .report-summary,
         .reports-page .trend-summary {
             grid-template-columns: 1fr;
-        }
-
-        .reports-page .trend-summary.four {
-            grid-template-columns: 1fr 1fr;
         }
 
         .reports-page .filter-container,
@@ -672,8 +533,7 @@
 
         .reports-page .filter-container,
         .reports-page .sales-flow-controls,
-        .reports-page .inv-controls,
-        .reports-page .trend-summary.four {
+        .reports-page .inv-controls {
             grid-template-columns: 1fr;
         }
 
@@ -696,9 +556,25 @@
         }
 
         .reports-page .sidebar,
-        .reports-page #summarySection,
-        .reports-page .report-tabs,
-        .reports-page .no-print {
+        .reports-page #summarySection {
+            display: none !important;
+        }
+
+        .reports-page .report-section:has(.filter-container) {
+            display: none !important;
+        }
+
+        .reports-page #salesFlowSection,
+        .reports-page #salesTrendSection,
+        .reports-page #inventorySection {
+            display: none !important;
+        }
+
+        .reports-page .filter-container,
+        .reports-page .filter-status,
+        .reports-page .print-button,
+        .reports-page .clear-button,
+        .reports-page .filter-button {
             display: none !important;
         }
 
@@ -717,23 +593,8 @@
             margin: 0 0 12px !important;
         }
 
-        .reports-page .tab-panel {
-            display: none !important;
-        }
-
-        .reports-page .tab-panel.active {
+        .reports-page .report-section:has(#salesReportTable) {
             display: block !important;
-        }
-
-        .reports-page .print-only {
-            display: block !important;
-            margin: 0 0 10px !important;
-            color: #374151 !important;
-            font-size: 12px !important;
-            font-weight: 700;
-        }
-
-        .reports-page .report-section {
             width: 100% !important;
             max-width: 100% !important;
             margin: 0 !important;
@@ -748,11 +609,6 @@
         .reports-page .table-wrapper {
             width: 100% !important;
             max-width: 100% !important;
-            overflow: visible !important;
-        }
-
-        .reports-page .inv-scroll {
-            max-height: none !important;
             overflow: visible !important;
         }
 
@@ -775,33 +631,29 @@
             box-sizing: border-box !important;
         }
 
-        .reports-page .sales-table th:nth-child(1),
-        .reports-page .sales-table td:nth-child(1) {
+        .reports-page .report-table th:nth-child(1),
+        .reports-page .report-table td:nth-child(1) {
             width: 8% !important;
         }
 
-        .reports-page .sales-table th:nth-child(2),
-        .reports-page .sales-table td:nth-child(2) {
+        .reports-page .report-table th:nth-child(2),
+        .reports-page .report-table td:nth-child(2) {
             width: 30% !important;
         }
 
-        .reports-page .sales-table th:nth-child(3),
-        .reports-page .sales-table td:nth-child(3) {
+        .reports-page .report-table th:nth-child(3),
+        .reports-page .report-table td:nth-child(3) {
             width: 12% !important;
         }
 
-        .reports-page .sales-table th:nth-child(4),
-        .reports-page .sales-table td:nth-child(4) {
+        .reports-page .report-table th:nth-child(4),
+        .reports-page .report-table td:nth-child(4) {
             width: 20% !important;
         }
 
-        .reports-page .sales-table th:nth-child(5),
-        .reports-page .sales-table td:nth-child(5) {
+        .reports-page .report-table th:nth-child(5),
+        .reports-page .report-table td:nth-child(5) {
             width: 30% !important;
-        }
-
-        .reports-page .inventory-table {
-            table-layout: auto !important;
         }
 
         .reports-page .report-table thead th {
@@ -811,26 +663,53 @@
             print-color-adjust: exact;
         }
 
-        .reports-page #invResult .trend-summary {
+        body.reports-page.print-inventory #inventorySection {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 12px !important;
+            box-sizing: border-box !important;
+            box-shadow: none !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 0 !important;
+        }
+
+        body.reports-page.print-inventory .report-section:has(#salesReportTable) {
+            display: none !important;
+        }
+
+        body.reports-page.print-inventory .inv-controls,
+        body.reports-page.print-inventory .inv-notice,
+        body.reports-page.print-inventory .inv-insight {
+            display: none !important;
+        }
+
+        body.reports-page.print-inventory .trend-summary {
             grid-template-columns: repeat(6, 1fr) !important;
             gap: 8px !important;
         }
 
-        .reports-page #invResult .trend-card {
+        body.reports-page.print-inventory .trend-card {
             padding: 8px !important;
             min-height: 0 !important;
         }
 
-        .reports-page #invResult .trend-card-value {
+        body.reports-page.print-inventory .trend-card-value {
             font-size: 13px !important;
         }
 
-        .reports-page #invResult .trend-card-title,
-        .reports-page #invResult .trend-card-subtitle {
+        body.reports-page.print-inventory .trend-card-title,
+        body.reports-page.print-inventory .trend-card-subtitle {
             font-size: 9px !important;
         }
 
-        .reports-page .status-badge {
+        body.reports-page.print-inventory .inventory-table th,
+        body.reports-page.print-inventory .inventory-table td {
+            width: auto !important;
+        }
+
+        body.reports-page.print-inventory .status-badge {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -894,6 +773,50 @@
     .flatpickr-day.selected.today {
         background: #24479b !important;
     }
+
+    .reports-page .filter-group input,
+    .reports-page .filter-group select,
+    .reports-page .sales-flow-controls input,
+    .reports-page .sales-flow-controls select {
+        margin: 0 !important;
+        height: 44px;
+    }
+
+    .reports-page .filter-container,
+    .reports-page .inv-controls,
+    .reports-page .sales-flow-controls {
+        align-items: end;
+    }
+
+    .reports-page .filter-container .report-button,
+    .reports-page .inv-controls .report-button,
+    .reports-page .sales-flow-controls .report-button {
+        align-self: end;
+        margin: 0 !important;
+    }
+
+    /* Print button spacing */
+    .reports-page .report-button.print-button {
+        margin-top: 14px !important;
+    }
+
+    .reports-page .inv-scroll {
+        max-height: 420px;
+        overflow-y: auto;
+    }
+
+    .reports-page .inv-scroll thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    @media print {
+        .reports-page .inv-scroll {
+            max-height: none !important;
+            overflow: visible !important;
+        }
+    }
 </style>
 </head>
 
@@ -913,7 +836,6 @@
         <li><a href="stock_in.html">Stock In</a></li>
         <li><a href="sales.html">Sales</a></li>
         <li><a href="sales-return.html">Sales Return</a></li>
-        <li><a href="sales-refund.html">Sales Refund</a></li>
         <li><a href="reports.html">Reports</a></li>
         <li><a href="analytics.html">Analytics</a></li>
         <li><a href="ai_recommendation.html">AI Recommendations</a></li>
@@ -942,420 +864,241 @@
         </div>
     </div>
 
-    <div class="report-tabs no-print">
-        <button type="button" class="tab-btn active" data-tab="tabInventory" onclick="showTab('tabInventory')">Inventory Report</button>
-        <button type="button" class="tab-btn" data-tab="tabSales" onclick="showTab('tabSales')">Sales Report</button>
-        <button type="button" class="tab-btn" data-tab="tabFlow" onclick="showTab('tabFlow')">Sales Flow</button>
-        <button type="button" class="tab-btn" data-tab="tabMovement" onclick="showTab('tabMovement')">Fast &amp; Slow Moving</button>
-    </div>
+    <div class="report-section" id="inventorySection">
+        <h2>Generate Inventory Report</h2>
+        <p class="section-description">
+            Select a report period and click Generate Report to view the inventory
+            records, stock status, and sales movement for that period.
+        </p>
 
-    <div id="tabInventory" class="tab-panel active">
-
-        <div class="report-section" id="inventorySection">
-            <h2>Generate Inventory Report</h2>
-            <p class="section-description no-print">
-                Select a date range and click Generate Report to view the inventory
-                records, stock status, and sales movement within that period.
-            </p>
-
-            <div class="inv-controls no-print">
-                <div class="filter-group">
-                    <label for="invFrom">From Date</label>
-                    <input type="text" id="invFrom" placeholder="Select date" readonly>
-                </div>
-
-                <div class="filter-group">
-                    <label for="invTo">To Date</label>
-                    <input type="text" id="invTo" placeholder="Select date" readonly>
-                </div>
-
-                <button type="button" id="invGenerateBtn" class="report-button filter-button" onclick="generateInventoryReport()">
-                    Generate Report
-                </button>
-
-                <button type="button" class="report-button inv-print-button" onclick="printInventoryReport()">
-                    Print Report
-                </button>
+        <div class="inv-controls">
+            <div class="filter-group">
+                <label for="invPeriod">Report Period</label>
+                <select id="invPeriod">
+                    <option value="">Select period</option>
+                    <option value="7">Last 7 Days</option>
+                    <option value="30">Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                    <option value="all">All Recorded Sales</option>
+                </select>
             </div>
 
-            <div class="quick-range no-print">
-                <button type="button" class="quick-btn" onclick="setInvRange(7)">Last 7 Days</button>
-                <button type="button" class="quick-btn" onclick="setInvRange(30)">Last 30 Days</button>
-                <button type="button" class="quick-btn" onclick="setInvRange(90)">Last 90 Days</button>
-                <button type="button" class="quick-btn" onclick="setInvThisMonth()">This Month</button>
-            </div>
+            <button type="button" id="invGenerateBtn" class="report-button filter-button" onclick="generateInventoryReport()">
+                Generate Report
+            </button>
 
-            <div id="invNotice" class="inv-notice no-print" role="status"></div>
-
-            <div id="invResult" style="display:none;">
-
-                <div class="inv-insight no-print">
-                    <h3>AI Insights</h3>
-                    <p id="invInsightText"></p>
-                    <small id="invInsightTag"></small>
-                </div>
-
-                <div class="trend-summary">
-                    <div class="trend-card">
-                        <span class="trend-card-title">Total Products</span>
-                        <span class="trend-card-value" id="invTotalProducts">0</span>
-                        <span class="trend-card-subtitle">In the inventory</span>
-                    </div>
-
-                    <div class="trend-card">
-                        <span class="trend-card-title">Total Stock</span>
-                        <span class="trend-card-value" id="invTotalStock">0 pcs</span>
-                        <span class="trend-card-subtitle">Current quantity</span>
-                    </div>
-
-                    <div class="trend-card">
-                        <span class="trend-card-title">Stock Value</span>
-                        <span class="trend-card-value" id="invStockValue">₱0.00</span>
-                        <span class="trend-card-subtitle">Quantity × price</span>
-                    </div>
-
-                    <div class="trend-card">
-                        <span class="trend-card-title">Low Stock</span>
-                        <span class="trend-card-value" id="invLowStock">0</span>
-                        <span class="trend-card-subtitle">1 to 10 pieces left</span>
-                    </div>
-
-                    <div class="trend-card">
-                        <span class="trend-card-title">Out of Stock</span>
-                        <span class="trend-card-value" id="invOutOfStock">0</span>
-                        <span class="trend-card-subtitle">Zero stock</span>
-                    </div>
-
-                    <div class="trend-card">
-                        <span class="trend-card-title">Net Sold</span>
-                        <span class="trend-card-value" id="invNetSold">0 pcs</span>
-                        <span class="trend-card-subtitle" id="invPeriodLabel">In the selected period</span>
-                    </div>
-                </div>
-
-                <div class="table-wrapper inv-scroll">
-                    <table class="report-table inventory-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>Stock</th>
-                                <th>Price</th>
-                                <th>Sold (Period)</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="inventoryBody">
-                            <tr>
-                                <td colspan="7" class="empty-row">No report generated yet.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <p class="inv-footnote" id="invFootnote"></p>
-            </div>
+            <button type="button" class="report-button inv-print-button" onclick="printInventoryReport()">
+                Print Report
+            </button>
         </div>
 
-    </div>
+        <div id="invNotice" class="inv-notice" role="status"></div>
 
-    <div id="tabSales" class="tab-panel">
+        <div id="invResult" style="display:none;">
 
-        <div class="report-section" id="salesReportSection">
-            <h2>Sales Report</h2>
-
-            <p class="section-description no-print">
-                Select a date range to display the sales transactions recorded within the
-                selected period. Leave the dates empty to show all recorded sales.
-            </p>
-
-            <p class="print-only" id="salesPrintPeriod"></p>
-
-            <div class="filter-container no-print">
-                <div class="filter-group">
-                    <label for="fromDate">From Date</label>
-                    <input type="text" id="fromDate" placeholder="Select date" readonly>
-                </div>
-
-                <div class="filter-group">
-                    <label for="toDate">To Date</label>
-                    <input type="text" id="toDate" placeholder="Select date" readonly>
-                </div>
-
-                <button type="button" class="report-button filter-button" onclick="filterReport()">Filter</button>
-
-                <button type="button" class="report-button clear-button" onclick="clearFilter()">Clear</button>
+            <div class="inv-insight">
+                <h3>AI Insights</h3>
+                <p id="invInsightText"></p>
+                <small id="invInsightTag"></small>
             </div>
-
-            <div id="filterStatus" class="filter-status no-print"></div>
-
-            <button type="button" class="report-button print-button no-print" onclick="printSalesReport()">Print Report</button>
-
-            <div class="trend-summary" style="margin-top:18px;">
-                <div class="trend-card">
-                    <span class="trend-card-title">Transactions</span>
-                    <span class="trend-card-value" id="salesTxCount">0</span>
-                    <span class="trend-card-subtitle">Sales records shown</span>
-                </div>
-
-                <div class="trend-card">
-                    <span class="trend-card-title">Quantity Sold</span>
-                    <span class="trend-card-value" id="salesQtyTotal">0 pcs</span>
-                    <span class="trend-card-subtitle">Total pieces sold</span>
-                </div>
-
-                <div class="trend-card">
-                    <span class="trend-card-title">Total Amount</span>
-                    <span class="trend-card-value" id="salesAmountTotal">₱0.00</span>
-                    <span class="trend-card-subtitle">Sum of the sales shown</span>
-                </div>
-            </div>
-
-            <div class="table-wrapper">
-                <table class="report-table sales-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Total Amount</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="salesReportTable">
-                        <tr>
-                            <td colspan="5" class="empty-row">Loading sales records...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="tabFlow" class="tab-panel">
-
-        <div class="report-section" id="salesFlowSection">
-            <h2>Sales Flow</h2>
-
-            <p class="section-description">
-                Graphical view of recorded sales by day, week, month, or year.
-            </p>
-
-            <div class="sales-flow-controls">
-                <div class="filter-group">
-                    <label for="flowPeriod">Sales Period</label>
-
-                    <select id="flowPeriod" onchange="updateFlowDateInput()">
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="flowDate" id="flowDateLabel">Select Date</label>
-                    <input type="date" id="flowDate">
-                </div>
-
-                <button type="button" class="report-button filter-button" onclick="loadSalesFlow()">Show Graph</button>
-            </div>
-
-            <div class="sales-flow-chart-wrapper">
-                <canvas id="salesFlowChart"></canvas>
-            </div>
-
-            <div id="flowStatus" class="flow-status">Select a period and click Show Graph.</div>
-        </div>
-
-        <div class="report-section" id="salesTrendSection">
-            <h2>Sales Trend</h2>
-
-            <p class="section-description">
-                Shows the products with the highest recorded sales quantity based on sales transactions in the system.
-            </p>
 
             <div class="trend-summary">
                 <div class="trend-card">
-                    <span class="trend-card-title">Top-Selling Product</span>
-                    <span id="topSellingProduct" class="trend-card-value">Loading...</span>
-                    <span class="trend-card-subtitle">Most sold product</span>
+                    <span class="trend-card-title">Total Products</span>
+                    <span class="trend-card-value" id="invTotalProducts">0</span>
+                    <span class="trend-card-subtitle">In the inventory</span>
                 </div>
 
                 <div class="trend-card">
-                    <span class="trend-card-title">Highest Quantity Sold</span>
-                    <span id="highestQuantitySold" class="trend-card-value">0 pcs</span>
-                    <span class="trend-card-subtitle">In a single product</span>
+                    <span class="trend-card-title">Total Stock</span>
+                    <span class="trend-card-value" id="invTotalStock">0 pcs</span>
+                    <span class="trend-card-subtitle">Current quantity</span>
                 </div>
 
                 <div class="trend-card">
-                    <span class="trend-card-title">Total Quantity Sold</span>
-                    <span id="totalQuantitySold" class="trend-card-value">0 pcs</span>
-                    <span class="trend-card-subtitle">Across all recorded sales</span>
+                    <span class="trend-card-title">Stock Value</span>
+                    <span class="trend-card-value" id="invStockValue">₱0.00</span>
+                    <span class="trend-card-subtitle">Quantity × price</span>
+                </div>
+
+                <div class="trend-card">
+                    <span class="trend-card-title">Low Stock</span>
+                    <span class="trend-card-value" id="invLowStock">0</span>
+                    <span class="trend-card-subtitle">1 to 10 pieces left</span>
+                </div>
+
+                <div class="trend-card">
+                    <span class="trend-card-title">Out of Stock</span>
+                    <span class="trend-card-value" id="invOutOfStock">0</span>
+                    <span class="trend-card-subtitle">Zero stock</span>
+                </div>
+
+                <div class="trend-card">
+                    <span class="trend-card-title">Net Sold</span>
+                    <span class="trend-card-value" id="invNetSold">0 pcs</span>
+                    <span class="trend-card-subtitle" id="invPeriodLabel">In the selected period</span>
                 </div>
             </div>
 
-            <div class="table-wrapper">
-                <table class="report-table">
+            <div class="table-wrapper inv-scroll">
+                <table class="report-table inventory-table">
                     <thead>
                         <tr>
-                            <th>Rank</th>
-                            <th>Product</th>
-                            <th>Quantity Sold</th>
-                            <th>Sales Level</th>
+                            <th>ID</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Sold (Period)</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
 
-                    <tbody id="trendTable">
+                    <tbody id="inventoryBody">
                         <tr>
-                            <td colspan="4" class="empty-row">Loading sales trend...</td>
+                            <td colspan="7" class="empty-row">No report generated yet.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
 
+            <p class="inv-footnote" id="invFootnote"></p>
+        </div>
     </div>
 
-    <div id="tabMovement" class="tab-panel">
+    <div class="report-section">
+        <h2>Sales Report Filter</h2>
 
-        <div class="report-section" id="movementSection">
-            <h2>Fast &amp; Slow Moving Products</h2>
+        <p class="section-description">
+            Select a date range to display sales transactions recorded within the selected period.
+        </p>
 
-            <p class="section-description">
-                Choose a time period to see how often each product was sold.
-            </p>
-
-            <div class="movement-note">
-                <strong>Fast Moving:</strong> the product has sales every day within the selected period, even if only one piece a day.<br>
-                <strong>Slow Moving:</strong> the product has sales, but on and off, with some days that have sales and some days that have none.<br>
-                <strong>No Sales:</strong> the product has no sales at all within the selected period.
+        <div class="filter-container">
+            <div class="filter-group">
+                <label for="fromDate">From Date</label>
+                <input type="text" id="fromDate" placeholder="Select date" readonly>
             </div>
 
-            <div class="move-controls">
-                <div class="filter-group">
-                    <label for="moveView">View By</label>
-
-                    <select id="moveView" onchange="updateMoveInputs()">
-                        <option value="yearly">Yearly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="custom">Custom Range</option>
-                    </select>
-                </div>
-
-                <div class="filter-group" id="moveSingleGroup">
-                    <label for="moveValue" id="moveValueLabel">Select Year</label>
-                    <input type="number" id="moveValue">
-                </div>
-
-                <div class="filter-group" id="moveFromGroup" style="display:none;">
-                    <label for="moveFrom">From Date</label>
-                    <input type="text" id="moveFrom" placeholder="Select date" readonly>
-                </div>
-
-                <div class="filter-group" id="moveToGroup" style="display:none;">
-                    <label for="moveTo">To Date</label>
-                    <input type="text" id="moveTo" placeholder="Select date" readonly>
-                </div>
-
-                <button type="button" id="moveBtn" class="report-button filter-button" onclick="loadMovement()">Show Movement</button>
+            <div class="filter-group">
+                <label for="toDate">To Date</label>
+                <input type="text" id="toDate" placeholder="Select date" readonly>
             </div>
 
-            <div id="moveNotice" class="inv-notice" role="status"></div>
+            <button class="report-button filter-button" onclick="filterReport()">Filter</button>
 
-            <div id="moveResult" style="display:none;">
+            <button class="report-button clear-button" onclick="clearFilter()">Clear</button>
+        </div>
 
-                <div class="flow-status" id="movePeriodLabel" style="margin:0 0 16px;"></div>
+        <div id="filterStatus" class="filter-status"></div>
 
-                <div class="trend-summary four">
-                    <div class="trend-card">
-                        <span class="trend-card-title">Fast Moving</span>
-                        <span class="trend-card-value" id="moveFastCount">0</span>
-                        <span class="trend-card-subtitle">Sold every day</span>
-                    </div>
+        <button class="report-button print-button" onclick="printSalesReport()">Print Report</button>
+    </div>
 
-                    <div class="trend-card">
-                        <span class="trend-card-title">Slow Moving</span>
-                        <span class="trend-card-value" id="moveSlowCount">0</span>
-                        <span class="trend-card-subtitle">Sold on some days only</span>
-                    </div>
+    <div class="report-section">
+        <h2>Sales Report</h2>
 
-                    <div class="trend-card">
-                        <span class="trend-card-title">No Sales</span>
-                        <span class="trend-card-value" id="moveNoneCount">0</span>
-                        <span class="trend-card-subtitle">No sale in the period</span>
-                    </div>
+        <p class="section-description">Recorded sales transactions from the system.</p>
 
-                    <div class="trend-card">
-                        <span class="trend-card-title">Days in Period</span>
-                        <span class="trend-card-value" id="moveDaysCount">0</span>
-                        <span class="trend-card-subtitle">Counted up to today</span>
-                    </div>
-                </div>
+        <div class="table-wrapper">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Total Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
 
-                <h3 class="movement-title">Fast Moving Products</h3>
+                <tbody id="salesReportTable">
+                    <tr>
+                        <td colspan="5" class="empty-row">Loading sales records...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-                <div class="table-wrapper inv-scroll">
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Product</th>
-                                <th>Category</th>
-                                <th>Days with Sales</th>
-                                <th>Quantity Sold</th>
-                                <th>Stock</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="moveFastBody"></tbody>
-                    </table>
-                </div>
+    <div class="report-section" id="salesFlowSection">
+        <h2>Sales Flow</h2>
 
-                <h3 class="movement-title">Slow Moving Products</h3>
+        <p class="section-description">
+            Graphical view of recorded sales by day, week, month, or year.
+        </p>
 
-                <div class="table-wrapper inv-scroll">
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Product</th>
-                                <th>Category</th>
-                                <th>Days with Sales</th>
-                                <th>Quantity Sold</th>
-                                <th>Stock</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="moveSlowBody"></tbody>
-                    </table>
-                </div>
+        <div class="sales-flow-controls">
+            <div class="filter-group">
+                <label for="flowPeriod">Sales Period</label>
 
-                <h3 class="movement-title">Products with No Sales</h3>
+                <select id="flowPeriod" onchange="updateFlowDateInput()">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </div>
 
-                <div class="table-wrapper inv-scroll">
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Product</th>
-                                <th>Category</th>
-                                <th>Stock</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="moveNoneBody"></tbody>
-                    </table>
-                </div>
+            <div class="filter-group">
+                <label for="flowDate" id="flowDateLabel">Select Date</label>
+                <input type="date" id="flowDate">
+            </div>
 
+            <button class="report-button filter-button" onclick="loadSalesFlow()">Show Graph</button>
+        </div>
+
+        <div class="sales-flow-chart-wrapper">
+            <canvas id="salesFlowChart"></canvas>
+        </div>
+
+        <div id="flowStatus" class="flow-status">Select a period and click Show Graph.</div>
+    </div>
+
+    <div class="report-section" id="salesTrendSection">
+        <h2>Sales Trend</h2>
+
+        <p class="section-description">
+            Shows the products with the highest recorded sales quantity based on sales transactions in the system.
+        </p>
+
+        <div class="trend-summary">
+            <div class="trend-card">
+                <span class="trend-card-title">Top-Selling Product</span>
+                <span id="topSellingProduct" class="trend-card-value">Loading...</span>
+                <span class="trend-card-subtitle">Most sold product</span>
+            </div>
+
+            <div class="trend-card">
+                <span class="trend-card-title">Highest Quantity Sold</span>
+                <span id="highestQuantitySold" class="trend-card-value">0 pcs</span>
+                <span class="trend-card-subtitle">In a single product</span>
+            </div>
+
+            <div class="trend-card">
+                <span class="trend-card-title">Total Quantity Sold</span>
+                <span id="totalQuantitySold" class="trend-card-value">0 pcs</span>
+                <span class="trend-card-subtitle">Across all recorded sales</span>
             </div>
         </div>
 
+        <div class="table-wrapper">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Product</th>
+                        <th>Quantity Sold</th>
+                        <th>Sales Level</th>
+                    </tr>
+                </thead>
+
+                <tbody id="trendTable">
+                    <tr>
+                        <td colspan="4" class="empty-row">Loading sales trend...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
@@ -1380,37 +1123,21 @@
         });
     }
 
-    const pickerOptions = {
+    flatpickr("#fromDate", {
         dateFormat: "Y-m-d",
         closeOnSelect: true,
         allowInput: false
-    };
+    });
 
-    const invFromPicker = flatpickr("#invFrom", pickerOptions);
-    const invToPicker = flatpickr("#invTo", pickerOptions);
+    flatpickr("#toDate", {
+        dateFormat: "Y-m-d",
+        closeOnSelect: true,
+        allowInput: false
+    });
 
-    flatpickr("#fromDate", pickerOptions);
-    flatpickr("#toDate", pickerOptions);
-    flatpickr("#moveFrom", pickerOptions);
-    flatpickr("#moveTo", pickerOptions);
-
-    let salesFlowChart = null;
-    let movementLoaded = false;
-
-    function showTab(tabId) {
-        document.querySelectorAll(".tab-panel").forEach(panel => {
-            panel.classList.toggle("active", panel.id === tabId);
-        });
-
-        document.querySelectorAll(".tab-btn").forEach(button => {
-            button.classList.toggle("active", button.dataset.tab === tabId);
-        });
-
-        if (tabId === "tabMovement" && !movementLoaded) {
-            movementLoaded = true;
-            loadMovement();
-        }
-    }
+    window.addEventListener("afterprint", () => {
+        document.body.classList.remove("print-inventory");
+    });
 
     function markFieldError(field) {
         if (!field) return;
@@ -1427,7 +1154,7 @@
     function showFilterError(message) {
         const status = document.getElementById("filterStatus");
 
-        status.className = "filter-status error no-print";
+        status.className = "filter-status error";
         status.style.display = "block";
         status.textContent = message;
     }
@@ -1435,7 +1162,7 @@
     function showFilterInfo(message) {
         const status = document.getElementById("filterStatus");
 
-        status.className = "filter-status no-print";
+        status.className = "filter-status";
         status.style.display = "block";
         status.textContent = message;
     }
@@ -1443,26 +1170,12 @@
     function hideFilterStatus() {
         const status = document.getElementById("filterStatus");
 
-        status.className = "filter-status no-print";
+        status.className = "filter-status";
         status.style.display = "none";
         status.textContent = "";
     }
 
-    function showNotice(id, message, type) {
-        const notice = document.getElementById(id);
-
-        notice.textContent = message;
-        notice.className = "inv-notice " + type;
-    }
-
-    function hideNotice(id) {
-        const notice = document.getElementById(id);
-
-        notice.textContent = "";
-        notice.className = "inv-notice";
-    }
-
-    ["fromDate", "toDate", "flowDate", "invFrom", "invTo", "moveFrom", "moveTo", "moveValue"].forEach(id => {
+    ["fromDate", "toDate", "flowDate", "invPeriod"].forEach(id => {
         const field = document.getElementById(id);
 
         if (field) {
@@ -1484,6 +1197,8 @@
             });
         }
     });
+
+    let salesFlowChart = null;
 
     function formatMoney(value) {
         return Number(value || 0).toLocaleString("en-PH", {
@@ -1510,10 +1225,6 @@
         if (element) element.textContent = value;
     }
 
-    function pad(value) {
-        return String(value).padStart(2, "0");
-    }
-
     function parseSaleDate(value) {
         if (!value) return null;
 
@@ -1531,7 +1242,11 @@
 
         if (!date) return "";
 
-        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
     }
 
     function formatExactDateTime(date) {
@@ -1625,28 +1340,25 @@
         }
     }
 
+    function showInvNotice(message, type) {
+        const notice = document.getElementById("invNotice");
+
+        notice.textContent = message;
+        notice.className = "inv-notice " + type;
+    }
+
+    function hideInvNotice() {
+        const notice = document.getElementById("invNotice");
+
+        notice.textContent = "";
+        notice.className = "inv-notice";
+    }
+
     function statusClass(status) {
         if (status === "Out of Stock") return "out";
         if (status === "Low Stock") return "low";
 
         return "in";
-    }
-
-    function setInvRange(days) {
-        const to = new Date();
-        const from = new Date();
-
-        from.setDate(from.getDate() - (days - 1));
-
-        invFromPicker.setDate(from, true);
-        invToPicker.setDate(to, true);
-    }
-
-    function setInvThisMonth() {
-        const now = new Date();
-
-        invFromPicker.setDate(new Date(now.getFullYear(), now.getMonth(), 1), true);
-        invToPicker.setDate(now, true);
     }
 
     function renderInventoryReport(data) {
@@ -1743,34 +1455,16 @@
     }
 
     async function generateInventoryReport() {
-        const fromInput = document.getElementById("invFrom");
-        const toInput = document.getElementById("invTo");
+        const select = document.getElementById("invPeriod");
         const button = document.getElementById("invGenerateBtn");
-        const fromDate = fromInput.value;
-        const toDate = toInput.value;
 
-        clearFieldError(fromInput);
-        clearFieldError(toInput);
-        hideNotice("invNotice");
+        clearFieldError(select);
+        hideInvNotice();
         document.getElementById("invResult").style.display = "none";
 
-        if (fromDate === "" || toDate === "") {
-            if (fromDate === "") markFieldError(fromInput);
-            if (toDate === "") markFieldError(toInput);
-
-            showNotice("invNotice", "Please select both From Date and To Date.", "error");
-            return;
-        }
-
-        if (fromDate > toDate) {
-            markFieldError(fromInput);
-            markFieldError(toInput);
-
-            showNotice(
-                "invNotice",
-                "From Date cannot be later than To Date. Please select a valid date range.",
-                "error"
-            );
+        if (!select.value) {
+            markFieldError(select);
+            showInvNotice("Please select a report period.", "error");
             return;
         }
 
@@ -1779,15 +1473,13 @@
 
         try {
             const response = await fetch(
-                "/reports/inventory?from=" + encodeURIComponent(fromDate) +
-                "&to=" + encodeURIComponent(toDate)
+                "/reports/inventory?period=" + encodeURIComponent(select.value)
             );
 
             const data = await response.json();
 
             if (!data.success) {
-                showNotice(
-                    "invNotice",
+                showInvNotice(
                     data.message || "Unable to generate the inventory report.",
                     "error"
                 );
@@ -1799,8 +1491,7 @@
         } catch (error) {
             console.error("Generate Inventory Report Error:", error);
 
-            showNotice(
-                "invNotice",
+            showInvNotice(
                 "Unable to generate the inventory report. Please try again.",
                 "error"
             );
@@ -1814,25 +1505,24 @@
         const result = document.getElementById("invResult");
 
         if (result.style.display === "none") {
-            showNotice("invNotice", "Please generate the inventory report first.", "info");
+            showInvNotice("Please generate the inventory report first.", "info");
             return;
         }
 
+        document.body.classList.add("print-inventory");
         window.print();
     }
 
-    function updateSalesSummary(sales) {
-        let quantity = 0;
-        let total = 0;
+    async function loadSalesReport() {
+        try {
+            const sales = await getSales();
+            displaySales(sales);
+        } catch (error) {
+            console.error("Sales Report Error:", error);
 
-        sales.forEach(sale => {
-            quantity += Number(sale.quantity) || 0;
-            total += Number(sale.total) || 0;
-        });
-
-        setText("salesTxCount", formatNumber(sales.length));
-        setText("salesQtyTotal", formatNumber(quantity) + " pcs");
-        setText("salesAmountTotal", "₱" + formatMoney(total));
+            document.getElementById("salesReportTable").innerHTML =
+                `<tr><td colspan="5" class="empty-row">Unable to load sales records.</td></tr>`;
+        }
     }
 
     function displaySales(sales) {
@@ -1848,109 +1538,6 @@
 
         document.getElementById("salesReportTable").innerHTML = rows ||
             `<tr><td colspan="5" class="empty-row">No sales records found.</td></tr>`;
-
-        updateSalesSummary(sales);
-    }
-
-    async function loadSalesReport() {
-        try {
-            const sales = await getSales();
-            displaySales(sales);
-        } catch (error) {
-            console.error("Sales Report Error:", error);
-
-            document.getElementById("salesReportTable").innerHTML =
-                `<tr><td colspan="5" class="empty-row">Unable to load sales records.</td></tr>`;
-        }
-    }
-
-    async function filterReport() {
-        const fromDateInput = document.getElementById("fromDate");
-        const toDateInput = document.getElementById("toDate");
-        const fromDate = fromDateInput.value;
-        const toDate = toDateInput.value;
-
-        clearFieldError(fromDateInput);
-        clearFieldError(toDateInput);
-
-        if (fromDate === "" || toDate === "") {
-            if (fromDate === "") markFieldError(fromDateInput);
-            if (toDate === "") markFieldError(toDateInput);
-            return;
-        }
-
-        if (fromDate > toDate) {
-            markFieldError(fromDateInput);
-            markFieldError(toDateInput);
-            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
-            return;
-        }
-
-        try {
-            const sales = await getSales();
-
-            const filteredSales = sales.filter(sale => {
-                const saleOnly = localDateKey(sale.sale_date);
-
-                if (!saleOnly) return false;
-
-                return saleOnly >= fromDate && saleOnly <= toDate;
-            });
-
-            displaySales(filteredSales);
-
-            setText("salesPrintPeriod", `Sales Report: ${fromDate} to ${toDate}`);
-
-            showFilterInfo(
-                `Showing ${filteredSales.length} sales record(s) from ${fromDate} to ${toDate}.`
-            );
-        } catch (error) {
-            console.error("Filter Error:", error);
-
-            markFieldError(fromDateInput);
-            markFieldError(toDateInput);
-        }
-    }
-
-    function clearFilter() {
-        document.getElementById("fromDate")._flatpickr.clear();
-        document.getElementById("toDate")._flatpickr.clear();
-
-        clearFieldError(document.getElementById("fromDate"));
-        clearFieldError(document.getElementById("toDate"));
-
-        hideFilterStatus();
-
-        setText("salesPrintPeriod", "");
-
-        loadSalesReport();
-    }
-
-    function printSalesReport() {
-        const fromDateInput = document.getElementById("fromDate");
-        const toDateInput = document.getElementById("toDate");
-        const fromDate = fromDateInput.value;
-        const toDate = toDateInput.value;
-
-        clearFieldError(fromDateInput);
-        clearFieldError(toDateInput);
-
-        if ((fromDate !== "" && toDate === "") || (fromDate === "" && toDate !== "")) {
-            if (fromDate === "") markFieldError(fromDateInput);
-            if (toDate === "") markFieldError(toDateInput);
-
-            showFilterError("Please select both From Date and To Date, or clear both dates.");
-            return;
-        }
-
-        if (fromDate !== "" && fromDate > toDate) {
-            markFieldError(fromDateInput);
-            markFieldError(toDateInput);
-            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
-            return;
-        }
-
-        window.print();
     }
 
     async function loadSalesTrend() {
@@ -2016,6 +1603,88 @@
             document.getElementById("trendTable").innerHTML =
                 `<tr><td colspan="4" class="empty-row">Unable to load sales trend.</td></tr>`;
         }
+    }
+
+    async function filterReport() {
+        const fromDateInput = document.getElementById("fromDate");
+        const toDateInput = document.getElementById("toDate");
+        const fromDate = fromDateInput.value;
+        const toDate = toDateInput.value;
+
+        clearFieldError(fromDateInput);
+        clearFieldError(toDateInput);
+
+        if (fromDate === "" || toDate === "") {
+            if (fromDate === "") markFieldError(fromDateInput);
+            if (toDate === "") markFieldError(toDateInput);
+            return;
+        }
+
+        if (fromDate > toDate) {
+            markFieldError(fromDateInput);
+            markFieldError(toDateInput);
+            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
+            return;
+        }
+
+        try {
+            const sales = await getSales();
+
+            const filteredSales = sales.filter(sale => {
+                const saleOnly = localDateKey(sale.sale_date);
+
+                if (!saleOnly) return false;
+
+                return saleOnly >= fromDate && saleOnly <= toDate;
+            });
+
+            displaySales(filteredSales);
+
+            showFilterInfo(
+                `Showing ${filteredSales.length} sales record(s) from ${fromDate} to ${toDate}.`
+            );
+        } catch (error) {
+            console.error("Filter Error:", error);
+
+            markFieldError(fromDateInput);
+            markFieldError(toDateInput);
+        }
+    }
+
+    function clearFilter() {
+        document.getElementById("fromDate")._flatpickr.clear();
+        document.getElementById("toDate")._flatpickr.clear();
+
+        clearFieldError(document.getElementById("fromDate"));
+        clearFieldError(document.getElementById("toDate"));
+
+        hideFilterStatus();
+
+        loadSalesReport();
+    }
+
+    function printSalesReport() {
+        const fromDateInput = document.getElementById("fromDate");
+        const toDateInput = document.getElementById("toDate");
+
+        clearFieldError(fromDateInput);
+        clearFieldError(toDateInput);
+
+        if (fromDateInput.value === "" || toDateInput.value === "") {
+            if (fromDateInput.value === "") markFieldError(fromDateInput);
+            if (toDateInput.value === "") markFieldError(toDateInput);
+            return;
+        }
+
+        if (fromDateInput.value > toDateInput.value) {
+            markFieldError(fromDateInput);
+            markFieldError(toDateInput);
+            showFilterError("From Date cannot be later than To Date. Please select a valid date range.");
+            return;
+        }
+
+        document.body.classList.remove("print-inventory");
+        window.print();
     }
 
     function updateFlowDateInput() {
@@ -2148,7 +1817,7 @@
                 const hours = [];
 
                 for (let hour = 0; hour < 24; hour++) {
-                    hours.push(pad(hour) + ":00");
+                    hours.push(String(hour).padStart(2, "0") + ":00");
                 }
 
                 prepare(hours);
@@ -2159,7 +1828,11 @@
                     if (!saleDate) return;
                     if (localDateKey(saleDate) !== selectedValue) return;
 
-                    addTransaction(pad(saleDate.getHours()) + ":00", sale, saleDate);
+                    addTransaction(
+                        String(saleDate.getHours()).padStart(2, "0") + ":00",
+                        sale,
+                        saleDate
+                    );
                 });
 
                 flowDescription = `Daily sales flow for ${selectedValue}`;
@@ -2194,7 +1867,7 @@
                 const days = [];
 
                 for (let day = 1; day <= daysInMonth; day++) {
-                    days.push(pad(day));
+                    days.push(String(day).padStart(2, "0"));
                 }
 
                 prepare(days);
@@ -2205,7 +1878,11 @@
                     if (!saleDate) return;
                     if (!localDateKey(saleDate).startsWith(selectedValue)) return;
 
-                    addTransaction(pad(saleDate.getDate()), sale, saleDate);
+                    addTransaction(
+                        String(saleDate.getDate()).padStart(2, "0"),
+                        sale,
+                        saleDate
+                    );
                 });
 
                 flowDescription = `Monthly sales flow for ${selectedValue}`;
@@ -2350,245 +2027,7 @@
         }
     }
 
-    function updateMoveInputs() {
-        const view = document.getElementById("moveView").value;
-        const input = document.getElementById("moveValue");
-        const label = document.getElementById("moveValueLabel");
-        const todayKey = localDateKey(new Date());
-        const isCustom = view === "custom";
-
-        document.getElementById("moveSingleGroup").style.display = isCustom ? "none" : "flex";
-        document.getElementById("moveFromGroup").style.display = isCustom ? "flex" : "none";
-        document.getElementById("moveToGroup").style.display = isCustom ? "flex" : "none";
-
-        clearFieldError(input);
-
-        if (isCustom) return;
-
-        input.removeAttribute("min");
-        input.removeAttribute("max");
-        input.placeholder = "";
-
-        if (view === "yearly") {
-            input.type = "number";
-            input.min = "2000";
-            input.max = "2100";
-            input.placeholder = "YYYY";
-            input.value = todayKey.slice(0, 4);
-            label.textContent = "Select Year";
-        } else if (view === "monthly") {
-            input.type = "month";
-            input.value = todayKey.slice(0, 7);
-            label.textContent = "Select Month";
-        } else {
-            input.type = "date";
-            input.value = todayKey;
-            label.textContent = "Select Any Date in the Week";
-        }
-    }
-
-    function getMoveRange() {
-        const view = document.getElementById("moveView").value;
-        const input = document.getElementById("moveValue");
-        const fromInput = document.getElementById("moveFrom");
-        const toInput = document.getElementById("moveTo");
-
-        clearFieldError(input);
-        clearFieldError(fromInput);
-        clearFieldError(toInput);
-
-        if (view === "custom") {
-            const fromDate = fromInput.value;
-            const toDate = toInput.value;
-
-            if (fromDate === "" || toDate === "") {
-                if (fromDate === "") markFieldError(fromInput);
-                if (toDate === "") markFieldError(toInput);
-
-                return { error: "Please select both From Date and To Date." };
-            }
-
-            if (fromDate > toDate) {
-                markFieldError(fromInput);
-                markFieldError(toInput);
-
-                return { error: "From Date cannot be later than To Date. Please select a valid date range." };
-            }
-
-            return { from: fromDate, to: toDate };
-        }
-
-        const value = input.value;
-
-        if (!value) {
-            markFieldError(input);
-
-            return { error: "Please select a period." };
-        }
-
-        if (view === "yearly") {
-            const year = Number(value);
-
-            if (!Number.isInteger(year) || year < 2000 || year > 2100) {
-                markFieldError(input);
-
-                return { error: "Please enter a valid year." };
-            }
-
-            return { from: `${year}-01-01`, to: `${year}-12-31` };
-        }
-
-        if (view === "monthly") {
-            const parts = value.split("-").map(Number);
-            const lastDay = new Date(parts[0], parts[1], 0).getDate();
-
-            return {
-                from: `${parts[0]}-${pad(parts[1])}-01`,
-                to: `${parts[0]}-${pad(parts[1])}-${pad(lastDay)}`
-            };
-        }
-
-        const selected = new Date(value + "T12:00:00");
-
-        return {
-            from: localDateKey(getWeekStart(selected)),
-            to: localDateKey(getWeekEnd(selected))
-        };
-    }
-
-    function movementBadge(status) {
-        const map = {
-            "Fast Moving": "fast",
-            "Slow Moving": "slow",
-            "No Sales": "none"
-        };
-
-        return `<span class="status-badge ${map[status] || "none"}">${escapeHtml(status)}</span>`;
-    }
-
-    function renderMovementRows(bodyId, rows, totalDays, hasSales, emptyText) {
-        const body = document.getElementById(bodyId);
-        const columns = hasSales ? 7 : 5;
-
-        if (rows.length === 0) {
-            body.innerHTML = `<tr><td colspan="${columns}" class="empty-row">${emptyText}</td></tr>`;
-            return;
-        }
-
-        body.innerHTML = rows.map((item, index) => {
-            if (hasSales) {
-                return `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${escapeHtml(item.product_name)}</td>
-                        <td>${escapeHtml(item.category)}</td>
-                        <td>${formatNumber(item.sale_days)} of ${formatNumber(totalDays)} days</td>
-                        <td class="quantity-value">${formatNumber(item.quantity_sold)} pcs</td>
-                        <td>${formatNumber(item.stock)}</td>
-                        <td>${movementBadge(item.status)}</td>
-                    </tr>
-                `;
-            }
-
-            return `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${escapeHtml(item.product_name)}</td>
-                    <td>${escapeHtml(item.category)}</td>
-                    <td>${formatNumber(item.stock)}</td>
-                    <td>${movementBadge(item.status)}</td>
-                </tr>
-            `;
-        }).join("");
-    }
-
-    function renderMovement(data) {
-        const summary = data.summary || {};
-        const items = data.items || [];
-        const totalDays = data.period ? data.period.totalDays : 0;
-
-        setText("movePeriodLabel", "Period: " + (data.period ? data.period.label : ""));
-        setText("moveFastCount", formatNumber(summary.fast));
-        setText("moveSlowCount", formatNumber(summary.slow));
-        setText("moveNoneCount", formatNumber(summary.noSales));
-        setText("moveDaysCount", formatNumber(totalDays));
-
-        renderMovementRows(
-            "moveFastBody",
-            items.filter(item => item.status === "Fast Moving"),
-            totalDays,
-            true,
-            "No product was sold every day in this period."
-        );
-
-        renderMovementRows(
-            "moveSlowBody",
-            items.filter(item => item.status === "Slow Moving"),
-            totalDays,
-            true,
-            "No slow moving products in this period."
-        );
-
-        renderMovementRows(
-            "moveNoneBody",
-            items.filter(item => item.status === "No Sales"),
-            totalDays,
-            false,
-            "Every product had sales in this period."
-        );
-
-        document.getElementById("moveResult").style.display = "block";
-    }
-
-    async function loadMovement() {
-        const button = document.getElementById("moveBtn");
-        const range = getMoveRange();
-
-        hideNotice("moveNotice");
-        document.getElementById("moveResult").style.display = "none";
-
-        if (range.error) {
-            showNotice("moveNotice", range.error, "error");
-            return;
-        }
-
-        button.disabled = true;
-        button.textContent = "Loading...";
-
-        try {
-            const response = await fetch(
-                "/reports/movement?from=" + encodeURIComponent(range.from) +
-                "&to=" + encodeURIComponent(range.to)
-            );
-
-            const data = await response.json();
-
-            if (!response.ok || !data.success) {
-                showNotice(
-                    "moveNotice",
-                    data.message || "Unable to load the fast and slow moving report.",
-                    "error"
-                );
-                return;
-            }
-
-            renderMovement(data);
-        } catch (error) {
-            console.error("Movement Report Error:", error);
-
-            showNotice(
-                "moveNotice",
-                "Unable to load the fast and slow moving report. Please try again.",
-                "error"
-            );
-        } finally {
-            button.disabled = false;
-            button.textContent = "Show Movement";
-        }
-    }
-
     updateFlowDateInput();
-    updateMoveInputs();
     loadReport();
     loadSalesSummary();
     loadSalesReport();

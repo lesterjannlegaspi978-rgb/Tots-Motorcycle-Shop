@@ -3,14 +3,13 @@ const router = express.Router();
 const db = require("./db");
 
 const LOW_STOCK_LIMIT = 10;
-const FAST_MIN_RATE = 1;
 
-const MONTH_NAMES = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
-
-const insightCache = new Map();
+const PERIODS = {
+    "7": { days: 7, label: "Last 7 Days" },
+    "30": { days: 30, label: "Last 30 Days" },
+    "90": { days: 90, label: "Last 90 Days" },
+    all: { days: null, label: "All Recorded Sales" }
+};
 
 function runQuery(sql, params = []) {
     return new Promise((resolve, reject) => {
@@ -21,103 +20,20 @@ function runQuery(sql, params = []) {
     });
 }
 
+function toSqlDate(date) {
+    const pad = n => String(n).padStart(2, "0");
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
 function num(value) {
     return Number(value) || 0;
 }
 
+
 function round(value, decimals = 2) {
     const factor = Math.pow(10, decimals);
     return Math.round(num(value) * factor) / factor;
-}
-
-function isDateKey(value) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-
-    const date = new Date(value + "T00:00:00Z");
-
-    return (
-        !Number.isNaN(date.getTime()) &&
-        date.toISOString().slice(0, 10) === value
-    );
-}
-
-function addDays(key, days) {
-    const date = new Date(key + "T00:00:00Z");
-
-    date.setUTCDate(date.getUTCDate() + days);
-
-    return date.toISOString().slice(0, 10);
-}
-
-function diffDays(from, to) {
-    return Math.round(
-        (new Date(to + "T00:00:00Z") - new Date(from + "T00:00:00Z")) / 86400000
-    );
-}
-
-function labelDate(key) {
-    const parts = key.split("-");
-
-    return MONTH_NAMES[Number(parts[1]) - 1] + " " + Number(parts[2]) + ", " + parts[0];
-}
-
-function validateRange(query) {
-    const from = String(query.from || "");
-    const to = String(query.to || "");
-
-    if (!isDateKey(from) || !isDateKey(to)) {
-        return { error: "Please select a valid date range." };
-    }
-
-    if (from > to) {
-        return { error: "From Date cannot be later than To Date." };
-    }
-
-    if (diffDays(from, to) > 3660) {
-        return { error: "The selected date range is too long." };
-    }
-
-    return { from, to };
-}
-
-async function getSalesData(start, end) {
-    const soldRows = await runQuery(`
-        SELECT
-            product_id,
-            COALESCE(SUM(quantity), 0) AS sold_quantity,
-            COUNT(DISTINCT DATE(sale_date)) AS sale_days
-        FROM sales
-        WHERE sale_date >= ?
-          AND sale_date < ?
-        GROUP BY product_id
-    `, [start, end]);
-
-    const returnRows = await runQuery(`
-        SELECT
-            product_id,
-            COALESCE(SUM(quantity_returned), 0) AS returned_quantity
-        FROM sales_returns
-        WHERE status IN ('Completed', 'Refunded')
-          AND return_date >= ?
-          AND return_date < ?
-        GROUP BY product_id
-    `, [start, end]);
-
-    const sold = new Map();
-    const returned = new Map();
-
-    soldRows.forEach(row => {
-        sold.set(Number(row.product_id), {
-            quantity: num(row.sold_quantity),
-            days: num(row.sale_days)
-        });
-    });
-
-    returnRows.forEach(row => {
-        returned.set(Number(row.product_id), num(row.returned_quantity));
-    });
-
-    return { sold, returned };
 }
 
 router.get("/summary", (req, res) => {
@@ -147,6 +63,7 @@ router.get("/summary", (req, res) => {
         res.send({
             totalProducts: row.totalProducts,
             lowStocks: row.lowStocks,
+
             totalSales: netSales.toFixed(2),
             grossSales: grossSales.toFixed(2),
             totalRefunds: totalRefunds.toFixed(2)
@@ -155,18 +72,21 @@ router.get("/summary", (req, res) => {
 });
 
 router.get("/inventory", async (req, res) => {
-    const range = validateRange(req.query);
+    const key = String(req.query.period || "");
 
-    if (range.error) {
+    if (!Object.prototype.hasOwnProperty.call(PERIODS, key)) {
         return res.status(400).json({
             success: false,
-            message: range.error
+            message: "Please select a valid report period."
         });
     }
 
+    const period = PERIODS[key];
+
     try {
-        const start = range.from + " 00:00:00";
-        const end = addDays(range.to, 1) + " 00:00:00";
+        const startDate = period.days === null
+            ? "1000-01-01 00:00:00"
+            : toSqlDate(new Date(Date.now() - period.days * 86400000));
 
         const products = await runQuery(`
             SELECT id, product_name, category, quantity, price
@@ -176,12 +96,42 @@ router.get("/inventory", async (req, res) => {
 
         if (products.length === 0) {
             return res.status(404).json({
+
                 success: false,
                 message: "No inventory data available. Please add products first."
             });
         }
 
-        const { sold, returned } = await getSalesData(start, end);
+        const soldRows = await runQuery(`
+            SELECT
+                product_id,
+                COALESCE(SUM(quantity), 0) AS sold_quantity
+            FROM sales
+            WHERE sale_date >= ?
+            GROUP BY product_id
+        `, [startDate]);
+
+        const returnRows = await runQuery(`
+            SELECT
+                product_id,
+                COALESCE(SUM(quantity_returned), 0) AS returned_quantity
+            FROM sales_returns
+            WHERE status IN ('Completed', 'Refunded')
+              AND return_date >= ?
+            GROUP BY product_id
+        `, [startDate]);
+
+        const soldMap = new Map();
+        const returnMap = new Map();
+
+        soldRows.forEach(row => {
+            soldMap.set(Number(row.product_id), num(row.sold_quantity));
+        });
+
+        returnRows.forEach(row => {
+
+            returnMap.set(Number(row.product_id), num(row.returned_quantity));
+        });
 
         let totalStock = 0;
         let stockValue = 0;
@@ -193,10 +143,9 @@ router.get("/inventory", async (req, res) => {
             const id = Number(product.id);
             const stock = num(product.quantity);
             const price = num(product.price);
-            const soldEntry = sold.get(id);
 
-            const soldQuantity = Math.max(
-                (soldEntry ? soldEntry.quantity : 0) - (returned.get(id) || 0),
+            const sold = Math.max(
+                (soldMap.get(id) || 0) - (returnMap.get(id) || 0),
                 0
             );
 
@@ -212,7 +161,8 @@ router.get("/inventory", async (req, res) => {
 
             totalStock += stock;
             stockValue += stock * price;
-            netSold += soldQuantity;
+            netSold += sold;
+
 
             return {
                 id,
@@ -220,18 +170,14 @@ router.get("/inventory", async (req, res) => {
                 category: product.category || "Uncategorized",
                 stock,
                 price: round(price, 2),
-                sold: soldQuantity,
+                sold,
                 status
             };
         });
 
         return res.json({
             success: true,
-            period: {
-                from: range.from,
-                to: range.to,
-                label: labelDate(range.from) + " to " + labelDate(range.to)
-            },
+            period: { key, label: period.label },
             generatedAt: new Date().toISOString(),
             summary: {
                 totalProducts: items.length,
@@ -249,135 +195,7 @@ router.get("/inventory", async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Failed to generate the inventory report."
-        });
-    }
-});
 
-router.get("/movement", async (req, res) => {
-    const range = validateRange(req.query);
-
-    if (range.error) {
-        return res.status(400).json({
-            success: false,
-            message: range.error
-        });
-    }
-
-    try {
-        const todayRows = await runQuery(
-            "SELECT DATE_FORMAT(CURDATE(), '%Y-%m-%d') AS today"
-        );
-
-        const today = todayRows[0].today;
-
-        if (range.from > today) {
-            return res.status(400).json({
-                success: false,
-                message: "The selected period has not started yet."
-            });
-        }
-
-        const effectiveTo = range.to < today ? range.to : today;
-        const totalDays = diffDays(range.from, effectiveTo) + 1;
-
-        const start = range.from + " 00:00:00";
-        const end = addDays(effectiveTo, 1) + " 00:00:00";
-
-        const products = await runQuery(`
-            SELECT id, product_name, category, quantity
-            FROM products
-            ORDER BY id ASC
-        `);
-
-        if (products.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "No products available."
-            });
-        }
-
-        const { sold, returned } = await getSalesData(start, end);
-
-        let fast = 0;
-        let slow = 0;
-        let noSales = 0;
-
-        const items = products.map(product => {
-            const id = Number(product.id);
-            const entry = sold.get(id) || { quantity: 0, days: 0 };
-
-            const quantitySold = Math.max(
-                entry.quantity - (returned.get(id) || 0),
-                0
-            );
-
-            const saleDays = Math.min(entry.days, totalDays);
-
-            let status = "No Sales";
-
-            if (saleDays > 0) {
-                status = saleDays / totalDays >= FAST_MIN_RATE
-                    ? "Fast Moving"
-                    : "Slow Moving";
-            }
-
-            if (status === "Fast Moving") fast += 1;
-            else if (status === "Slow Moving") slow += 1;
-            else noSales += 1;
-
-            return {
-                id,
-                product_name: product.product_name,
-                category: product.category || "Uncategorized",
-                stock: num(product.quantity),
-                sale_days: saleDays,
-                quantity_sold: quantitySold,
-                status
-            };
-        });
-
-        const rank = { "Fast Moving": 0, "Slow Moving": 1, "No Sales": 2 };
-
-        items.sort((a, b) => {
-            if (rank[a.status] !== rank[b.status]) {
-                return rank[a.status] - rank[b.status];
-            }
-
-            if (b.sale_days !== a.sale_days) {
-                return b.sale_days - a.sale_days;
-            }
-
-            if (b.quantity_sold !== a.quantity_sold) {
-                return b.quantity_sold - a.quantity_sold;
-            }
-
-            return a.id - b.id;
-        });
-
-        const cappedNote = effectiveTo < range.to ? " (up to today)" : "";
-
-        return res.json({
-            success: true,
-            period: {
-                from: range.from,
-                to: effectiveTo,
-                totalDays,
-                label: labelDate(range.from) + " to " + labelDate(effectiveTo) + cappedNote
-            },
-            summary: {
-                fast,
-                slow,
-                noSales,
-                totalProducts: items.length
-            },
-            items
-        });
-    } catch (error) {
-        console.error("Movement Report Error:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Failed to generate the fast and slow moving report."
         });
     }
 });
@@ -410,6 +228,7 @@ async function askGemini(prompt) {
                         }
                     })
                 }
+
             );
 
             if (response.ok) {
@@ -428,35 +247,21 @@ async function askGemini(prompt) {
     return null;
 }
 
-function cleanInsight(text) {
-    if (!text) return null;
-
-    const cleaned = String(text)
-        .replace(/\$/g, "₱")
-        .replace(/\s+/g, " ")
-        .trim();
-
-    if (/online|website|e-commerce|ecommerce|listing/i.test(cleaned)) {
-        return null;
-    }
-
-    return cleaned;
-}
-
 router.post("/insight", async (req, res) => {
     const body = req.body || {};
 
     const facts = {
-        report_period: String(body.periodLabel || "").slice(0, 60),
+        report_period: String(body.periodLabel || "").slice(0, 40),
         total_products: num(body.totalProducts),
         total_stock_pcs: num(body.totalStock),
-        stock_value_in_philippine_pesos: round(body.stockValue, 2),
+        stock_value: round(body.stockValue, 2),
         low_stock_products: num(body.lowStock),
         out_of_stock_products: num(body.outOfStock),
         net_quantity_sold_in_period: num(body.netSold),
         products_needing_attention: Array.isArray(body.needAttention)
             ? body.needAttention.slice(0, 5).map(name => String(name).slice(0, 60))
             : [],
+
         top_sold: Array.isArray(body.topSold)
             ? body.topSold.slice(0, 3).map(item => ({
                 name: String(item.name || "").slice(0, 60),
@@ -470,47 +275,28 @@ router.post("/insight", async (req, res) => {
     const fallback =
         "You have " + facts.total_products + " products with " +
         facts.total_stock_pcs.toLocaleString("en-PH") + " pieces in stock worth ₱" +
-        facts.stock_value_in_philippine_pesos.toLocaleString("en-PH", { minimumFractionDigits: 2 }) +
+        facts.stock_value.toLocaleString("en-PH", { minimumFractionDigits: 2 }) +
         ". " + facts.low_stock_products + " product(s) are low on stock and " +
         facts.out_of_stock_products + " are out of stock" +
         (attention ? ", including " + attention + "." : ".");
 
-    const prompt =
-        "You are advising the owner of a physical motorcycle parts shop in the Philippines. " +
+        const prompt =
+        "You are advising the owner of a motorcycle parts shop in the Philippines. " +
         "Write 2 short sentences in simple English that explain this inventory report " +
         "and suggest one practical action. Use 'you' and 'your'. " +
-        "All money amounts are in Philippine pesos. Write them with the ₱ sign and never use the $ sign. " +
+        "All money amounts are in Philippine pesos, so write them with the ₱ sign and never use the $ sign. " +
         "This is a physical shop, so do not mention online listings, websites, or online sales. " +
-        "Do not say anything about dead stock, slow-moving items, fast-moving items, or sales trends. " +
-        "Only describe the stock counts, the stock value, the low and out-of-stock items, and the quantity sold exactly as given. " +
         "Use ONLY the numbers given and do not invent numbers.\n\n" +
         JSON.stringify(facts);
 
-    const cacheKey = JSON.stringify(facts);
-
-    if (insightCache.has(cacheKey)) {
-        return res.json({
-            success: true,
-            aiUsed: true,
-            insight: insightCache.get(cacheKey)
-        });
-    }
-
-    let text = null;
-
-    for (let attempt = 0; attempt < 2 && !text; attempt++) {
-        text = cleanInsight(await askGemini(prompt));
-    }
-
-    if (text) {
-        insightCache.set(cacheKey, text);
-    }
+    const text = await askGemini(prompt);
 
     return res.json({
         success: true,
         aiUsed: Boolean(text),
         insight: text || fallback
     });
+
 });
 
 module.exports = router;
