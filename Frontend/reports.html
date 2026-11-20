@@ -93,6 +93,25 @@
         line-height: 1.5;
     }
 
+    .reports-page .sub-block {
+        margin-top: 28px;
+        padding-top: 22px;
+        border-top: 2px solid #e5e7eb;
+    }
+
+    .reports-page .sub-block:first-of-type {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+    }
+
+    .reports-page .sub-heading {
+        margin: 0 0 14px;
+        font-size: 18px !important;
+        font-weight: 700;
+        color: #1f3f8f;
+    }
+
     .reports-page .filter-container {
         display: grid;
         grid-template-columns: 1fr 1fr auto auto auto;
@@ -698,8 +717,8 @@
         <h2>Report Date Range</h2>
 
         <p class="section-description">
-            Select a date range and click Generate Report. The Inventory Report, Sales Report,
-            Sales Flow, Sales Trend, and Fast and Slow Moving Products will all use this same date range.
+            Select a date range and click Generate Report. The Sales Report (Sales Flow, Sales Trend,
+            Fast and Slow Moving Products, Sales Records) and the Inventory Report will all use this same date range.
         </p>
 
         <div class="filter-container">
@@ -726,6 +745,133 @@
     <div id="reportResult" style="display:none;">
 
         <div class="period-banner" id="periodBanner"></div>
+
+        <div class="report-section" id="salesSection">
+            <h2>Sales Report</h2>
+
+            <p class="section-description">
+                Sales flow, sales trend, fast and slow moving products, and sales records within the selected date range.
+            </p>
+
+            <div class="sub-block">
+                <h3 class="sub-heading">Sales Flow</h3>
+
+                <div class="sales-flow-chart-wrapper">
+                    <canvas id="salesFlowChart"></canvas>
+                </div>
+
+                <div id="flowStatus" class="flow-status"></div>
+            </div>
+
+            <div class="sub-block">
+                <h3 class="sub-heading">Sales Trend</h3>
+
+                <div class="trend-summary">
+                    <div class="trend-card">
+                        <span class="trend-card-title">Top-Selling Product</span>
+                        <span id="topSellingProduct" class="trend-card-value">-</span>
+                        <span class="trend-card-subtitle">Most sold product</span>
+                    </div>
+
+                    <div class="trend-card">
+                        <span class="trend-card-title">Highest Quantity Sold</span>
+                        <span id="highestQuantitySold" class="trend-card-value">0 pcs</span>
+                        <span class="trend-card-subtitle">In a single product</span>
+                    </div>
+
+                    <div class="trend-card">
+                        <span class="trend-card-title">Total Quantity Sold</span>
+                        <span id="totalQuantitySold" class="trend-card-value">0 pcs</span>
+                        <span class="trend-card-subtitle">Across the selected date range</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Product</th>
+                                <th>Quantity Sold</th>
+                                <th>Sales Level</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="trendTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="sub-block">
+                <h3 class="sub-heading">Fast and Slow Moving Products</h3>
+
+                <p class="section-description" id="movingDescription"></p>
+
+                <div class="two-col">
+                    <div>
+                        <h3 class="sub-title fast">Fast Moving (Top 10)</h3>
+
+                        <div class="table-wrapper">
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Product</th>
+                                        <th>Qty Sold</th>
+                                        <th>Sales</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="fastBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="sub-title slow">Slow Moving (No Sales)</h3>
+
+                        <div class="table-wrapper inv-scroll">
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Stock</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="slowBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="inv-footnote">
+                    Fast Moving products have a net quantity sold (sold minus returned) within the selected date range.
+                    Slow Moving products have no net sales within the same date range.
+                </p>
+            </div>
+
+            <div class="sub-block">
+                <h3 class="sub-heading">Sales Records</h3>
+
+                <div class="table-wrapper inv-scroll">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Total Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="salesReportTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
         <div class="report-section" id="inventorySection">
             <h2>Inventory Report</h2>
@@ -797,135 +943,6 @@
             </div>
 
             <p class="inv-footnote" id="invFootnote"></p>
-        </div>
-
-        <div class="report-section">
-            <h2>Sales Report</h2>
-
-            <p class="section-description">Recorded sales transactions within the selected date range.</p>
-
-            <div class="table-wrapper inv-scroll">
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Total Amount</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="salesReportTable"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="report-section" id="salesFlowSection">
-            <h2>Sales Flow</h2>
-
-            <p class="section-description">
-                Graphical view of recorded sales within the selected date range.
-            </p>
-
-            <div class="sales-flow-chart-wrapper">
-                <canvas id="salesFlowChart"></canvas>
-            </div>
-
-            <div id="flowStatus" class="flow-status"></div>
-        </div>
-
-        <div class="report-section" id="salesTrendSection">
-            <h2>Sales Trend</h2>
-
-            <p class="section-description">
-                Shows the products with the highest recorded sales quantity within the selected date range.
-            </p>
-
-            <div class="trend-summary">
-                <div class="trend-card">
-                    <span class="trend-card-title">Top-Selling Product</span>
-                    <span id="topSellingProduct" class="trend-card-value">-</span>
-                    <span class="trend-card-subtitle">Most sold product</span>
-                </div>
-
-                <div class="trend-card">
-                    <span class="trend-card-title">Highest Quantity Sold</span>
-                    <span id="highestQuantitySold" class="trend-card-value">0 pcs</span>
-                    <span class="trend-card-subtitle">In a single product</span>
-                </div>
-
-                <div class="trend-card">
-                    <span class="trend-card-title">Total Quantity Sold</span>
-                    <span id="totalQuantitySold" class="trend-card-value">0 pcs</span>
-                    <span class="trend-card-subtitle">Across the selected date range</span>
-                </div>
-            </div>
-
-            <div class="table-wrapper">
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Product</th>
-                            <th>Quantity Sold</th>
-                            <th>Sales Level</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="trendTable"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="report-section" id="movingSection">
-            <h2>Fast and Slow Moving Products</h2>
-
-            <p class="section-description" id="movingDescription"></p>
-
-            <div class="two-col">
-                <div>
-                    <h3 class="sub-title fast">Fast Moving (Top 10)</h3>
-
-                    <div class="table-wrapper">
-                        <table class="report-table">
-                            <thead>
-                                <tr>
-                                    <th>Rank</th>
-                                    <th>Product</th>
-                                    <th>Qty Sold</th>
-                                    <th>Sales</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="fastBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="sub-title slow">Slow Moving (No Sales)</h3>
-
-                    <div class="table-wrapper inv-scroll">
-                        <table class="report-table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Category</th>
-                                    <th>Stock</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="slowBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <p class="inv-footnote">
-                Fast Moving products have a net quantity sold (sold minus returned) within the selected date range.
-                Slow Moving products have no net sales within the same date range.
-            </p>
         </div>
     </div>
 
@@ -1376,6 +1393,10 @@
     }
 
     function bucketKeyFor(date, mode) {
+        if (mode === "hourly") {
+            return String(date.getHours()).padStart(2, "0");
+        }
+
         if (mode === "daily") return localDateKey(date);
         if (mode === "weekly") return localDateKey(getWeekStart(date));
 
@@ -1383,6 +1404,10 @@
     }
 
     function bucketLabelFor(key, mode) {
+        if (mode === "hourly") {
+            return key + ":00";
+        }
+
         const months = [
             "Jan", "Feb", "Mar", "Apr", "May", "Jun",
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -1423,27 +1448,47 @@
 
     function renderSalesFlow(sales, from, to) {
         const days = dayCount(from, to);
-        const mode = days <= 31 ? "daily" : days <= 92 ? "weekly" : "monthly";
+
+        let mode = "monthly";
+
+        if (days === 1) {
+            mode = "hourly";
+        } else if (days <= 31) {
+            mode = "daily";
+        } else if (days <= 92) {
+            mode = "weekly";
+        }
 
         const labels = [];
         const keys = [];
         const grouped = {};
         const transactionsByKey = {};
 
-        const cursor = new Date(from + "T12:00:00");
-        const last = new Date(to + "T12:00:00");
+        if (mode === "hourly") {
+            for (let hour = 0; hour < 24; hour++) {
+                const key = String(hour).padStart(2, "0");
 
-        while (cursor <= last) {
-            const key = bucketKeyFor(cursor, mode);
-
-            if (keys[keys.length - 1] !== key) {
                 keys.push(key);
                 labels.push(bucketLabelFor(key, mode));
                 grouped[key] = 0;
                 transactionsByKey[key] = [];
             }
+        } else {
+            const cursor = new Date(from + "T12:00:00");
+            const last = new Date(to + "T12:00:00");
 
-            cursor.setDate(cursor.getDate() + 1);
+            while (cursor <= last) {
+                const key = bucketKeyFor(cursor, mode);
+
+                if (keys[keys.length - 1] !== key) {
+                    keys.push(key);
+                    labels.push(bucketLabelFor(key, mode));
+                    grouped[key] = 0;
+                    transactionsByKey[key] = [];
+                }
+
+                cursor.setDate(cursor.getDate() + 1);
+            }
         }
 
         sales.forEach(sale => {
@@ -1478,10 +1523,12 @@
             salesFlowChart.destroy();
         }
 
+        const useBars = mode === "hourly" || mode === "monthly" || keys.length <= 3;
+
         salesFlowChart = new Chart(
             document.getElementById("salesFlowChart"),
             {
-                type: mode === "monthly" ? "bar" : "line",
+                type: useBars ? "bar" : "line",
 
                 data: {
                     labels: labels,
@@ -1490,7 +1537,7 @@
                             label: "Sales (₱)",
                             data: values,
                             borderColor: "#24479b",
-                            backgroundColor: mode === "monthly"
+                            backgroundColor: useBars
                                 ? "#24479b"
                                 : "rgba(36, 71, 155, 0.15)",
                             borderWidth: 3,
@@ -1551,7 +1598,7 @@
                                 maxRotation: 45,
                                 minRotation: 0,
                                 autoSkip: true,
-                                maxTicksLimit: 16
+                                maxTicksLimit: 24
                             }
                         },
 
@@ -1571,7 +1618,11 @@
         );
 
         const totalForView = values.reduce((sum, value) => sum + value, 0);
-        const modeText = mode === "daily" ? "per day" : mode === "weekly" ? "per week" : "per month";
+
+        const modeText =
+            mode === "hourly" ? "per hour" :
+            mode === "daily" ? "per day" :
+            mode === "weekly" ? "per week" : "per month";
 
         setText(
             "flowStatus",
@@ -1639,13 +1690,14 @@
 
             setText("periodBanner", `Report Period: ${fromDate} to ${toDate}`);
 
-            renderInventoryReport(inventoryData);
-            displaySales(filteredSales);
+            document.getElementById("reportResult").style.display = "block";
+
             renderSalesFlow(filteredSales, fromDate, toDate);
             renderSalesTrend(filteredSales);
             renderMoving(movingData);
+            displaySales(filteredSales);
+            renderInventoryReport(inventoryData);
 
-            document.getElementById("reportResult").style.display = "block";
             reportReady = true;
 
             showFilterInfo(
