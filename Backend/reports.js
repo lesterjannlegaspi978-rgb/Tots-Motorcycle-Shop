@@ -3,8 +3,14 @@ const router = express.Router();
 const db = require("./db");
 
 const LOW_STOCK_LIMIT = 10;
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const FAST_DAY_RATIO = 0.5;
+const FAST_MIN_RATE = 1;
+
+const MONTH_NAMES = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+
+const insightCache = new Map();
 
 function runQuery(sql, params = []) {
     return new Promise((resolve, reject) => {
@@ -24,24 +30,94 @@ function round(value, decimals = 2) {
     return Math.round(num(value) * factor) / factor;
 }
 
-function readRange(req) {
-    const from = String(req.query.from || "");
-    const to = String(req.query.to || "");
+function isDateKey(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
 
-    if (!DATE_PATTERN.test(from) || !DATE_PATTERN.test(to)) {
-        return { error: "Please select a valid From Date and To Date." };
+    const date = new Date(value + "T00:00:00Z");
+
+    return (
+        !Number.isNaN(date.getTime()) &&
+        date.toISOString().slice(0, 10) === value
+    );
+}
+
+function addDays(key, days) {
+    const date = new Date(key + "T00:00:00Z");
+
+    date.setUTCDate(date.getUTCDate() + days);
+
+    return date.toISOString().slice(0, 10);
+}
+
+function diffDays(from, to) {
+    return Math.round(
+        (new Date(to + "T00:00:00Z") - new Date(from + "T00:00:00Z")) / 86400000
+    );
+}
+
+function labelDate(key) {
+    const parts = key.split("-");
+
+    return MONTH_NAMES[Number(parts[1]) - 1] + " " + Number(parts[2]) + ", " + parts[0];
+}
+
+function validateRange(query) {
+    const from = String(query.from || "");
+    const to = String(query.to || "");
+
+    if (!isDateKey(from) || !isDateKey(to)) {
+        return { error: "Please select a valid date range." };
     }
 
     if (from > to) {
         return { error: "From Date cannot be later than To Date." };
     }
 
-    return {
-        from,
-        to,
-        start: from + " 00:00:00",
-        end: to + " 23:59:59"
-    };
+    if (diffDays(from, to) > 3660) {
+        return { error: "The selected date range is too long." };
+    }
+
+    return { from, to };
+}
+
+async function getSalesData(start, end) {
+    const soldRows = await runQuery(`
+        SELECT
+            product_id,
+            COALESCE(SUM(quantity), 0) AS sold_quantity,
+            COUNT(DISTINCT DATE(sale_date)) AS sale_days
+        FROM sales
+        WHERE sale_date >= ?
+          AND sale_date < ?
+        GROUP BY product_id
+    `, [start, end]);
+
+    const returnRows = await runQuery(`
+        SELECT
+            product_id,
+            COALESCE(SUM(quantity_returned), 0) AS returned_quantity
+        FROM sales_returns
+        WHERE status IN ('Completed', 'Refunded')
+          AND return_date >= ?
+          AND return_date < ?
+        GROUP BY product_id
+    `, [start, end]);
+
+    const sold = new Map();
+    const returned = new Map();
+
+    soldRows.forEach(row => {
+        sold.set(Number(row.product_id), {
+            quantity: num(row.sold_quantity),
+            days: num(row.sale_days)
+        });
+    });
+
+    returnRows.forEach(row => {
+        returned.set(Number(row.product_id), num(row.returned_quantity));
+    });
+
+    return { sold, returned };
 }
 
 router.get("/summary", (req, res) => {
@@ -79,7 +155,7 @@ router.get("/summary", (req, res) => {
 });
 
 router.get("/inventory", async (req, res) => {
-    const range = readRange(req);
+    const range = validateRange(req.query);
 
     if (range.error) {
         return res.status(400).json({
@@ -89,6 +165,9 @@ router.get("/inventory", async (req, res) => {
     }
 
     try {
+        const start = range.from + " 00:00:00";
+        const end = addDays(range.to, 1) + " 00:00:00";
+
         const products = await runQuery(`
             SELECT id, product_name, category, quantity, price
             FROM products
@@ -102,35 +181,7 @@ router.get("/inventory", async (req, res) => {
             });
         }
 
-        const soldRows = await runQuery(`
-            SELECT
-                product_id,
-                COALESCE(SUM(quantity), 0) AS sold_quantity
-            FROM sales
-            WHERE sale_date BETWEEN ? AND ?
-            GROUP BY product_id
-        `, [range.start, range.end]);
-
-        const returnRows = await runQuery(`
-            SELECT
-                product_id,
-                COALESCE(SUM(quantity_returned), 0) AS returned_quantity
-            FROM sales_returns
-            WHERE status IN ('Completed', 'Refunded')
-              AND return_date BETWEEN ? AND ?
-            GROUP BY product_id
-        `, [range.start, range.end]);
-
-        const soldMap = new Map();
-        const returnMap = new Map();
-
-        soldRows.forEach(row => {
-            soldMap.set(Number(row.product_id), num(row.sold_quantity));
-        });
-
-        returnRows.forEach(row => {
-            returnMap.set(Number(row.product_id), num(row.returned_quantity));
-        });
+        const { sold, returned } = await getSalesData(start, end);
 
         let totalStock = 0;
         let stockValue = 0;
@@ -142,9 +193,10 @@ router.get("/inventory", async (req, res) => {
             const id = Number(product.id);
             const stock = num(product.quantity);
             const price = num(product.price);
+            const soldEntry = sold.get(id);
 
-            const sold = Math.max(
-                (soldMap.get(id) || 0) - (returnMap.get(id) || 0),
+            const soldQuantity = Math.max(
+                (soldEntry ? soldEntry.quantity : 0) - (returned.get(id) || 0),
                 0
             );
 
@@ -160,7 +212,7 @@ router.get("/inventory", async (req, res) => {
 
             totalStock += stock;
             stockValue += stock * price;
-            netSold += sold;
+            netSold += soldQuantity;
 
             return {
                 id,
@@ -168,7 +220,7 @@ router.get("/inventory", async (req, res) => {
                 category: product.category || "Uncategorized",
                 stock,
                 price: round(price, 2),
-                sold,
+                sold: soldQuantity,
                 status
             };
         });
@@ -178,7 +230,7 @@ router.get("/inventory", async (req, res) => {
             period: {
                 from: range.from,
                 to: range.to,
-                label: range.from + " to " + range.to
+                label: labelDate(range.from) + " to " + labelDate(range.to)
             },
             generatedAt: new Date().toISOString(),
             summary: {
@@ -201,8 +253,8 @@ router.get("/inventory", async (req, res) => {
     }
 });
 
-router.get("/moving", async (req, res) => {
-    const range = readRange(req);
+router.get("/movement", async (req, res) => {
+    const range = validateRange(req.query);
 
     if (range.error) {
         return res.status(400).json({
@@ -211,123 +263,121 @@ router.get("/moving", async (req, res) => {
         });
     }
 
-    const totalDays =
-        Math.round((Date.parse(range.to) - Date.parse(range.from)) / 86400000) + 1;
-
-    const requiredDays = Math.max(1, Math.ceil(totalDays * FAST_DAY_RATIO));
-
     try {
+        const todayRows = await runQuery(
+            "SELECT DATE_FORMAT(CURDATE(), '%Y-%m-%d') AS today"
+        );
+
+        const today = todayRows[0].today;
+
+        if (range.from > today) {
+            return res.status(400).json({
+                success: false,
+                message: "The selected period has not started yet."
+            });
+        }
+
+        const effectiveTo = range.to < today ? range.to : today;
+        const totalDays = diffDays(range.from, effectiveTo) + 1;
+
+        const start = range.from + " 00:00:00";
+        const end = addDays(effectiveTo, 1) + " 00:00:00";
+
         const products = await runQuery(`
             SELECT id, product_name, category, quantity
             FROM products
+            ORDER BY id ASC
         `);
 
-        const soldRows = await runQuery(`
-            SELECT
-                product_id,
-                COUNT(DISTINCT DATE(sale_date)) AS active_days,
-                COALESCE(SUM(quantity), 0) AS sold_quantity,
-                COALESCE(SUM(total), 0) AS gross_total
-            FROM sales
-            WHERE sale_date BETWEEN ? AND ?
-            GROUP BY product_id
-        `, [range.start, range.end]);
+        if (products.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No products available."
+            });
+        }
 
-        const returnRows = await runQuery(`
-            SELECT
-                product_id,
-                COALESCE(SUM(quantity_returned), 0) AS returned_quantity
-            FROM sales_returns
-            WHERE status IN ('Completed', 'Refunded')
-              AND return_date BETWEEN ? AND ?
-            GROUP BY product_id
-        `, [range.start, range.end]);
+        const { sold, returned } = await getSalesData(start, end);
 
-        const soldMap = new Map();
-        const grossMap = new Map();
-        const daysMap = new Map();
-        const returnMap = new Map();
-
-        soldRows.forEach(row => {
-            const id = Number(row.product_id);
-
-            soldMap.set(id, num(row.sold_quantity));
-            grossMap.set(id, num(row.gross_total));
-            daysMap.set(id, num(row.active_days));
-        });
-
-        returnRows.forEach(row => {
-            returnMap.set(Number(row.product_id), num(row.returned_quantity));
-        });
+        let fast = 0;
+        let slow = 0;
+        let noSales = 0;
 
         const items = products.map(product => {
             const id = Number(product.id);
-            const activeDays = daysMap.get(id) || 0;
+            const entry = sold.get(id) || { quantity: 0, days: 0 };
 
-            const net = Math.max(
-                (soldMap.get(id) || 0) - (returnMap.get(id) || 0),
+            const quantitySold = Math.max(
+                entry.quantity - (returned.get(id) || 0),
                 0
             );
 
+            const saleDays = Math.min(entry.days, totalDays);
+
+            let status = "No Sales";
+
+            if (saleDays > 0) {
+                status = saleDays / totalDays >= FAST_MIN_RATE
+                    ? "Fast Moving"
+                    : "Slow Moving";
+            }
+
+            if (status === "Fast Moving") fast += 1;
+            else if (status === "Slow Moving") slow += 1;
+            else noSales += 1;
+
             return {
+                id,
                 product_name: product.product_name,
                 category: product.category || "Uncategorized",
                 stock: num(product.quantity),
-                net_quantity: net,
-                active_days: activeDays,
-                total_days: totalDays,
-                coverage: round((activeDays / totalDays) * 100, 1),
-                total: round(grossMap.get(id) || 0, 2)
+                sale_days: saleDays,
+                quantity_sold: quantitySold,
+                status
             };
         });
 
-        const isFast = item => item.net_quantity > 0 && item.active_days >= requiredDays;
+        const rank = { "Fast Moving": 0, "Slow Moving": 1, "No Sales": 2 };
 
-        const fast = items
-            .filter(isFast)
-            .sort((a, b) =>
-                b.active_days - a.active_days ||
-                b.net_quantity - a.net_quantity ||
-                a.product_name.localeCompare(b.product_name)
-            );
+        items.sort((a, b) => {
+            if (rank[a.status] !== rank[b.status]) {
+                return rank[a.status] - rank[b.status];
+            }
 
-        const slow = items
-            .filter(item => !isFast(item))
-            .sort((a, b) =>
-                a.active_days - b.active_days ||
-                b.stock - a.stock ||
-                a.product_name.localeCompare(b.product_name)
-            );
+            if (b.sale_days !== a.sale_days) {
+                return b.sale_days - a.sale_days;
+            }
+
+            if (b.quantity_sold !== a.quantity_sold) {
+                return b.quantity_sold - a.quantity_sold;
+            }
+
+            return a.id - b.id;
+        });
+
+        const cappedNote = effectiveTo < range.to ? " (up to today)" : "";
 
         return res.json({
             success: true,
             period: {
                 from: range.from,
-                to: range.to,
-                days: totalDays,
-                label: range.from + " to " + range.to
-            },
-            rule: {
-                ratio: FAST_DAY_RATIO,
-                requiredDays,
-                totalDays
+                to: effectiveTo,
+                totalDays,
+                label: labelDate(range.from) + " to " + labelDate(effectiveTo) + cappedNote
             },
             summary: {
-                fastCount: fast.length,
-                slowCount: slow.length
+                fast,
+                slow,
+                noSales,
+                totalProducts: items.length
             },
-            fastMoving: fast.slice(0, 10).map((item, index) => ({
-                rank: index + 1,
-                ...item
-            })),
-            slowMoving: slow.slice(0, 50)
+            items
         });
     } catch (error) {
-        console.error("Moving Products Error:", error);
+        console.error("Movement Report Error:", error);
 
         return res.status(500).json({
             success: false,
-            message: "Failed to load fast and slow moving products."
+            message: "Failed to generate the fast and slow moving report."
         });
     }
 });
@@ -378,14 +428,29 @@ async function askGemini(prompt) {
     return null;
 }
 
+function cleanInsight(text) {
+    if (!text) return null;
+
+    const cleaned = String(text)
+        .replace(/\$/g, "₱")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    if (/online|website|e-commerce|ecommerce|listing/i.test(cleaned)) {
+        return null;
+    }
+
+    return cleaned;
+}
+
 router.post("/insight", async (req, res) => {
     const body = req.body || {};
 
     const facts = {
-        report_period: String(body.periodLabel || "").slice(0, 40),
+        report_period: String(body.periodLabel || "").slice(0, 60),
         total_products: num(body.totalProducts),
         total_stock_pcs: num(body.totalStock),
-        stock_value: round(body.stockValue, 2),
+        stock_value_in_philippine_pesos: round(body.stockValue, 2),
         low_stock_products: num(body.lowStock),
         out_of_stock_products: num(body.outOfStock),
         net_quantity_sold_in_period: num(body.netSold),
@@ -405,21 +470,41 @@ router.post("/insight", async (req, res) => {
     const fallback =
         "You have " + facts.total_products + " products with " +
         facts.total_stock_pcs.toLocaleString("en-PH") + " pieces in stock worth ₱" +
-        facts.stock_value.toLocaleString("en-PH", { minimumFractionDigits: 2 }) +
+        facts.stock_value_in_philippine_pesos.toLocaleString("en-PH", { minimumFractionDigits: 2 }) +
         ". " + facts.low_stock_products + " product(s) are low on stock and " +
         facts.out_of_stock_products + " are out of stock" +
         (attention ? ", including " + attention + "." : ".");
 
     const prompt =
-        "You are advising the owner of a motorcycle parts shop in the Philippines. " +
+        "You are advising the owner of a physical motorcycle parts shop in the Philippines. " +
         "Write 2 short sentences in simple English that explain this inventory report " +
         "and suggest one practical action. Use 'you' and 'your'. " +
-        "All money amounts are in Philippine pesos, so write them with the ₱ sign and never use the $ sign. " +
+        "All money amounts are in Philippine pesos. Write them with the ₱ sign and never use the $ sign. " +
         "This is a physical shop, so do not mention online listings, websites, or online sales. " +
+        "Do not say anything about dead stock, slow-moving items, fast-moving items, or sales trends. " +
+        "Only describe the stock counts, the stock value, the low and out-of-stock items, and the quantity sold exactly as given. " +
         "Use ONLY the numbers given and do not invent numbers.\n\n" +
         JSON.stringify(facts);
 
-    const text = await askGemini(prompt);
+    const cacheKey = JSON.stringify(facts);
+
+    if (insightCache.has(cacheKey)) {
+        return res.json({
+            success: true,
+            aiUsed: true,
+            insight: insightCache.get(cacheKey)
+        });
+    }
+
+    let text = null;
+
+    for (let attempt = 0; attempt < 2 && !text; attempt++) {
+        text = cleanInsight(await askGemini(prompt));
+    }
+
+    if (text) {
+        insightCache.set(cacheKey, text);
+    }
 
     return res.json({
         success: true,
