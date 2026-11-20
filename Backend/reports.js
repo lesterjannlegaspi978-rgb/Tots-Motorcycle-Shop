@@ -3,7 +3,13 @@ const router = express.Router();
 const db = require("./db");
 
 const LOW_STOCK_LIMIT = 10;
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+const PERIODS = {
+    "7": { days: 7, label: "Last 7 Days" },
+    "30": { days: 30, label: "Last 30 Days" },
+    "90": { days: 90, label: "Last 90 Days" },
+    all: { days: null, label: "All Recorded Sales" }
+};
 
 function runQuery(sql, params = []) {
     return new Promise((resolve, reject) => {
@@ -14,34 +20,20 @@ function runQuery(sql, params = []) {
     });
 }
 
+function toSqlDate(date) {
+    const pad = n => String(n).padStart(2, "0");
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
 function num(value) {
     return Number(value) || 0;
 }
 
+
 function round(value, decimals = 2) {
     const factor = Math.pow(10, decimals);
     return Math.round(num(value) * factor) / factor;
-}
-
-function readRange(req) {
-    const from = String(req.query.from || "");
-    const to = String(req.query.to || "");
-
-    if (!DATE_PATTERN.test(from) || !DATE_PATTERN.test(to)) {
-        return { error: "Please select a valid From Date and To Date." };
-    }
-
-
-    if (from > to) {
-        return { error: "From Date cannot be later than To Date." };
-    }
-
-    return {
-        from,
-        to,
-        start: from + " 00:00:00",
-        end: to + " 23:59:59"
-    };
 }
 
 router.get("/summary", (req, res) => {
@@ -63,7 +55,6 @@ router.get("/summary", (req, res) => {
             return res.send({});
         }
 
-
         const row = result[0];
         const grossSales = Number(row.grossSales) || 0;
         const totalRefunds = Number(row.totalRefunds) || 0;
@@ -72,6 +63,7 @@ router.get("/summary", (req, res) => {
         res.send({
             totalProducts: row.totalProducts,
             lowStocks: row.lowStocks,
+
             totalSales: netSales.toFixed(2),
             grossSales: grossSales.toFixed(2),
             totalRefunds: totalRefunds.toFixed(2)
@@ -80,25 +72,31 @@ router.get("/summary", (req, res) => {
 });
 
 router.get("/inventory", async (req, res) => {
-    const range = readRange(req);
+    const key = String(req.query.period || "");
 
-    if (range.error) {
+    if (!Object.prototype.hasOwnProperty.call(PERIODS, key)) {
         return res.status(400).json({
             success: false,
-            message: range.error
+            message: "Please select a valid report period."
         });
     }
 
+    const period = PERIODS[key];
+
     try {
+        const startDate = period.days === null
+            ? "1000-01-01 00:00:00"
+            : toSqlDate(new Date(Date.now() - period.days * 86400000));
+
         const products = await runQuery(`
             SELECT id, product_name, category, quantity, price
             FROM products
             ORDER BY id ASC
         `);
 
-
         if (products.length === 0) {
             return res.status(404).json({
+
                 success: false,
                 message: "No inventory data available. Please add products first."
             });
@@ -109,9 +107,9 @@ router.get("/inventory", async (req, res) => {
                 product_id,
                 COALESCE(SUM(quantity), 0) AS sold_quantity
             FROM sales
-            WHERE sale_date BETWEEN ? AND ?
+            WHERE sale_date >= ?
             GROUP BY product_id
-        `, [range.start, range.end]);
+        `, [startDate]);
 
         const returnRows = await runQuery(`
             SELECT
@@ -119,9 +117,9 @@ router.get("/inventory", async (req, res) => {
                 COALESCE(SUM(quantity_returned), 0) AS returned_quantity
             FROM sales_returns
             WHERE status IN ('Completed', 'Refunded')
-              AND return_date BETWEEN ? AND ?
+              AND return_date >= ?
             GROUP BY product_id
-        `, [range.start, range.end]);
+        `, [startDate]);
 
         const soldMap = new Map();
         const returnMap = new Map();
@@ -130,8 +128,8 @@ router.get("/inventory", async (req, res) => {
             soldMap.set(Number(row.product_id), num(row.sold_quantity));
         });
 
-
         returnRows.forEach(row => {
+
             returnMap.set(Number(row.product_id), num(row.returned_quantity));
         });
 
@@ -162,9 +160,9 @@ router.get("/inventory", async (req, res) => {
             }
 
             totalStock += stock;
-
             stockValue += stock * price;
             netSold += sold;
+
 
             return {
                 id,
@@ -179,11 +177,7 @@ router.get("/inventory", async (req, res) => {
 
         return res.json({
             success: true,
-            period: {
-                from: range.from,
-                to: range.to,
-                label: range.from + " to " + range.to
-            },
+            period: { key, label: period.label },
             generatedAt: new Date().toISOString(),
             summary: {
                 totalProducts: items.length,
@@ -195,122 +189,13 @@ router.get("/inventory", async (req, res) => {
             },
             items
         });
-
     } catch (error) {
         console.error("Inventory Report Error:", error);
 
         return res.status(500).json({
             success: false,
             message: "Failed to generate the inventory report."
-        });
-    }
-});
 
-router.get("/moving", async (req, res) => {
-    const range = readRange(req);
-
-    if (range.error) {
-        return res.status(400).json({
-            success: false,
-            message: range.error
-        });
-    }
-
-    try {
-        const products = await runQuery(`
-            SELECT id, product_name, category, quantity
-            FROM products
-        `);
-
-        const soldRows = await runQuery(`
-            SELECT
-                product_id,
-                COALESCE(SUM(quantity), 0) AS sold_quantity,
-                COALESCE(SUM(total), 0) AS gross_total
-            FROM sales
-
-            WHERE sale_date BETWEEN ? AND ?
-            GROUP BY product_id
-        `, [range.start, range.end]);
-
-        const returnRows = await runQuery(`
-            SELECT
-                product_id,
-                COALESCE(SUM(quantity_returned), 0) AS returned_quantity
-            FROM sales_returns
-            WHERE status IN ('Completed', 'Refunded')
-              AND return_date BETWEEN ? AND ?
-            GROUP BY product_id
-        `, [range.start, range.end]);
-
-        const soldMap = new Map();
-        const grossMap = new Map();
-        const returnMap = new Map();
-
-        soldRows.forEach(row => {
-            soldMap.set(Number(row.product_id), num(row.sold_quantity));
-            grossMap.set(Number(row.product_id), num(row.gross_total));
-        });
-
-        returnRows.forEach(row => {
-            returnMap.set(Number(row.product_id), num(row.returned_quantity));
-        });
-
-        const items = products.map(product => {
-            const id = Number(product.id);
-            const net = Math.max(
-                (soldMap.get(id) || 0) - (returnMap.get(id) || 0),
-                0
-
-            );
-
-            return {
-                product_name: product.product_name,
-                category: product.category || "Uncategorized",
-                stock: num(product.quantity),
-                net_quantity: net,
-                total: round(grossMap.get(id) || 0, 2)
-            };
-        });
-
-        const fast = items
-            .filter(item => item.net_quantity > 0)
-            .sort((a, b) =>
-                b.net_quantity - a.net_quantity ||
-                a.product_name.localeCompare(b.product_name)
-            );
-
-        const slow = items
-            .filter(item => item.net_quantity <= 0)
-            .sort((a, b) =>
-                b.stock - a.stock ||
-                a.product_name.localeCompare(b.product_name)
-            );
-
-        return res.json({
-            success: true,
-            period: {
-                from: range.from,
-                to: range.to,
-                label: range.from + " to " + range.to
-            },
-
-            summary: {
-                fastCount: fast.length,
-                slowCount: slow.length
-            },
-            fastMoving: fast.slice(0, 10).map((item, index) => ({
-                rank: index + 1,
-                ...item
-            })),
-            slowMoving: slow.slice(0, 50)
-        });
-    } catch (error) {
-        console.error("Moving Products Error:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Failed to load fast and slow moving products."
         });
     }
 });
@@ -327,7 +212,6 @@ async function askGemini(prompt) {
         try {
             const response = await fetch(
                 "https://generativelanguage.googleapis.com/v1beta/models/" +
-
                 model + ":generateContent",
                 {
                     method: "POST",
@@ -344,6 +228,7 @@ async function askGemini(prompt) {
                         }
                     })
                 }
+
             );
 
             if (response.ok) {
@@ -360,7 +245,6 @@ async function askGemini(prompt) {
     }
 
     return null;
-
 }
 
 router.post("/insight", async (req, res) => {
@@ -377,6 +261,7 @@ router.post("/insight", async (req, res) => {
         products_needing_attention: Array.isArray(body.needAttention)
             ? body.needAttention.slice(0, 5).map(name => String(name).slice(0, 60))
             : [],
+
         top_sold: Array.isArray(body.topSold)
             ? body.topSold.slice(0, 3).map(item => ({
                 name: String(item.name || "").slice(0, 60),
@@ -393,10 +278,9 @@ router.post("/insight", async (req, res) => {
         facts.stock_value.toLocaleString("en-PH", { minimumFractionDigits: 2 }) +
         ". " + facts.low_stock_products + " product(s) are low on stock and " +
         facts.out_of_stock_products + " are out of stock" +
-
         (attention ? ", including " + attention + "." : ".");
 
-    const prompt =
+        const prompt =
         "You are advising the owner of a motorcycle parts shop in the Philippines. " +
         "Write 2 short sentences in simple English that explain this inventory report " +
         "and suggest one practical action. Use 'you' and 'your'. " +
@@ -412,6 +296,7 @@ router.post("/insight", async (req, res) => {
         aiUsed: Boolean(text),
         insight: text || fallback
     });
+
 });
 
 module.exports = router;
