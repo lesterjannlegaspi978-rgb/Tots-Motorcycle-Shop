@@ -565,7 +565,7 @@
         }
 
         .reports-page #salesFlowSection,
-        .reports-page #salesTrendSection,
+        .reports-page #movementSection,
         .reports-page #inventorySection {
             display: none !important;
         }
@@ -631,28 +631,28 @@
             box-sizing: border-box !important;
         }
 
-        .reports-page .report-table th:nth-child(1),
-        .reports-page .report-table td:nth-child(1) {
+        .reports-page .sales-table th:nth-child(1),
+        .reports-page .sales-table td:nth-child(1) {
             width: 8% !important;
         }
 
-        .reports-page .report-table th:nth-child(2),
-        .reports-page .report-table td:nth-child(2) {
+        .reports-page .sales-table th:nth-child(2),
+        .reports-page .sales-table td:nth-child(2) {
             width: 30% !important;
         }
 
-        .reports-page .report-table th:nth-child(3),
-        .reports-page .report-table td:nth-child(3) {
+        .reports-page .sales-table th:nth-child(3),
+        .reports-page .sales-table td:nth-child(3) {
             width: 12% !important;
         }
 
-        .reports-page .report-table th:nth-child(4),
-        .reports-page .report-table td:nth-child(4) {
+        .reports-page .sales-table th:nth-child(4),
+        .reports-page .sales-table td:nth-child(4) {
             width: 20% !important;
         }
 
-        .reports-page .report-table th:nth-child(5),
-        .reports-page .report-table td:nth-child(5) {
+        .reports-page .sales-table th:nth-child(5),
+        .reports-page .sales-table td:nth-child(5) {
             width: 30% !important;
         }
 
@@ -817,6 +817,80 @@
             overflow: visible !important;
         }
     }
+
+    .reports-page .subsection-title {
+        margin: 26px 0 8px;
+        color: #1f3f8f;
+        font-size: 18px !important;
+        font-weight: 700;
+    }
+
+    .reports-page .movement-note {
+        margin: 0 0 16px;
+        padding: 12px 16px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #24479b;
+        border-radius: 8px;
+        font-size: 13px !important;
+        line-height: 1.7;
+        color: #475569;
+        text-align: left;
+    }
+
+    .reports-page .movement-title {
+        margin: 22px 0 10px;
+        color: #1f3f8f;
+        font-size: 17px !important;
+        font-weight: 700;
+    }
+
+    .reports-page .move-controls {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        margin-bottom: 16px;
+    }
+
+    .reports-page .move-controls .filter-group {
+        flex: 1 1 200px;
+    }
+
+    .reports-page .move-controls .report-button {
+        flex: 0 0 auto;
+    }
+
+    .reports-page .status-badge.fast {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .reports-page .status-badge.slow {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .reports-page .status-badge.none {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .reports-page .trend-summary.four {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 900px) {
+        .reports-page .trend-summary.four {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .reports-page .trend-summary.four {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 </head>
@@ -966,11 +1040,12 @@
         </div>
     </div>
 
-    <div class="report-section">
-        <h2>Sales Report Filter</h2>
+    <div class="report-section" id="salesReportSection">
+        <h2>Sales Report</h2>
 
         <p class="section-description">
-            Select a date range to display sales transactions recorded within the selected period.
+            Select a date range to display the sales transactions and the sales trend
+            recorded within the selected period. Click Clear to show all recorded sales.
         </p>
 
         <div class="filter-container">
@@ -992,15 +1067,9 @@
         <div id="filterStatus" class="filter-status"></div>
 
         <button class="report-button print-button" onclick="printSalesReport()">Print Report</button>
-    </div>
 
-    <div class="report-section">
-        <h2>Sales Report</h2>
-
-        <p class="section-description">Recorded sales transactions from the system.</p>
-
-        <div class="table-wrapper">
-            <table class="report-table">
+        <div class="table-wrapper" style="margin-top:18px;">
+            <table class="report-table sales-table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -1014,6 +1083,51 @@
                 <tbody id="salesReportTable">
                     <tr>
                         <td colspan="5" class="empty-row">Loading sales records...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="subsection-title">Sales Trend</h3>
+
+        <p class="section-description">
+            Shows the products with the highest sales quantity among the sales records shown above.
+        </p>
+
+        <div class="trend-summary">
+            <div class="trend-card">
+                <span class="trend-card-title">Top-Selling Product</span>
+                <span id="topSellingProduct" class="trend-card-value">Loading...</span>
+                <span class="trend-card-subtitle">Most sold product</span>
+            </div>
+
+            <div class="trend-card">
+                <span class="trend-card-title">Highest Quantity Sold</span>
+                <span id="highestQuantitySold" class="trend-card-value">0 pcs</span>
+                <span class="trend-card-subtitle">In a single product</span>
+            </div>
+
+            <div class="trend-card">
+                <span class="trend-card-title">Total Quantity Sold</span>
+                <span id="totalQuantitySold" class="trend-card-value">0 pcs</span>
+                <span class="trend-card-subtitle">Across the sales shown</span>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Product</th>
+                        <th>Quantity Sold</th>
+                        <th>Sales Level</th>
+                    </tr>
+                </thead>
+
+                <tbody id="trendTable">
+                    <tr>
+                        <td colspan="4" class="empty-row">Loading sales trend...</td>
                     </tr>
                 </tbody>
             </table>
@@ -1054,50 +1168,136 @@
         <div id="flowStatus" class="flow-status">Select a period and click Show Graph.</div>
     </div>
 
-    <div class="report-section" id="salesTrendSection">
-        <h2>Sales Trend</h2>
+    <div class="report-section" id="movementSection">
+        <h2>Fast &amp; Slow Moving Products</h2>
 
         <p class="section-description">
-            Shows the products with the highest recorded sales quantity based on sales transactions in the system.
+            Choose a year, month, week, or a custom date range to see how often each product was sold.
         </p>
 
-        <div class="trend-summary">
-            <div class="trend-card">
-                <span class="trend-card-title">Top-Selling Product</span>
-                <span id="topSellingProduct" class="trend-card-value">Loading...</span>
-                <span class="trend-card-subtitle">Most sold product</span>
-            </div>
-
-            <div class="trend-card">
-                <span class="trend-card-title">Highest Quantity Sold</span>
-                <span id="highestQuantitySold" class="trend-card-value">0 pcs</span>
-                <span class="trend-card-subtitle">In a single product</span>
-            </div>
-
-            <div class="trend-card">
-                <span class="trend-card-title">Total Quantity Sold</span>
-                <span id="totalQuantitySold" class="trend-card-value">0 pcs</span>
-                <span class="trend-card-subtitle">Across all recorded sales</span>
-            </div>
+        <div class="movement-note">
+            <strong>Fast Moving:</strong> the product has sales every day within the selected period, even if only one piece a day.<br>
+            <strong>Slow Moving:</strong> the product has sales, but on and off, with some days that have sales and some days that have none.<br>
+            <strong>No Sales:</strong> the product has no sales at all within the selected period.
         </div>
 
-        <div class="table-wrapper">
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Product</th>
-                        <th>Quantity Sold</th>
-                        <th>Sales Level</th>
-                    </tr>
-                </thead>
+        <div class="move-controls">
+            <div class="filter-group">
+                <label for="moveView">View By</label>
 
-                <tbody id="trendTable">
-                    <tr>
-                        <td colspan="4" class="empty-row">Loading sales trend...</td>
-                    </tr>
-                </tbody>
-            </table>
+                <select id="moveView" onchange="updateMoveInputs()">
+                    <option value="yearly">Yearly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="custom">Date Range</option>
+                </select>
+            </div>
+
+            <div class="filter-group" id="moveSingleGroup">
+                <label for="moveValue" id="moveValueLabel">Select Year</label>
+                <input type="number" id="moveValue">
+            </div>
+
+            <div class="filter-group" id="moveFromGroup" style="display:none;">
+                <label for="moveFrom">From Date</label>
+                <input type="text" id="moveFrom" placeholder="Select date" readonly>
+            </div>
+
+            <div class="filter-group" id="moveToGroup" style="display:none;">
+                <label for="moveTo">To Date</label>
+                <input type="text" id="moveTo" placeholder="Select date" readonly>
+            </div>
+
+            <button type="button" id="moveBtn" class="report-button filter-button" onclick="loadMovement()">Show Movement</button>
+        </div>
+
+        <div id="moveNotice" class="inv-notice" role="status"></div>
+
+        <div id="moveResult" style="display:none;">
+
+            <div class="flow-status" id="movePeriodLabel" style="margin:0 0 16px;"></div>
+
+            <div class="trend-summary four">
+                <div class="trend-card">
+                    <span class="trend-card-title">Fast Moving</span>
+                    <span class="trend-card-value" id="moveFastCount">0</span>
+                    <span class="trend-card-subtitle">Sold every day</span>
+                </div>
+
+                <div class="trend-card">
+                    <span class="trend-card-title">Slow Moving</span>
+                    <span class="trend-card-value" id="moveSlowCount">0</span>
+                    <span class="trend-card-subtitle">Sold on some days only</span>
+                </div>
+
+                <div class="trend-card">
+                    <span class="trend-card-title">No Sales</span>
+                    <span class="trend-card-value" id="moveNoneCount">0</span>
+                    <span class="trend-card-subtitle">No sale in the period</span>
+                </div>
+
+                <div class="trend-card">
+                    <span class="trend-card-title">Days in Period</span>
+                    <span class="trend-card-value" id="moveDaysCount">0</span>
+                    <span class="trend-card-subtitle">Counted up to today</span>
+                </div>
+            </div>
+
+            <h3 class="movement-title">Fast Moving Products</h3>
+
+            <div class="table-wrapper inv-scroll">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Days with Sales</th>
+                            <th>Quantity Sold</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="moveFastBody"></tbody>
+                </table>
+            </div>
+
+            <h3 class="movement-title">Slow Moving Products</h3>
+
+            <div class="table-wrapper inv-scroll">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Days with Sales</th>
+                            <th>Quantity Sold</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="moveSlowBody"></tbody>
+                </table>
+            </div>
+
+            <h3 class="movement-title">Products with No Sales</h3>
+
+            <div class="table-wrapper inv-scroll">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="moveNoneBody"></tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 
@@ -1135,6 +1335,7 @@
         allowInput: false
     });
 
+
     const invFromPicker = flatpickr("#invFrom", {
         dateFormat: "Y-m-d",
         closeOnSelect: true,
@@ -1167,6 +1368,7 @@
 
     function clearFieldError(field) {
         if (!field) return;
+
         field.classList.remove("input-error");
         field.removeAttribute("aria-invalid");
     }
@@ -1195,10 +1397,11 @@
         status.textContent = "";
     }
 
-    ["fromDate", "toDate", "flowDate", "invFrom", "invTo"].forEach(id => {
+    ["fromDate", "toDate", "flowDate", "invFrom", "invTo", "moveFrom", "moveTo", "moveValue"].forEach(id => {
         const field = document.getElementById(id);
 
         if (field) {
+
             field.addEventListener("change", () => clearFieldError(field));
             field.addEventListener("input", () => clearFieldError(field));
         }
@@ -1230,6 +1433,7 @@
     function formatNumber(value) {
         return Number(value || 0).toLocaleString("en-PH");
     }
+
 
     function escapeHtml(value) {
         return String(value ?? "")
@@ -1263,6 +1467,7 @@
         if (!date) return "";
 
         const year = date.getFullYear();
+
         const month = String(date.getMonth() + 1).padStart(2, "0");
         const day = String(date.getDate()).padStart(2, "0");
 
@@ -1295,6 +1500,7 @@
             month: "short",
             day: "2-digit",
             hour: "2-digit",
+
             minute: "2-digit"
         });
     }
@@ -1327,6 +1533,7 @@
             setText("totalProducts", "Error");
             setText("lowStocks", "Error");
         }
+
     }
 
     async function getSales() {
@@ -1360,6 +1567,7 @@
         }
     }
 
+
     function showInvNotice(message, type) {
         const notice = document.getElementById("invNotice");
 
@@ -1391,6 +1599,7 @@
         setText("invLowStock", formatNumber(summary.lowStock));
         setText("invOutOfStock", formatNumber(summary.outOfStock));
         setText("invNetSold", formatNumber(summary.netSold) + " pcs");
+
         setText("invPeriodLabel", data.period ? data.period.label : "");
 
         const rows = items.map(item => {
@@ -1422,6 +1631,7 @@
             "quantity sold minus returned items within the selected period. " +
             "Generated on " + generated.toLocaleString("en-PH") + "."
         );
+
 
         document.getElementById("invResult").style.display = "block";
     }
@@ -1455,6 +1665,7 @@
         };
 
         try {
+
             const response = await fetch("/reports/insight", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -1487,6 +1698,7 @@
         document.getElementById("invResult").style.display = "none";
 
         if (fromDate === "" || toDate === "") {
+
             if (fromDate === "") markFieldError(fromInput);
             if (toDate === "") markFieldError(toInput);
 
@@ -1519,6 +1731,7 @@
             if (!data.success) {
                 showInvNotice(
                     data.message || "Unable to generate the inventory report.",
+
                     "error"
                 );
                 return;
@@ -1551,7 +1764,8 @@
         window.print();
     }
 
-        async function loadSalesReport() {
+
+    async function loadSalesReport() {
         try {
             const sales = await getSales();
             displaySales(sales);
@@ -1560,6 +1774,13 @@
 
             document.getElementById("salesReportTable").innerHTML =
                 `<tr><td colspan="5" class="empty-row">Unable to load sales records.</td></tr>`;
+
+            setText("topSellingProduct", "Error");
+            setText("highestQuantitySold", "Error");
+            setText("totalQuantitySold", "Error");
+
+            document.getElementById("trendTable").innerHTML =
+                `<tr><td colspan="4" class="empty-row">Unable to load sales trend.</td></tr>`;
         }
     }
 
@@ -1576,13 +1797,14 @@
 
         document.getElementById("salesReportTable").innerHTML = rows ||
             `<tr><td colspan="5" class="empty-row">No sales records found.</td></tr>`;
+
+
+        renderSalesTrend(sales);
     }
 
-    async function loadSalesTrend() {
+    function renderSalesTrend(sales) {
         try {
-            const sales = await getSales();
             const productSales = {};
-
 
             let totalQuantity = 0;
 
@@ -1608,6 +1830,7 @@
             const maxQuantity = ranking.length > 0 ? ranking[0][1] : 1;
 
             setText("topSellingProduct", topProduct);
+
             setText("highestQuantitySold", highestQuantity + " pcs");
             setText("totalQuantitySold", totalQuantity + " pcs");
 
@@ -1615,7 +1838,6 @@
                 const product = item[0];
                 const quantity = item[1];
                 const percentage = Math.max(5, (quantity / maxQuantity) * 100);
-
 
                 return `
                     <tr>
@@ -1641,6 +1863,7 @@
             setText("totalQuantitySold", "Error");
 
             document.getElementById("trendTable").innerHTML =
+
                 `<tr><td colspan="4" class="empty-row">Unable to load sales trend.</td></tr>`;
         }
     }
@@ -1649,7 +1872,6 @@
         const fromDateInput = document.getElementById("fromDate");
         const toDateInput = document.getElementById("toDate");
         const fromDate = fromDateInput.value;
-
         const toDate = toDateInput.value;
 
         clearFieldError(fromDateInput);
@@ -1674,6 +1896,7 @@
             const filteredSales = sales.filter(sale => {
                 const saleOnly = localDateKey(sale.sale_date);
 
+
                 if (!saleOnly) return false;
 
                 return saleOnly >= fromDate && saleOnly <= toDate;
@@ -1682,7 +1905,6 @@
             displaySales(filteredSales);
 
             showFilterInfo(
-
                 `Showing ${filteredSales.length} sales record(s) from ${fromDate} to ${toDate}.`
             );
         } catch (error) {
@@ -1707,6 +1929,7 @@
 
     function printSalesReport() {
         const fromDateInput = document.getElementById("fromDate");
+
         const toDateInput = document.getElementById("toDate");
 
         clearFieldError(fromDateInput);
@@ -1715,7 +1938,6 @@
         if (fromDateInput.value === "" || toDateInput.value === "") {
             if (fromDateInput.value === "") markFieldError(fromDateInput);
             if (toDateInput.value === "") markFieldError(toDateInput);
-
             return;
         }
 
@@ -1730,7 +1952,7 @@
         window.print();
     }
 
-    function updateFlowDateInput() {
+        function updateFlowDateInput() {
         const period = document.getElementById("flowPeriod").value;
         const label = document.getElementById("flowDateLabel");
         const input = document.getElementById("flowDate");
@@ -1748,7 +1970,6 @@
             input.min = "2000";
             input.max = "2100";
             input.placeholder = "YYYY";
-
             input.value = yearKey;
             label.textContent = "Select Year";
         } else if (period === "weekly") {
@@ -1763,6 +1984,7 @@
             label.textContent = "Select Date";
         }
     }
+
 
     function getWeekStart(date) {
         const result = new Date(date);
@@ -1781,7 +2003,6 @@
         const result = getWeekStart(date);
 
         result.setDate(result.getDate() + 6);
-
         result.setHours(23, 59, 59, 999);
 
         return result;
@@ -1796,6 +2017,7 @@
 
         transactions.forEach(sale => {
             lines.push(` ${formatExactDateTime(sale.date)}`);
+
             lines.push(` Product: ${sale.product || "Unknown Product"}`);
             lines.push(` Quantity: ${Number(sale.quantity) || 0} pcs`);
             lines.push(` Sales: ₱${formatMoney(Number(sale.total) || 0)}`);
@@ -1814,7 +2036,6 @@
         if (!selectedValue) {
             markFieldError(flowDateInput);
             return;
-
         }
 
         try {
@@ -1829,6 +2050,7 @@
                 "Monday", "Tuesday", "Wednesday", "Thursday",
                 "Friday", "Saturday", "Sunday"
             ];
+
 
             let labels = [];
             let flowDescription = "";
@@ -1848,7 +2070,6 @@
             function addTransaction(label, sale, saleDate) {
                 const saleTotal = Number(sale.total) || 0;
 
-
                 grouped[label] += saleTotal;
 
                 transactionsByLabel[label].push({
@@ -1862,6 +2083,7 @@
 
             if (period === "daily") {
                 const hours = [];
+
 
                 for (let hour = 0; hour < 24; hour++) {
                     hours.push(String(hour).padStart(2, "0") + ":00");
@@ -1880,7 +2102,6 @@
                         sale,
                         saleDate
                     );
-
                 });
 
                 flowDescription = `Daily sales flow for ${selectedValue}`;
@@ -1895,6 +2116,7 @@
                     const saleDate = parseSaleDate(sale.sale_date);
 
                     if (!saleDate) return;
+
                     if (saleDate < start || saleDate > end) return;
 
                     addTransaction(
@@ -1914,7 +2136,6 @@
                 const daysInMonth = new Date(year, month, 0).getDate();
                 const days = [];
 
-
                 for (let day = 1; day <= daysInMonth; day++) {
                     days.push(String(day).padStart(2, "0"));
                 }
@@ -1928,6 +2149,7 @@
                     if (!localDateKey(saleDate).startsWith(selectedValue)) return;
 
                     addTransaction(
+
                         String(saleDate.getDate()).padStart(2, "0"),
                         sale,
                         saleDate
@@ -1947,7 +2169,6 @@
                     addTransaction(monthNames[saleDate.getMonth()], sale, saleDate);
                 });
 
-
                 flowDescription = `Yearly sales flow for ${selectedValue}`;
             }
 
@@ -1961,6 +2182,7 @@
 
             if (salesFlowChart) {
                 salesFlowChart.destroy();
+
             }
 
             const maxTicks =
@@ -1979,7 +2201,6 @@
                             {
                                 label: "Sales (₱)",
                                 data: values,
-
                                 borderColor: "#24479b",
                                 backgroundColor: "rgba(36, 71, 155, 0.15)",
                                 borderWidth: 3,
@@ -1994,6 +2215,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+
 
                         interaction: {
                             intersect: false,
@@ -2012,7 +2234,6 @@
 
                                         const label = labels[context[0].dataIndex];
 
-
                                         return period === "monthly"
                                             ? "Day " + label
                                             : label;
@@ -2027,6 +2248,7 @@
                                         return transactions.length === 0
                                             ? " Sales: ₱" + total
                                             : " Total Sales: ₱" + total;
+
                                     },
 
                                     afterLabel: function (context) {
@@ -2045,7 +2267,6 @@
                                     minRotation: 0,
                                     autoSkip: true,
                                     maxTicksLimit: maxTicks
-
                                 }
                             },
 
@@ -2060,6 +2281,7 @@
                                 }
                             }
                         }
+
                     }
                 }
             );
@@ -2078,14 +2300,387 @@
 
             setText("flowStatus", "Unable to load the sales flow.");
         }
+    }
 
+    flatpickr("#moveFrom", {
+        dateFormat: "Y-m-d",
+        closeOnSelect: true,
+        allowInput: false
+    });
+
+    flatpickr("#moveTo", {
+        dateFormat: "Y-m-d",
+        closeOnSelect: true,
+        allowInput: false
+    });
+
+
+    function pad(value) {
+        return String(value).padStart(2, "0");
+    }
+
+    function showNotice(id, message, type) {
+        const notice = document.getElementById(id);
+
+        notice.textContent = message;
+        notice.className = "inv-notice " + type;
+    }
+
+    function hideNotice(id) {
+        const notice = document.getElementById(id);
+
+        notice.textContent = "";
+        notice.className = "inv-notice";
+    }
+
+    function daysBetween(fromKey, toKey) {
+        const start = new Date(fromKey + "T00:00:00Z");
+        const end = new Date(toKey + "T00:00:00Z");
+
+        return Math.round((end - start) / 86400000) + 1;
+    }
+
+    function updateMoveInputs() {
+        const view = document.getElementById("moveView").value;
+        const input = document.getElementById("moveValue");
+        const label = document.getElementById("moveValueLabel");
+        const todayKey = localDateKey(new Date());
+        const isCustom = view === "custom";
+
+
+        document.getElementById("moveSingleGroup").style.display = isCustom ? "none" : "flex";
+        document.getElementById("moveFromGroup").style.display = isCustom ? "flex" : "none";
+        document.getElementById("moveToGroup").style.display = isCustom ? "flex" : "none";
+
+        clearFieldError(input);
+
+        if (isCustom) return;
+
+        input.removeAttribute("min");
+        input.removeAttribute("max");
+        input.placeholder = "";
+
+        if (view === "yearly") {
+            input.type = "number";
+            input.min = "2000";
+            input.max = "2100";
+            input.placeholder = "YYYY";
+            input.value = todayKey.slice(0, 4);
+            label.textContent = "Select Year";
+        } else if (view === "monthly") {
+            input.type = "month";
+            input.value = todayKey.slice(0, 7);
+            label.textContent = "Select Month";
+        } else {
+            input.type = "date";
+            input.value = todayKey;
+            label.textContent = "Select Any Date in the Week";
+        }
+    }
+
+    function getMoveRange() {
+        const view = document.getElementById("moveView").value;
+
+        const input = document.getElementById("moveValue");
+        const fromInput = document.getElementById("moveFrom");
+        const toInput = document.getElementById("moveTo");
+
+        clearFieldError(input);
+        clearFieldError(fromInput);
+        clearFieldError(toInput);
+
+        if (view === "custom") {
+            const fromDate = fromInput.value;
+            const toDate = toInput.value;
+
+            if (fromDate === "" || toDate === "") {
+                if (fromDate === "") markFieldError(fromInput);
+                if (toDate === "") markFieldError(toInput);
+
+                return { error: "Please select both From Date and To Date." };
+            }
+
+            if (fromDate > toDate) {
+                markFieldError(fromInput);
+                markFieldError(toInput);
+
+                return { error: "From Date cannot be later than To Date. Please select a valid date range." };
+            }
+
+            return { from: fromDate, to: toDate };
+        }
+
+        const value = input.value;
+
+        if (!value) {
+
+            markFieldError(input);
+
+            return { error: "Please select a period." };
+        }
+
+        if (view === "yearly") {
+            const year = Number(value);
+
+            if (!Number.isInteger(year) || year < 2000 || year > 2100) {
+                markFieldError(input);
+
+                return { error: "Please enter a valid year." };
+            }
+
+            return { from: `${year}-01-01`, to: `${year}-12-31` };
+        }
+
+        if (view === "monthly") {
+            const parts = value.split("-").map(Number);
+            const lastDay = new Date(parts[0], parts[1], 0).getDate();
+
+            return {
+                from: `${parts[0]}-${pad(parts[1])}-01`,
+                to: `${parts[0]}-${pad(parts[1])}-${pad(lastDay)}`
+            };
+        }
+
+        const selected = new Date(value + "T12:00:00");
+
+        return {
+            from: localDateKey(getWeekStart(selected)),
+            to: localDateKey(getWeekEnd(selected))
+
+        };
+    }
+
+    async function calculateMovement(fromKey, toKey) {
+        const [productResponse, sales] = await Promise.all([
+            fetch("/products/all"),
+            getSales()
+        ]);
+
+        if (!productResponse.ok) {
+            throw new Error("Unable to load products.");
+        }
+
+        const products = await productResponse.json();
+        const todayKey = localDateKey(new Date());
+
+        if (fromKey > todayKey) {
+            return { error: "The selected period has not started yet. Please choose a period up to today." };
+        }
+
+        const endKey = toKey > todayKey ? todayKey : toKey;
+        const totalDays = daysBetween(fromKey, endKey);
+
+        const productById = new Map();
+        const productByName = new Map();
+        const stats = new Map();
+
+        products.forEach(product => {
+            productById.set(String(product.id), product);
+            productByName.set(String(product.product_name || "").trim().toLowerCase(), product);
+            stats.set(product, { days: new Set(), quantity: 0 });
+        });
+
+
+        sales.forEach(sale => {
+            const dayKey = localDateKey(sale.sale_date);
+
+            if (!dayKey || dayKey < fromKey || dayKey > endKey) return;
+
+            let product = null;
+
+            if (sale.product_id !== undefined && sale.product_id !== null) {
+                product = productById.get(String(sale.product_id)) || null;
+            }
+
+            if (!product) {
+                product = productByName.get(String(sale.product_name || "").trim().toLowerCase()) || null;
+            }
+
+            if (!product) return;
+
+            const entry = stats.get(product);
+
+            entry.days.add(dayKey);
+            entry.quantity += Number(sale.quantity) || 0;
+        });
+
+        const summary = { fast: 0, slow: 0, noSales: 0 };
+
+        const items = products.map(product => {
+            const entry = stats.get(product);
+            const saleDays = entry.days.size;
+            let status = "No Sales";
+
+            if (saleDays > 0 && saleDays >= totalDays) {
+
+                status = "Fast Moving";
+                summary.fast += 1;
+            } else if (saleDays > 0) {
+                status = "Slow Moving";
+                summary.slow += 1;
+            } else {
+                summary.noSales += 1;
+            }
+
+            return {
+                product_name: product.product_name,
+                category: product.category || "Uncategorized",
+                stock: Number(product.quantity) || 0,
+                sale_days: saleDays,
+                quantity_sold: entry.quantity,
+                status
+            };
+        });
+
+        items.sort((a, b) =>
+            b.quantity_sold - a.quantity_sold ||
+            String(a.product_name).localeCompare(String(b.product_name))
+        );
+
+        return {
+            period: {
+                label: fromKey + " to " + endKey +
+                    (endKey !== toKey ? " (counted up to today)" : ""),
+                totalDays
+            },
+            summary,
+            items
+
+        };
+    }
+
+    function movementBadge(status) {
+        const map = {
+            "Fast Moving": "fast",
+            "Slow Moving": "slow",
+            "No Sales": "none"
+        };
+
+        return `<span class="status-badge ${map[status] || "none"}">${escapeHtml(status)}</span>`;
+    }
+
+    function renderMovementRows(bodyId, rows, totalDays, hasSales, emptyText) {
+        const body = document.getElementById(bodyId);
+        const columns = hasSales ? 7 : 5;
+
+        if (rows.length === 0) {
+            body.innerHTML = `<tr><td colspan="${columns}" class="empty-row">${emptyText}</td></tr>`;
+            return;
+        }
+
+        body.innerHTML = rows.map((item, index) => {
+            if (hasSales) {
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${escapeHtml(item.product_name)}</td>
+                        <td>${escapeHtml(item.category)}</td>
+                        <td>${formatNumber(item.sale_days)} of ${formatNumber(totalDays)} days</td>
+                        <td class="quantity-value">${formatNumber(item.quantity_sold)} pcs</td>
+                        <td>${formatNumber(item.stock)}</td>
+
+                        <td>${movementBadge(item.status)}</td>
+                    </tr>
+                `;
+            }
+
+            return `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${escapeHtml(item.product_name)}</td>
+                    <td>${escapeHtml(item.category)}</td>
+                    <td>${formatNumber(item.stock)}</td>
+                    <td>${movementBadge(item.status)}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function renderMovement(data) {
+        const summary = data.summary || {};
+        const items = data.items || [];
+        const totalDays = data.period ? data.period.totalDays : 0;
+
+        setText("movePeriodLabel", "Period: " + (data.period ? data.period.label : ""));
+        setText("moveFastCount", formatNumber(summary.fast));
+        setText("moveSlowCount", formatNumber(summary.slow));
+        setText("moveNoneCount", formatNumber(summary.noSales));
+        setText("moveDaysCount", formatNumber(totalDays));
+
+        renderMovementRows(
+            "moveFastBody",
+            items.filter(item => item.status === "Fast Moving"),
+            totalDays,
+
+            true,
+            "No product was sold every day in this period."
+        );
+
+        renderMovementRows(
+            "moveSlowBody",
+            items.filter(item => item.status === "Slow Moving"),
+            totalDays,
+            true,
+            "No slow moving products in this period."
+        );
+
+        renderMovementRows(
+            "moveNoneBody",
+            items.filter(item => item.status === "No Sales"),
+            totalDays,
+            false,
+            "Every product had sales in this period."
+        );
+
+        document.getElementById("moveResult").style.display = "block";
+    }
+
+    async function loadMovement() {
+        const button = document.getElementById("moveBtn");
+        const range = getMoveRange();
+
+        hideNotice("moveNotice");
+        document.getElementById("moveResult").style.display = "none";
+
+        if (range.error) {
+            showNotice("moveNotice", range.error, "error");
+
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Loading...";
+
+        try {
+            const data = await calculateMovement(range.from, range.to);
+
+            if (data.error) {
+                showNotice("moveNotice", data.error, "error");
+                return;
+            }
+
+            renderMovement(data);
+        } catch (error) {
+            console.error("Movement Report Error:", error);
+
+            showNotice(
+                "moveNotice",
+                "Unable to load the fast and slow moving report. Please try again.",
+                "error"
+            );
+        } finally {
+            button.disabled = false;
+            button.textContent = "Show Movement";
+        }
     }
 
     updateFlowDateInput();
+    updateMoveInputs();
     loadReport();
+
     loadSalesSummary();
     loadSalesReport();
-    loadSalesTrend();
+    loadMovement();
 
 </script>
 
