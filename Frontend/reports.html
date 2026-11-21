@@ -1336,24 +1336,18 @@
     });
 
 
-    const invFromPicker = flatpickr("#invFrom", {
+       flatpickr("#invFrom", {
         dateFormat: "Y-m-d",
         closeOnSelect: true,
         allowInput: false,
-        maxDate: "today",
-        onChange: function (selectedDates) {
-            invToPicker.set("minDate", selectedDates.length ? selectedDates[0] : null);
-        }
+        maxDate: "today"
     });
 
-    const invToPicker = flatpickr("#invTo", {
+    flatpickr("#invTo", {
         dateFormat: "Y-m-d",
         closeOnSelect: true,
         allowInput: false,
-        maxDate: "today",
-        onChange: function (selectedDates) {
-            invFromPicker.set("maxDate", selectedDates.length ? selectedDates[0] : "today");
-        }
+        maxDate: "today"
     });
 
     window.addEventListener("afterprint", () => {
